@@ -1,12 +1,18 @@
-LIB_NAME = libmx.a
+APP_NAME = libmx.a
 
-SRC_DIR = src
+CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+CC = clang
 
-OBJ_DIR = obj
+DIR_NAME = libmx
 
-INC = inc/
+SRCD = src
+INCD = inc
+OBJD = obj
 
-SRC = $(addprefix $(SRC_DIR)/, \
+INC = libmx.h
+INCS = $(addprefix $(INCD)/, $(INC))
+
+SRC = \
 mx_binary_search.c \
 mx_bubble_sort.c \
 mx_count_substr.c \
@@ -94,116 +100,34 @@ mx_strarr_len.c \
 mx_pop_string_array.c \
 mx_list_merge_sort.c \
 mx_list_insertion_sort.c \
-mx_push_second.c)
+mx_push_second.c \
 
-OBJ = \
-mx_binary_search.o \
-mx_bubble_sort.o \
-mx_count_substr.o \
-mx_count_words.o \
-mx_del_strarr.o \
-mx_del_intarr.o \
-mx_foreach.o \
-mx_get_char_index.o \
-mx_get_substr_index.o \
-mx_hex_to_nbr.o \
-mx_isspace.o \
-mx_isalpha.o \
-mx_islower.o \
-mx_isupper.o \
-mx_isdigit.o \
-mx_toupper.o \
-mx_tolower.o \
-mx_itoa.o \
-mx_lltoa.o \
-mx_ulltoa.o \
-mx_atoi.o \
-mx_ctoi.o \
-mx_nbr_to_hex.o \
-mx_pow.o \
-mx_print_strarr.o \
-mx_printchar.o \
-mx_printchar_endl.o \
-mx_print_unicode.o \
-mx_printint.o \
-mx_printint_endl.o \
-mx_printstr.o \
-mx_printstr_endl.o \
-mx_print_error.o \
-mx_print_error_endl.o \
-mx_quicksort.o \
-mx_sqrt.o \
-mx_str_reverse.o \
-mx_strcat.o \
-mx_strcmp.o \
-mx_strcpy.o \
-mx_strdel.o \
-mx_intdel.o \
-mx_strdup.o \
-mx_strndup.o \
-mx_strlen.o \
-mx_numlen.o \
-mx_unumlen.o \
-mx_strncmp.o \
-mx_strncpy.o \
-mx_strnew.o \
-mx_strstr.o \
-mx_strtrim.o \
-mx_swap_char.o \
-mx_del_extra_spaces.o \
-mx_strsplit.o \
-mx_strjoin.o \
-mx_get_file_length.o \
-mx_file_to_str.o \
-mx_read_line.o \
-mx_replace_substr.o \
-mx_memset.o \
-mx_memcpy.o \
-mx_memccpy.o \
-mx_memcmp.o \
-mx_memchr.o \
-mx_memrchr.o \
-mx_memmem.o \
-mx_memmove.o \
-mx_realloc.o \
-mx_memalloc.o \
-mx_create_node.o \
-mx_pop_back.o \
-mx_pop_front.o \
-mx_push_back.o \
-mx_push_front.o \
-mx_list_size.o \
-mx_sort_list.o \
-mx_reverse_list.o \
-mx_is_equal_lists.o \
-mx_get_arr_length.o \
-mx_count_unequal.o \
-mx_check_set.o \
-mx_create_set.o \
-mx_strarr_len.o \
-mx_pop_string_array.o \
-mx_list_merge_sort.o \
-mx_list_insertion_sort.o \
-mx_push_second.o
+SRCS = $(addprefix $(SRCD)/, $(SRC))
+OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))
 
-CC = clang
+all: install
 
-CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+install: $(APP_NAME)
 
-all : install
+$(APP_NAME): $(OBJS)
+	@ar rcs $@ $^
+	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
 
-install : libmx.a
+$(OBJD)/%.o: $(SRCD)/%.c $(INCS)
+	@$(CC) $(CFLAGS) -c $< -o $@ -I$(INCD)
+	@printf "\r\33[2K$(APP_NAME) \033[33;1mcompile \033[0m$(<:$(SRCD)/%.c=%)"
 
-libmx.a : $(SRC) inc/libmx.h
-	@$(CC) $(CFLAGS) -c $(SRC) -I $(INC)
-	@ar rcs $(LIB_NAME) $(OBJ)
-	@mkdir $(OBJ_DIR)
-	@mv $(OBJ) $(OBJ_DIR)
+$(OBJS): | $(OBJD)
 
-uninstall : clean
-	@rm -rf $(LIB_NAME)
+$(OBJD):
+	@mkdir -p $@
 
-clean :
-	@rm -rf $(OBJ_DIR)
+clean:
+	@rm -rf $(OBJD)
+	@printf "$(DIR_NAME)/$(OBJD)\t   \033[31;1mdeleted\033[0m\n"
 
-reinstall : uninstall install
+uninstall: clean
+	@rm -rf $(APP_NAME)
+	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
+
+reinstall: uninstall install
