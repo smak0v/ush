@@ -9,9 +9,11 @@ int mx_ush_loop(t_ush *ush, char **envp) {
     while (status) {
         mx_printstr("u$h> ");
         getline(&line, &size, stdin);
-        mx_push_front(&ush->history, mx_strdup(line));
-        args = mx_split_line(line);
-        status = mx_execute(args, envp);
+        if (mx_strcmp(line, "\n\0")) {
+            mx_push_front(&ush->history, mx_strdup(line));
+            args = mx_split_line(line);
+            status = mx_execute(args, envp);
+        }
         mx_strdel(&line);
     }
     mx_clear_history(&ush->history);

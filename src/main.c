@@ -6,6 +6,7 @@ int main(int argc, char **argv, char **envp) {
 
     argc = 0;
     argv = NULL;
+    // init shell
     exit_code = mx_ush_loop(ush, envp);
     // system("leaks ush");
     return exit_code;

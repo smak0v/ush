@@ -1,7 +1,7 @@
 #include "ush.h"
 
 int mx_execute(char **args, char **envp) {
-    if (!args)
+    if (!args && !(*args))
         return 1;
     if (!mx_strcmp(args[0], "cd"))
         return mx_ush_cd(args);
