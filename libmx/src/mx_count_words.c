@@ -20,7 +20,7 @@ int mx_count_words(const char *str, char c) {
     while ((*s) && (*s != '\0')) {
         if (*s == c) {
             s++;
-            continue ;
+            continue;
         }
         words_count++;
         s += get_word_length(s, c);

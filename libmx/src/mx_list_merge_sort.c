@@ -41,7 +41,7 @@ void mx_list_merge_sort(t_list **head_ptr, bool (*cmp)(void *a, void *b)) {
     t_list *b = NULL;
 
     if (head == NULL || head->next == NULL)
-        return ;
+        return;
     divide(head, &a, &b);
     mx_list_merge_sort(&a, cmp);
     mx_list_merge_sort(&b, cmp);

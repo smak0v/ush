@@ -21,6 +21,9 @@ main.c \
 ush_loop.c \
 split_line.c \
 execute.c \
+launch.c \
+clear_history.c \
+builtins.c \
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))

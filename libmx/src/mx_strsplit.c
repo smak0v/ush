@@ -25,7 +25,7 @@ char **mx_strsplit(const char *s, char c) {
             arr[i] = mx_strndup(s, word_length);
             s += word_length;
             i++;
-            continue ;
+            continue;
         }
         s++;
     }

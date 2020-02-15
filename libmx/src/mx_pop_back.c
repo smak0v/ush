@@ -4,12 +4,12 @@ void mx_pop_back(t_list **head) {
     t_list *p = NULL;
 
     if (!head || !(*head))
-        return ;
+        return;
     if (!(*head)->next) {
         (*head)->data = NULL;
         free(*head);
         *head = NULL;
-        return ;
+        return;
     }
     else {
         p = *head;
