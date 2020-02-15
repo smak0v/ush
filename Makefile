@@ -24,6 +24,8 @@ execute.c \
 launch.c \
 clear_history.c \
 builtins.c \
+create_trees.c \
+split_token.c \
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))

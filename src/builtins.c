@@ -22,8 +22,8 @@ int mx_ush_pwd() {
     return 1;
 }
 
-int mx_ush_env(char **envp) {
-    mx_print_strarr(envp, "\n");
+int mx_ush_env(char **args) {
+    mx_print_strarr(args, "\n");
     return 1;
 }
 

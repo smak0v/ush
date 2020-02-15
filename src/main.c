@@ -1,13 +1,10 @@
 #include "ush.h"
 
-int main(int argc, char **argv, char **envp) {
+int main() {
     int exit_code = 0;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
 
-    argc = 0;
-    argv = NULL;
-    // init shell
-    exit_code = mx_ush_loop(ush, envp);
+    exit_code = mx_ush_loop(ush);
     // system("leaks ush");
     return exit_code;
 }

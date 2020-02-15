@@ -5,8 +5,13 @@ int mx_launch(char **args) {
     int status = 0;
 
     pid = fork();
-    if (!pid)
-        execvp(args[0], args);
+    if (!pid) {
+        status = execvp(args[0], args);
+        if (status < 0)
+            mx_print_error("ush: command not found: ");
+            mx_print_error_endl(args[0]);
+        exit(status);
+    }
     else {
         waitpid(pid, &status, WUNTRACED);
         while (!WIFEXITED(status) && !WIFSIGNALED(status))

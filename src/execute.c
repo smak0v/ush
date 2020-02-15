@@ -1,6 +1,6 @@
 #include "ush.h"
 
-int mx_execute(char **args, char **envp) {
+int mx_execute(char **args) {
     if (!args && !(*args))
         return 1;
     if (!mx_strcmp(args[0], "cd"))
@@ -8,7 +8,7 @@ int mx_execute(char **args, char **envp) {
     else if (!mx_strcmp(args[0], "pwd"))
         return mx_ush_pwd();
     else if (!mx_strcmp(args[0], "env"))
-        return mx_ush_env(envp);
+        return mx_ush_env(args);
     else if (!mx_strcmp(args[0], "echo"))
         return mx_ush_echo(args);
     else if (!mx_strcmp(args[0], "exit"))
