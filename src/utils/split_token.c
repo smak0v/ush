@@ -1,24 +1,33 @@
 #include "ush.h"
 
-static void copy_part(t_list **sub_tokens, char **pos, int *len, char *str) {
+static void copy_part(t_dll **sub_tokens, char **pos, int *len, char *str) {
     char *tmp = mx_strndup(*pos, *len);
+    t_token *token_1 = malloc(sizeof(t_token));
+    t_token *token_2 = malloc(sizeof(t_token));
 
-    mx_push_back(sub_tokens, mx_strtrim(tmp));
+    token_1->data = mx_strtrim(tmp);
+    token_1->type = 0;
+    mx_dll_push_back(sub_tokens, token_1);
     mx_strdel(&tmp);
-    mx_push_back(sub_tokens, mx_strdup(str));
+    token_2->data = mx_strdup(str);
+    token_2->type = 1;
+    mx_dll_push_back(sub_tokens, token_2);
     *pos += *len + mx_strlen(str);
     *len = 0;
 }
 
-static void copy_last(t_list **sub_tokens, char *pos) {
+static void copy_last(t_dll **sub_tokens, char *pos) {
     char *tmp = mx_strdup(pos);
+    t_token *token = malloc(sizeof(t_token));
 
-    mx_push_back(sub_tokens, mx_strtrim(tmp));
+    token->data = mx_strtrim(tmp);
+    token->type = 0;
+    mx_dll_push_back(sub_tokens, token);
     mx_strdel(&tmp);
 }
 
-t_list *mx_split_token(char *token) {
-    t_list *sub_tokens = NULL;
+t_dll *mx_split_token(char *token) {
+    t_dll *sub_tokens = NULL;
     char *prev_position = token;
 
     for (int i = 0, len = 0; i < mx_strlen(token); ++i, ++len)

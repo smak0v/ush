@@ -1,6 +1,6 @@
 APP_NAME = ush
 
-CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -g
 CC = clang
 
 DIR_NAME = ush
@@ -16,36 +16,36 @@ LIBMXI := $(LIBMXD)/inc
 INC = ush.h
 INCS = $(addprefix $(INCD)/, $(INC))
 
-SRC = \
+CLEARING_SRCS = clear_tokens.c
+
+UTILS_SRCS = print_tree.c split_token.c
+
+CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
+UTILS = $(addprefix utils/, $(UTILS_SRCS))
+
+SOURCES = \
 main.c \
 ush_loop.c \
-split_line.c \
 execute.c \
 launch.c \
-clear_history.c \
 builtins.c \
-create_trees.c \
-split_token.c \
+create_trees.c
+
+SRC = $(SOURCES) $(CLEARING) $(UTILS)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
-OBJS = $(addprefix $(OBJD)/, $(SRC:%.c=%.o))
+OBJS = $(SOURCES:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) $(UTILS_SRCS:%.c=%.o)
 
 all: install
 
 install: $(LIBMXA) $(APP_NAME)
 
-$(APP_NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -L $(LIBMXD) -lmx -o $@
+$(APP_NAME): $(SRCS) $(INCD)/$(INC) $(LIBMXA)
+	@$(CC) $(CFLAGS) -c $(SRCS) -I $(INCD) -I $(LIBMXI)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBMXA) -o $(APP_NAME)
+	@mkdir $(OBJD)
+	@mv $(OBJS) $(OBJD)
 	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
-
-$(OBJD)/%.o: $(SRCD)/%.c $(INCS)
-	@$(CC) $(CFLAGS) -c $< -o $@ -I$(INCD) -I$(LIBMXI)
-	@printf "\r\33[2K$(APP_NAME) \033[33;1mcompile \033[0m$(<:$(SRCD)/%.c=%)"
-
-$(OBJS): | $(OBJD)
-
-$(OBJD):
-	@mkdir -p $@
 
 $(LIBMXA):
 	@make -sC $(LIBMXD)
@@ -56,6 +56,7 @@ clean:
 	@printf "$(DIR_NAME)/$(OBJD)\t\t   \033[31;1mdeleted\033[0m\n"
 
 uninstall: clean
+	@make -sC $(LIBMXD) $@
 	@rm -rf $(APP_NAME)
 	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
 

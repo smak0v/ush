@@ -19,7 +19,6 @@ char **mx_pop_string_array(char **arr, char *value) {
         }
         new_arr[j] = NULL;
     }
-
     mx_del_strarr(&arr);
     return new_arr;
 }

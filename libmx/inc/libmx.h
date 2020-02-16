@@ -8,10 +8,25 @@
 #include <wchar.h>
 
 // Structures
+// Singly Linked List
 typedef struct s_list {
     void *data;
     struct s_list *next;
 } t_list;
+
+// Doubly Linked List
+typedef struct s_dll {
+    void *data;
+    struct s_dll *prev;
+    struct s_dll *next;
+} t_dll;
+
+// Binary tree
+typedef struct s_tree {
+    struct s_tree *left;
+    struct s_tree *right;
+    void *data;
+}              t_tree;
 
 // Utils pack
 void mx_printchar(char c);
@@ -97,6 +112,7 @@ void *mx_realloc(void *ptr, size_t size);
 void *mx_memalloc(size_t size);
 
 // List pack
+// Singly Linked List
 t_list *mx_create_node(void *data);
 void mx_push_front(t_list **list, void *data);
 void mx_push_second(t_list **list, void *data);
@@ -110,6 +126,15 @@ void mx_list_merge_sort(t_list **head_ptr, bool (*cmp)(void *a, void *b));
 void mx_revers_list(t_list **list);
 bool mx_is_equal_lists(t_list *a, t_list *b);
 
+// Doubly Linked List
+t_dll *mx_dll_create_node(void *data);
+void mx_dll_push_front(t_dll **list, void *data);
+void mx_dll_push_back(t_dll **list, void *data);
+void mx_dll_pop_front(t_dll **head);
+
 // Set pack
 bool mx_check_set(char **set, char *element, int set_size);
 char **mx_create_set(char **arr);
+
+// Tree pack
+t_tree *mx_create_tree_node(void *data);
