@@ -24,7 +24,7 @@ int mx_ush_loop(t_ush *ush) {
         // }
         mx_create_trees(ush, line);
         status = mx_proccess_commands_list(ush);
-        // mx_clear_trees(ush);
+        mx_clear_trees(ush);
         mx_strdel(&line);
     }
     return status;

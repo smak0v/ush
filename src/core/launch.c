@@ -1,6 +1,6 @@
 #include "ush.h"
 
-int ./u mx_launch(char **args, t_ush *ush) {
+int mx_launch(char **args, t_ush *ush) {
     pid_t pid = 0;
     int status = 0;
 
