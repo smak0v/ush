@@ -42,7 +42,6 @@ void mx_create_trees(t_ush *ush, char *line) {
     while (token) {
         sub_tokens = mx_split_token(token);
         mx_create_tree(sub_tokens, &tree);
-        mx_print_inorder_tree(tree);
         mx_dll_push_back(&ush->trees, tree);
         mx_clear_tokens(&sub_tokens);
         token = strtok(NULL, ";");

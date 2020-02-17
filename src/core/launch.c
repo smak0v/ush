@@ -1,9 +1,10 @@
 #include "ush.h"
 
-int mx_launch(char **args) {
+int ./u mx_launch(char **args, t_ush *ush) {
     pid_t pid = 0;
     int status = 0;
 
+    ush++; // Remove
     pid = fork();
     if (!pid) {
         status = execvp(args[0], args);
