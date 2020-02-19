@@ -9,8 +9,9 @@ int mx_ush_cd(char **args, t_ush *ush) {
         mx_print_error(strerror(errno));
         mx_print_error(": ");
         mx_print_error_endl(args[1]);
+        status = 1;
     }
-    return 1;
+    return status;
 }
 
 int mx_ush_pwd(char **args, t_ush *ush) {
@@ -22,13 +23,13 @@ int mx_ush_pwd(char **args, t_ush *ush) {
     getcwd(path, (size_t)size);
     mx_printstr_endl(path);
     mx_strdel(&path);
-    return 1;
+    return 0;
 }
 
 int mx_ush_env(char **args, t_ush *ush) {
     ush++; // Remove
     mx_print_strarr(args, "\n");
-    return 1;
+    return 0;
 }
 
 int mx_ush_echo(char **args, t_ush *ush) {
@@ -36,7 +37,7 @@ int mx_ush_echo(char **args, t_ush *ush) {
 
     ush++; // Remove
     mx_print_strarr(tmp, " ");
-    return 1;
+    return 0;
 }
 
 int mx_ush_exit(char **args, t_ush *ush) {
