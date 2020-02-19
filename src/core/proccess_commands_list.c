@@ -5,7 +5,7 @@ int mx_proccess_commands_list(t_ush *ush) {
     int status = 0;
 
     while (tree) {
-        status = mx_traverse_and_execute_tree((t_tree *)tree->data, ush);
+        mx_traverse_and_execute_tree((t_tree *)tree->data, ush, &status);
         tree = tree->next;
     }
     return status;

@@ -32,7 +32,7 @@ UTIL_SRCS = mx_printchar.c mx_printchar_endl.c mx_print_unicode.c \
 			mx_atoi.c mx_ctoi.c mx_foreach.c mx_binary_search.c \
 			mx_bubble_sort.c mx_quicksort.c mx_get_arr_length.c \
 			mx_del_intarr.c mx_intdel.c mx_get_file_length.c \
-			mx_count_unequal.c mx_numlen.c mx_unumlen.c
+			mx_count_unequal.c mx_numlen.c mx_unumlen.c mx_terminate.c
 
 STRINGS_SRCS = mx_strlen.c mx_swap_char.c mx_str_reverse.c mx_strdel.c \
 			   mx_pop_string_array.c mx_del_strarr.c mx_get_char_index.c \

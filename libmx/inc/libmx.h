@@ -61,6 +61,7 @@ int mx_count_unequal(char **arr);
 int mx_strarr_len(char **strarr);
 int mx_numlen(long long value);
 int mx_unumlen(unsigned long long value);
+void mx_terminate(char *error_message);
 
 // String pack
 int mx_strlen(const char *s);
