@@ -1,9 +1,9 @@
 #include "ush.h"
 
-static int count_separated_flags(int argc, char **argv) {
+static int count_separated_flags(char **argv) {
     int separated_flags_count = 0;
 
-    for (int i = 1; i < argc; ++i) {
+    for (int i = 1; argv[i]; ++i) {
         if (argv[i][0] == '-') {
             if (mx_strlen(argv[i]) == 1)
                 break;
@@ -37,6 +37,6 @@ static char **store_flags(int separated_flags_count, char **argv) {
     return flags;
 }
 
-char **mx_store_flags(int argc, char **argv) {
-    return store_flags(count_separated_flags(argc, argv), argv);
+char **mx_store_flags(char **argv) {
+    return store_flags(count_separated_flags(argv), argv);
 }

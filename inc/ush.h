@@ -44,11 +44,16 @@ void mx_print_inorder_tree(t_tree *tree);
 // Signals
 
 // Builtins
+char **mx_store_flags(char **argv);
+char **mx_store_files(char **argv);
 int mx_ush_cd(char **args, t_ush *ush);
 int mx_ush_pwd(char **args, t_ush *ush);
 int mx_ush_env(char **args, t_ush *ush);
 int mx_ush_echo(char **args, t_ush *ush);
 int mx_ush_exit(char **args, t_ush *ush);
+
+    // CD
+
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);

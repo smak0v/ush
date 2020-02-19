@@ -1,15 +1,23 @@
 #include "ush.h"
 
-int mx_ush_cd(char **args, t_ush *ush) {
-    int status = chdir(args[1]);
+extern char **environ;
 
-    ush++; // Remove
-    if (status < 0) {
-        mx_print_error("cd: ");
-        mx_print_error(strerror(errno));
-        mx_print_error(": ");
-        mx_print_error_endl(args[1]);
-    }
+int mx_ush_cd(char **args, t_ush *ush) {
+    char **flags = mx_store_flags(args);
+    char **arguments = mx_store_files(args);
+    //int status = mx_cd(flags, arguments);
+
+    mx_print_strarr(environ, "\n");
+    ush++;
+    // int status = chdir(args[1]);
+
+    // ush++; // Remove
+    // if (status < 0) {
+    //     mx_print_error("cd: ");
+    //     mx_print_error(strerror(errno));
+    //     mx_print_error(": ");
+    //     mx_print_error_endl(args[1]);
+    // }
     return 1;
 }
 
@@ -44,3 +52,4 @@ int mx_ush_exit(char **args, t_ush *ush) {
     ush++; // Remove
     return 0;
 }
+
