@@ -12,7 +12,6 @@
 // Constants
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
-#define MX_USH_TREE_END_STATUS 999
 
 // Macroses
 
@@ -24,7 +23,7 @@ typedef struct s_ush {
 typedef struct s_token {
     char *data;
     int type;
-} t_token;
+}              t_token;
 
 // Fucntions
 // Core
@@ -32,7 +31,7 @@ int mx_ush_loop(t_ush *ush);
 int mx_proccess_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
 int mx_execute(char **args, t_ush *ush);
-int mx_launch(char **args, t_ush *ush);
+int mx_launch(char **args);
 
 // Utils
 t_dll *mx_split_token(char *token);
