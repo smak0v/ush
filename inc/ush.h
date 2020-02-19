@@ -15,13 +15,12 @@
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
 
-# define RIGHT		4414235
-# define LEFT		4479771
-# define UP			4283163
-# define DOWN		4348699
-# define ESC		27
-#define BACKSPACE 127
-
+#define RIGHT       4414235
+#define LEFT        4479771
+#define UP          4283163
+#define DOWN        4348699
+#define ESC         27
+#define BACKSPACE   127
 
 // Macroses
 
@@ -29,12 +28,18 @@
 typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
 typedef struct s_token t_token;
+typedef struct s_env t_env;
 
 struct s_ush {
     t_dll *trees;
     t_hist *history;
     struct termios savetty;
+    t_list *env;
+};
 
+struct s_env {
+    char *key;
+    char *value;
 };
 
 struct s_token {
