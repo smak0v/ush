@@ -103,9 +103,9 @@ int mx_ush_env(char **args, t_ush *ush);
 int mx_ush_echo(char **args, t_ush *ush);
 int mx_ush_exit(char **args, t_ush *ush);
 
-    // CD
+// CD
 
-    // ENV
+// ENV
 int mx_env(char **flags, char **arguments);
 void mx_env_illegal_option(char illegal_option);
 
