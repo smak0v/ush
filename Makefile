@@ -1,7 +1,7 @@
 APP_NAME = ush
 
 CC = clang
-CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra  -Wpedantic
 ADDITIONAl_FLAGS = -g -ltermcap
 
 DIR_NAME = ush
@@ -18,11 +18,13 @@ INC = ush.h
 INCS = $(addprefix $(INCD)/, $(INC))
 
 CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
-			execute.c launch.c get_input.c init_ush.c history.c input_mode.c
+			execute.c launch.c get_input.c init_ush.c history.c input_mode.c \
+
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
-UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c
+UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
+			mx_printnbr.c
 
 BUILTINS_SRCS = builtins.c
 
