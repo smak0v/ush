@@ -22,7 +22,8 @@ CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
-UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c
+UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
+			 create_env_list.c
 
 BUILTINS_SRCS = builtins.c
 
@@ -44,7 +45,7 @@ install: $(LIBMXA) $(APP_NAME)
 $(APP_NAME): $(SRCS) $(INCD)/$(INC) $(LIBMXA)
 	@$(CC) $(CFLAGS) -c $(SRCS) -I $(INCD) -I $(LIBMXI)
 	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) $(OBJS) $(LIBMXA) -o $(APP_NAME)
-	@mkdir $(OBJD)
+	@mkdir -p $(OBJD)
 	@mv $(OBJS) $(OBJD)
 	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
 

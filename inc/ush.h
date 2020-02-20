@@ -21,6 +21,7 @@
 #define DOWN        4348699
 #define ESC         27
 #define BACKSPACE   127
+#define ENTER       10
 
 // Macroses
 
@@ -73,6 +74,7 @@ void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
+t_list *mx_create_env_list(char **environ);
 
 // Signals
 

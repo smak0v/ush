@@ -3,7 +3,7 @@
 static void init_terminal_data() {
     char term_buffer[2048];
     char *termtype = getenv("TERM");
-    int success;
+    int success = 0;
 
     if (termtype == 0)
         mx_terminate("Specify a terminal type: \'export TERM=<termtype>\'.");
@@ -11,7 +11,7 @@ static void init_terminal_data() {
     if (success < 0)
         mx_terminate("Could not access the termcap data base.");
     if (success == 0)
-        mx_terminate("Terminal type `%s' is not defined.");
+        mx_terminate("Terminal type is not defined.");
 }
 
 void mx_enable_input_mode(t_ush *ush) {
