@@ -1,7 +1,7 @@
 APP_NAME = ush
 
 CC = clang
-CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 ADDITIONAl_FLAGS = -g -ltermcap
 
 DIR_NAME = ush
@@ -25,18 +25,21 @@ CLEARING_SRCS = clear_tokens.c clear_trees.c
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
 			 create_env_list.c
 
-BUILTINS_SRCS = builtins.c
+BUILTINS_SRCS = builtins.c parse_flags.c parse_args.c validation.c cd.c
+
+ENV_SRCS = env.c errors.c
 
 CORE = $(addprefix core/, $(CORE_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
 BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
+ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 
-SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS)
+SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
-	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o)
+	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o)
 
 all: install
 

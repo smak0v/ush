@@ -15,6 +15,12 @@
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
 
+#define MX_ENV_FLAGS "iPu"
+#define MX_CD_FLAGS "sP"
+#define MX_PWD_FLAGS "LP"
+#define MX_WHICH_FLAGS "as"
+#define MX_ECHO_FLAGS "neE"
+
 #define RIGHT       4414235
 #define LEFT        4479771
 #define UP          4283163
@@ -54,6 +60,15 @@ struct s_hist {
     t_hist *prev;
 };
 
+typedef enum e_builtins {
+    env,
+    cd,
+    pwd,
+    which,
+    echo,
+    ext
+}            t_blt;
+
 // Functions
 // Core
 int mx_ush_loop(t_ush *ush);
@@ -79,11 +94,20 @@ t_list *mx_create_env_list(char **environ);
 // Signals
 
 // Builtins
+char **mx_store_flags(char **argv);
+char **mx_store_files(char **argv);
+int mx_flags_validation(char **flags, t_blt builtin);
 int mx_ush_cd(char **args, t_ush *ush);
 int mx_ush_pwd(char **args, t_ush *ush);
 int mx_ush_env(char **args, t_ush *ush);
 int mx_ush_echo(char **args, t_ush *ush);
 int mx_ush_exit(char **args, t_ush *ush);
+
+    // CD
+
+    // ENV
+int mx_env(char **flags, char **arguments);
+void mx_env_illegal_option(char illegal_option);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);

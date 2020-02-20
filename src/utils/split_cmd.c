@@ -28,3 +28,4 @@ char **mx_split_cmd(char *cmd) {
     }
     return args;
 }
+

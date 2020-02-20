@@ -3,7 +3,6 @@
 t_ush *mx_init_shell() {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
-
     ush->env = mx_create_env_list(environ);
     return ush;
 }
