@@ -1,7 +1,7 @@
 APP_NAME = ush
 
 CC = clang
-CFLAGS = -std=c11 -Wall -Wextra  -Wpedantic
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
 ADDITIONAl_FLAGS = -g -ltermcap
 
 DIR_NAME = ush
@@ -24,20 +24,23 @@ CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
-			mx_printnbr.c
+			       mx_printnbr.c create_env_list.c
 
-BUILTINS_SRCS = builtins.c
+BUILTINS_SRCS = builtins.c parse_flags.c parse_args.c validation.c cd.c
+
+ENV_SRCS = env.c errors.c
 
 CORE = $(addprefix core/, $(CORE_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
 BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
+ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 
-SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS)
+SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
-	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o)
+	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o)
 
 all: install
 
@@ -46,7 +49,7 @@ install: $(LIBMXA) $(APP_NAME)
 $(APP_NAME): $(SRCS) $(INCD)/$(INC) $(LIBMXA)
 	@$(CC) $(CFLAGS) -c $(SRCS) -I $(INCD) -I $(LIBMXI)
 	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) $(OBJS) $(LIBMXA) -o $(APP_NAME)
-	@mkdir $(OBJD)
+	@mkdir -p $(OBJD)
 	@mv $(OBJS) $(OBJD)
 	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
 
