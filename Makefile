@@ -18,12 +18,13 @@ INC = ush.h
 INCS = $(addprefix $(INCD)/, $(INC))
 
 CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
-			execute.c launch.c get_input.c init_ush.c history.c input_mode.c
+			execute.c launch.c get_input.c init_ush.c history.c input_mode.c \
+
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
-			 create_env_list.c
+			       mx_printnbr.c create_env_list.c
 
 BUILTINS_SRCS = builtins.c parse_flags.c parse_args.c validation.c cd.c
 

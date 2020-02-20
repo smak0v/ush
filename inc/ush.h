@@ -3,12 +3,12 @@
 // Includes
 #include "libmx.h"
 
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
-#include <signal.h>
 #include <termcap.h>
-#include <fcntl.h>
 #include <termios.h>
 
 // Constants
@@ -78,6 +78,7 @@ int mx_execute(char **args, t_ush *ush);
 int mx_launch(char **args);
 char *mx_get_line(t_ush *ush);
 t_ush *mx_init_shell();
+void mx_init_terminal_data();
 void mx_enable_input_mode(t_ush *ush);
 void mx_disable_input_mode(t_ush *ush);
 
@@ -89,6 +90,7 @@ void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
+int mx_printnbr(int i);
 t_list *mx_create_env_list(char **environ);
 
 // Signals
