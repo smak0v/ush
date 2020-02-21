@@ -35,16 +35,6 @@ t_dll *mx_split_token(char *token) {
             copy_part(&sub_tokens, &prev_position, &len, "&&");
         else if (token[i] == '|' && token[i + 1] == '|' && (i += 2))
             copy_part(&sub_tokens, &prev_position, &len, "||");
-        else if (token[i] == '>' && token[i + 1] == '>' && (i += 2))
-            copy_part(&sub_tokens, &prev_position, &len, ">>");
-        else if (token[i] == '<' && token[i + 1] == '<' && (i += 2))
-            copy_part(&sub_tokens, &prev_position, &len, "<<");
-        else if (token[i] == '|' && token[i + 1] != '|' && ++i)
-            copy_part(&sub_tokens, &prev_position, &len, "|");
-        else if (token[i] == '>' && ++i)
-            copy_part(&sub_tokens, &prev_position, &len, ">");
-        else if (token[i] == '<' && ++i)
-            copy_part(&sub_tokens, &prev_position, &len, "<");
     copy_last(&sub_tokens, prev_position);
     return sub_tokens;
 }

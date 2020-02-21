@@ -24,7 +24,7 @@ void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
     else if (!mx_strcmp(args[0], "||"))
         shell_or_operator(tree, ush, status);
     else {
-        *status = mx_execute(args, ush);
+        *status = mx_execute(tree->data, ush);
         mx_traverse_and_execute_tree(tree->right, ush, status);
     }
 }

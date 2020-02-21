@@ -1,5 +1,5 @@
-#include "libmx.h"
+#include "ush.h"
 
 int mx_printnbr(int i) {
-    return (write(0, &i, 1));
+    return write(0, &i, 1);
 }

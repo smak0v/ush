@@ -9,15 +9,15 @@ void mx_left_arrow(char *line, size_t *cur_x, size_t *cur_y) {
 }
 
 void mx_right_arrow(char *line, size_t *cur_x, size_t *cur_y) {
-    
+
 }
 
 void mx_up_arrow() {
-    
+
 }
 
 void mx_down_arrow() {
-    
+
 }
 
 static void shuffle_text(char *line, size_t *cur_x) {
@@ -60,7 +60,7 @@ static void edit_line(long *key, char *line, size_t *cur_x, size_t *cur_y) {
     }
     else if (*key == BACKSPACE && *cur_x != 0) {
         tputs(tgetstr("le", NULL), 1, mx_printnbr);
-        tputs(tgetstr("dc", NULL), 1, mx_printnbr);    
+        tputs(tgetstr("dc", NULL), 1, mx_printnbr);
         --(*cur_x);
         shuffle_text(line, cur_x);
     }
@@ -74,7 +74,7 @@ char *mx_get_line(t_ush *ush) {
 
     mx_enable_input_mode(ush);
     while (key != ENTER) {
-        read_input(&key, line, &cur_x, &cur_y);        
+        read_input(&key, line, &cur_x, &cur_y);
         edit_line(&key, line, &cur_x, &cur_y);
     }
     mx_disable_input_mode(ush);
