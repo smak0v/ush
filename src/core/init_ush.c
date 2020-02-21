@@ -1,31 +1,29 @@
 #include "ush.h"
 
-t_list *mx_create_env_list(char **environ) {
-    t_list *env_list = NULL;
-    t_env *env = NULL;
-    char **tmp = NULL;
+void increase_shell_lvl(char **env) {
+    while (*env) {
+        char **tmp = mx_strsplit(*env, '=');
 
-    while (*environ) {
-        tmp = mx_strsplit(*environ, '=');
-        env = mx_memalloc(sizeof(t_env));
-        env->key = mx_strdup(tmp[0]);
-        if (!mx_strcmp(env->key, "SHLVL")) {
-            env->value = mx_itoa(mx_atoi(tmp[1]) + 1);
-            setenv(env->key, env->value, 1);
+        if (!mx_strcmp(tmp[0], "SHLVL")) {
+            int shlvl = mx_atoi(tmp[1]);
+            char *str_shlvl = mx_itoa(++shlvl);
+
+            free(*env);
+            *env = mx_strjoin("SHLVL=", str_shlvl);
+            mx_strdel(&str_shlvl);
         }
-        else
-            env->value = mx_strdup(tmp[1]);
+
         mx_del_strarr(&tmp);
-        mx_push_back(&env_list, env);
-        environ++;
+        *env++;
     }
-    return env_list;
 }
 
 t_ush *mx_init_shell() {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
-    ush->env = mx_create_env_list(environ);
+
+    ush->env = mx_strarr_dup(environ);
+    increase_shell_lvl(ush->env);
     return ush;
 }
 

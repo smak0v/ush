@@ -3,7 +3,14 @@
 int mx_ush_cd(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);
+    char illegal_option = 0;
     //int status = mx_cd(flags, arguments);
+
+    if (*flags && (illegal_option = mx_flags_validation(flags, cd)) != 0) {
+        mx_print_error_endl("to do: cd error handling");
+        //mx_env_illegal_option(illegal_option);
+        return 1;
+    }
 
     // int status = chdir(args[1]);
     // if (status < 0) {
@@ -26,17 +33,14 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 }
 
 int mx_ush_env(char **args, t_ush *ush) {
-    char **flags = mx_store_flags(args);
-    char **arguments = mx_store_files(args);
+    t_env *setup = mx_parse_env(args);
     int status = 0;
-    char illegal_option = 0;
 
-    if (*flags && (illegal_option = mx_flags_validation(flags, env)) != 0) {
-        mx_env_illegal_option(illegal_option);
+    if (setup->error) {
+        mx_env_illegal_option(setup->error);
         return 1;
     }
-
-    status = mx_env(flags, arguments, ush);
+    // status = mx_env(flags, arguments);
 
     return status;
 }

@@ -3,7 +3,7 @@
 static char *handle_escape(char *str1, char *str2) {
     char *tmp = NULL;
     char *res = NULL;
-    
+
     res = mx_strndup(str1, (size_t)mx_strlen(str1) - 1);
     tmp = mx_strjoin(res, " ");
     mx_strdel(&res);
