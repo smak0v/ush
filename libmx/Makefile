@@ -42,7 +42,7 @@ STRINGS_SRCS = mx_strlen.c mx_swap_char.c mx_str_reverse.c mx_strdel.c \
 			   mx_del_extra_spaces.c mx_strsplit.c mx_strjoin.c \
 			   mx_file_to_str.c mx_read_line.c mx_replace_substr.c \
 			   mx_isspace.c mx_isalpha.c mx_isdigit.c mx_islower.c mx_isupper.c \
-			   mx_tolower.c mx_toupper.c
+			   mx_tolower.c mx_toupper.c mx_strarr_dup.c
 
 MEMORY_SRCS = mx_memset.c mx_memcpy.c mx_memccpy.c mx_memcmp.c mx_memchr.c \
 			  mx_memrchr.c mx_memmem.c mx_memmove.c mx_realloc.c \
