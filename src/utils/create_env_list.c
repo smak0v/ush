@@ -22,4 +22,5 @@ t_list *mx_create_env_list(char **environ) {
     // return env_list;
 
     mx_printstr_endl("create_env_list function can be deleted but i left it just in case. yulia xoxox");
+    return NULL;
 }

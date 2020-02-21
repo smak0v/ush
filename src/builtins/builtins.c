@@ -40,6 +40,16 @@ int mx_ush_env(char **args, t_ush *ush) {
         mx_env_illegal_option(setup->error);
         return 1;
     }
+    if (setup->P && !mx_strcmp("No ArGuMeNt", setup->P)) {
+        printf("test\n");
+        mx_option_requires_an_argument('P');
+        printf("test\n");
+        return 1;
+    }
+    if (setup->u && !mx_strcmp("No ArGuMeNt", setup->u)) {
+        mx_option_requires_an_argument('u');
+        return 1;
+    }
     // status = mx_env(flags, arguments);
 
     return status;
