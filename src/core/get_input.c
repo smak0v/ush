@@ -20,9 +20,16 @@ void mx_down_arrow() {
 
 }
 
-static void shuffle_text(char *line, size_t *cur_x) {
-    for (size_t i = *cur_x; i <= strlen(line); i++)
-        line[i] = line[i + 1];
+static void shuffle_text(char *line, size_t cur_x, long key) {
+    if (key == BACKSPACE) {
+        for (size_t i = cur_x; i <= strlen(line); i++)
+            line[i] = line[i + 1];
+    }
+    else {
+        for (size_t i = strlen(line); i > cur_x; i--)
+            line[i] = line[i - 1];
+        line[cur_x] = key;
+    }
     line[strlen(line)] = 0;
 }
 
@@ -34,16 +41,19 @@ static void read_input(long *key, char *line, size_t *cur_x, size_t *cur_y) {
     mx_init_terminal_data();
     winsize = tgetnum("co");
     if ((*key >= 32 && *key < 127)) {
-        line[*cur_x] = *key;
-        // tputs(tgetstr("im", NULL), 1, mx_printnbr);
-        mx_printchar(*key);
-        // tputs(tgetstr("ei", NULL), 1, mx_printnbr);
+        shuffle_text(line, *cur_x, *key);
         ++(*cur_x);
-        // if (((*cur_x + 5) / *cur_y) == winsize) {
-        //     tputs(tgetstr("do", NULL), 1, mx_printnbr);
-        //     tputs(tgetstr("cr", NULL), 1, mx_printnbr);
-        //     ++(*cur_y);
-        // }
+        tputs(tgetstr("im", NULL), 1, mx_printnbr);
+        // tputs(tgetstr("ic", NULL), 1, mx_printnbr);
+        mx_printchar(*key);
+        tputs(tgetstr("ei", NULL), 1, mx_printnbr);
+        if (((strlen(line) + 5) / *cur_y) == winsize) {
+            // tputs(tgetstr("do", NULL), 1, mx_printnbr);
+            // tputs(tgetstr("cr", NULL), 1, mx_printnbr);
+            mx_printchar('\n');
+            ++(*cur_y);
+            // tputs(tgetstr("cr", NULL), 1, mx_printnbr);
+        }
     }
 }
 
@@ -62,7 +72,7 @@ static void edit_line(long *key, char *line, size_t *cur_x, size_t *cur_y) {
         tputs(tgetstr("le", NULL), 1, mx_printnbr);
         tputs(tgetstr("dc", NULL), 1, mx_printnbr);
         --(*cur_x);
-        shuffle_text(line, cur_x);
+        shuffle_text(line, *cur_x, *key);
     }
 }
 
