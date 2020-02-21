@@ -104,7 +104,7 @@ int mx_ush_exit(char **args, t_ush *ush);
     // CD
 
     // ENV
-int mx_env(char **flags, char **arguments);
+int mx_env(char **flags, char **arguments, t_ush *ush);
 void mx_env_illegal_option(char illegal_option);
 
 // Data clearing

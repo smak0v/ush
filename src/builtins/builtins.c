@@ -36,7 +36,7 @@ int mx_ush_env(char **args, t_ush *ush) {
         return 1;
     }
 
-    status = mx_env(flags, arguments);
+    status = mx_env(flags, arguments, ush);
 
     return status;
 }
