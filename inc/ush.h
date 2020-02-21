@@ -48,8 +48,8 @@ struct s_env {
     bool i;
     char *P;
     char *u;
-    char **env;
-    char *utility;
+    char **name_val;
+    char **utility;
     char error;
 };
 

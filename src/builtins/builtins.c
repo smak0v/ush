@@ -35,18 +35,25 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 int mx_ush_env(char **args, t_ush *ush) {
     t_env *setup = mx_parse_env(args);
     int status = 0;
+    printf("P: %s\n", setup->P);
+    printf("u: %s\n", setup->u);
+    printf("i: %d\n", setup->i);
+    mx_printstr("name_val: ");
+    mx_print_strarr(setup->name_val, " ");
+    mx_printchar('\n');
+    mx_printstr("utility: ");
+    mx_print_strarr(setup->utility, " ");
+    mx_printchar('\n');
 
     if (setup->error) {
         mx_env_illegal_option(setup->error);
         return 1;
     }
-    if (setup->P && !mx_strcmp("No ArGuMeNt", setup->P)) {
-        printf("test\n");
+    if (setup->P && !mx_strcmp("No ArG", setup->P)) {
         mx_option_requires_an_argument('P');
-        printf("test\n");
         return 1;
     }
-    if (setup->u && !mx_strcmp("No ArGuMeNt", setup->u)) {
+    if (setup->u && !mx_strcmp("No ArG", setup->u)) {
         mx_option_requires_an_argument('u');
         return 1;
     }
