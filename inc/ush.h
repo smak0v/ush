@@ -42,6 +42,7 @@ struct s_ush {
     t_hist *history;
     struct termios savetty;
     char **env;
+    bool exit;
 };
 
 struct s_env {
@@ -49,7 +50,7 @@ struct s_env {
     char *P;
     char *u;
     char **name_val;
-    char **utility;
+    char **util;
     char error;
 };
 
@@ -113,7 +114,7 @@ int mx_ush_exit(char **args, t_ush *ush);
     // CD
 
     // ENV
-int mx_env(char **flags, char **arguments, t_ush *ush);
+int mx_env(t_env *env, t_ush *ush);
 t_env *mx_parse_env(char **args);
 void mx_env_illegal_option(char illegal_option);
 void mx_option_requires_an_argument(char option);

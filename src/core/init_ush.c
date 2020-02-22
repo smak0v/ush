@@ -1,6 +1,6 @@
 #include "ush.h"
 
-void increase_shell_lvl(char **env) {
+static void increase_shell_lvl(char **env) {
     while (*env) {
         char **tmp = mx_strsplit(*env, '=');
 
@@ -18,12 +18,23 @@ void increase_shell_lvl(char **env) {
     }
 }
 
+static void set_env(char **env) {
+    while (*env) {
+        char **tmp = mx_strsplit(*env, '=');
+
+        setenv(tmp[0], tmp[1], 1);
+        mx_del_strarr(&tmp);
+        env++;
+    }
+}
+
 t_ush *mx_init_shell() {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
 
     ush->env = mx_strarr_dup(environ);
     increase_shell_lvl(ush->env);
+    set_env(ush->env);
     return ush;
 }
 

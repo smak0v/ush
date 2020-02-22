@@ -1,12 +1,13 @@
 #include "ush.h"
 
-char *builtins[] = {"cd", "pwd", "env", "echo", "exit"};
+char *builtins[] = {"cd", "pwd", "env", "echo", "exit", "bye"};
 
 int (*builtin_func[]) (char **, t_ush *) = {
     &mx_ush_cd,
     &mx_ush_pwd,
     &mx_ush_env,
     &mx_ush_echo,
+    &mx_ush_exit,
     &mx_ush_exit
 };
 

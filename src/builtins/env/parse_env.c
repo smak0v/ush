@@ -84,7 +84,7 @@ t_env *mx_parse_env(char **args) {
             i += name_val_len - 1;
         }
         else {
-            setup->utility = mx_strarr_dup(&args[i]);
+            setup->util = mx_strarr_dup(&args[i]);
             break;
         }
     return setup;

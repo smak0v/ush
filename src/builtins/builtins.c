@@ -35,15 +35,15 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 int mx_ush_env(char **args, t_ush *ush) {
     t_env *setup = mx_parse_env(args);
     int status = 0;
-    printf("P: %s\n", setup->P);
-    printf("u: %s\n", setup->u);
-    printf("i: %d\n", setup->i);
-    mx_printstr("name_val: ");
-    mx_print_strarr(setup->name_val, " ");
-    mx_printchar('\n');
-    mx_printstr("utility: ");
-    mx_print_strarr(setup->utility, " ");
-    mx_printchar('\n');
+    // printf("P: %s\n", setup->P); // DEBUG CODE
+    // printf("u: %s\n", setup->u);
+    // printf("i: %d\n", setup->i);
+    // mx_printstr("name_val: ");
+    // mx_print_strarr(setup->name_val, " ");
+    // mx_printchar('\n');
+    // mx_printstr("utility: ");
+    // mx_print_strarr(setup->utility, " ");
+    // mx_printchar('\n');
 
     if (setup->error) {
         mx_env_illegal_option(setup->error);
@@ -57,7 +57,8 @@ int mx_ush_env(char **args, t_ush *ush) {
         mx_option_requires_an_argument('u');
         return 1;
     }
-    // status = mx_env(flags, arguments);
+    
+    status = mx_env(setup, ush);
 
     return status;
 }
@@ -77,6 +78,7 @@ int mx_ush_echo(char **args, t_ush *ush) {
 }
 
 int mx_ush_exit(char **args, t_ush *ush) {
+    ush->exit = 1;
     return 0;
 }
 
