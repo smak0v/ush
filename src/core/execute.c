@@ -15,7 +15,7 @@ static int ush_count_builtins() {
     return sizeof(builtins) / sizeof(char *);
 }
 
-int mx_execute(char *cmd, t_ush *ush) {
+int mx_execute(char *cmd, t_ush *ush, char **env) {
     char **args = NULL;
 
     if (!cmd)
@@ -24,5 +24,5 @@ int mx_execute(char *cmd, t_ush *ush) {
     for (int i = 0; i < ush_count_builtins(); ++i)
         if (!mx_strcmp(args[0], builtins[i]))
             return (*builtin_func[i])(args, ush);
-    return mx_launch(args);
+    return mx_launch(args, env);
 }

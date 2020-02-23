@@ -70,6 +70,7 @@ void mx_str_reverse(char *s);
 void mx_strdel(char **str);
 char **mx_pop_string_array(char **arr, char *value);
 char **mx_strarr_dup(char **strarr);
+char *mx_strarr_to_str(char **strarr, char *separator);
 void mx_del_strarr(char ***arr);
 int mx_get_char_index(const char *str, char c);
 char *mx_strdup(const char *s1);

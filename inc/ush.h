@@ -79,9 +79,9 @@ typedef enum e_builtins {
 int mx_ush_loop(t_ush *ush);
 int mx_proccess_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
-int mx_execute(char *cmd, t_ush *ush);
+int mx_execute(char *cmd, t_ush *ush, char **env);
 void mx_execute_piped(char **args, char **piped_args);
-int mx_launch(char **args);
+int mx_launch(char **args, char **env);
 char *mx_get_line(t_ush *ush);
 t_ush *mx_init_shell();
 void mx_init_terminal_data();
