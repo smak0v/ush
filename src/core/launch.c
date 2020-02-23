@@ -13,8 +13,7 @@ int mx_launch(char **args, char **env) {
 
     if (!pid) {
         if ((status = choose_exec(args, env)) < 0) {
-            mx_print_error("ush: command not found: ");
-            mx_print_error_endl(args[0]);
+            mx_choose_error(args, env);
         }
         exit(status);
     }

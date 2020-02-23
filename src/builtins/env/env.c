@@ -18,30 +18,64 @@ static void process_u(char **env, char *u) {
     }
 }
 
-int mx_env(t_env *env, t_ush *ush) {
+static void process_P(t_env *env) {
+    char *full_path = NULL;
+    char *tmp = NULL;
+
+    if (env->P[mx_strlen(env->P) - 1] == '/')
+        full_path = mx_strjoin(env->P, *(env->util));
+    else {
+        tmp = mx_strjoin(env->P, "/");
+        full_path = mx_strjoin(tmp, *(env->util));
+        free(tmp);
+    }
+
+    free(env->util[0]);
+    env->util[0] = full_path;
+}
+
+static char **set_environment(t_env *env, t_ush *ush) {
     char **environment = NULL;
-    char **tmp_env = mx_strarr_dup(ush->env);
 
     if (env->i)
         environment = mx_strarr_dup(env->name_val);
-    else
+    else {
         environment = mx_strarr_dup(ush->env);
-    
-    ush->env = environment;
 
-    if (env->u) {
-        process_u(environment, env->u);
+        if (env->name_val) {
+            int env_len = mx_strarr_len(ush->env);
+            int name_val_len = mx_strarr_len(env->name_val);
+            int i = env_len;
+
+            environment = realloc(environment, sizeof(char *) 
+                                  * (env_len + name_val_len + 1));
+            for (int j = 0; i < env_len + name_val_len; j++)
+                environment[i++] = mx_strdup(env->name_val[j]);
+            environment[i] = NULL;
+        }
     }
+    return environment;
+}
 
-    if (!env->util|| (!mx_strcmp("env", env->util[0]) && !env->util[1]))
+int mx_env(t_env *env, t_ush *ush) {
+    char **environment = NULL;
+    char **tmp_env = mx_strarr_dup(ush->env);
+    char *cmd = NULL;
+
+    environment = set_environment(env, ush);
+    ush->env = environment;
+    if (env->u && !env->i)
+        process_u(environment, env->u);
+    if (env->P)
+        process_P(env);
+    if (!mx_strcmp("env", env->util[0]) && !env->util[1])
         mx_print_strarr(environment, "\n");
     else {
-        char *cmd = mx_strarr_to_str(env->util, " ");
+        cmd = mx_strarr_to_str(env->util, " ");
         mx_execute(cmd, ush, environment);
+        mx_strdel(&cmd);
     }
-
-    if (tmp_env)
-        ush->env = tmp_env;
+    ush->env = tmp_env;
     mx_del_strarr(&environment);
     return 0;
 }

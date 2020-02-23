@@ -98,6 +98,7 @@ void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
 int mx_printnbr(int i);
 t_list *mx_create_env_list(char **environ);
+void mx_choose_error(char **args, char **env);
 
 // Signals
 

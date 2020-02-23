@@ -80,6 +80,7 @@ t_env *mx_parse_env(char **args) {
                 return setup;
         }
         else if (mx_get_char_index(args[i], '=') != -1) {
+            flag_stop = 1;
             name_val_len = write_args(&args[i], setup);
             i += name_val_len - 1;
         }
