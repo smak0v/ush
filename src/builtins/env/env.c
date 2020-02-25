@@ -39,42 +39,36 @@ static char **set_environment(t_env *env, t_ush *ush) {
 
     if (env->i)
         environment = mx_strarr_dup(env->name_val);
-    else {
-        environment = mx_strarr_dup(ush->env);
+    else
+        environment = mx_strarr_join(ush->env, env->name_val);
 
-        if (env->name_val) {
-            int env_len = mx_strarr_len(ush->env);
-            int name_val_len = mx_strarr_len(env->name_val);
-            int i = env_len;
-
-            environment = realloc(environment, sizeof(char *) 
-                                  * (env_len + name_val_len + 1));
-            for (int j = 0; i < env_len + name_val_len; j++)
-                environment[i++] = mx_strdup(env->name_val[j]);
-            environment[i] = NULL;
-        }
-    }
     return environment;
+}
+
+static void execute(t_ush *ush, t_env *env, char **environment) {
+    char *cmd = mx_strarr_to_str(env->util, " ");
+
+    mx_execute(cmd, ush, environment);
+    mx_strdel(&cmd);
 }
 
 int mx_env(t_env *env, t_ush *ush) {
     char **environment = NULL;
     char **tmp_env = mx_strarr_dup(ush->env);
-    char *cmd = NULL;
 
     environment = set_environment(env, ush);
     ush->env = environment;
     if (env->u && !env->i)
         process_u(environment, env->u);
-    if (env->P)
+    if (env->P && env->util)
         process_P(env);
+    if (!env->util)
+        env->util = mx_strsplit("env", ' ');
     if (!mx_strcmp("env", env->util[0]) && !env->util[1])
         mx_print_strarr(environment, "\n");
-    else {
-        cmd = mx_strarr_to_str(env->util, " ");
-        mx_execute(cmd, ush, environment);
-        mx_strdel(&cmd);
-    }
+    else
+        execute(ush, env, environment);
+
     ush->env = tmp_env;
     mx_del_strarr(&environment);
     return 0;

@@ -10,10 +10,17 @@
 #include <string.h>
 #include <termcap.h>
 #include <termios.h>
+#include <stdarg.h>
+
+#include <sys/types.h>
+#include <pwd.h>
+#include <uuid/uuid.h>
 
 // Constants
+#define MX_BUILTINS_COUNT 8
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
+#define MX_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 #define MX_ENV_FLAGS "iPu"
 #define MX_CD_FLAGS "sP"
@@ -41,7 +48,10 @@ struct s_ush {
     t_dll *trees;
     t_hist *history;
     struct termios savetty;
+    char **builtins;
     char **env;
+    char **export;
+    char **local_variables;
     bool exit;
 };
 
@@ -74,6 +84,16 @@ typedef enum e_builtins {
     ext
 }            t_blt;
 
+typedef enum e_defaults {
+    OLDPWD,
+    PWD,
+    SHLVL,
+    PATH,
+    TERM,
+    HOME
+}            t_def;
+
+
 // Functions
 // Core
 int mx_ush_loop(t_ush *ush);
@@ -83,8 +103,8 @@ int mx_execute(char *cmd, t_ush *ush, char **env);
 void mx_execute_piped(char **args, char **piped_args);
 int mx_launch(char **args, char **env);
 char *mx_get_line(t_ush *ush);
-t_ush *mx_init_shell();
-void mx_init_terminal_data();
+t_ush *mx_init_shell(void);
+void mx_init_terminal_data(void);
 void mx_enable_input_mode(t_ush *ush);
 void mx_disable_input_mode(t_ush *ush);
 
@@ -99,8 +119,12 @@ t_hist *mx_create_hist_node(char *cmd);
 int mx_printnbr(int i);
 t_list *mx_create_env_list(char **environ);
 void mx_choose_error(char **args, char **env);
+void mx_set_default(t_ush *ush, int *not_found);
+char **mx_process_home(char **arr);
 
 // Signals
+void mx_init_signal(void);
+void mx_signal_dfl(void);
 
 // Builtins
 char **mx_store_flags(char **argv);
@@ -111,6 +135,9 @@ int mx_ush_pwd(char **args, t_ush *ush);
 int mx_ush_env(char **args, t_ush *ush);
 int mx_ush_echo(char **args, t_ush *ush);
 int mx_ush_exit(char **args, t_ush *ush);
+int mx_ush_export(char **args, t_ush *ush);
+int mx_ush_unset(char **args, t_ush *ush);
+
 
     // CD
 
