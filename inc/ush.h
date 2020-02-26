@@ -17,7 +17,7 @@
 #include <uuid/uuid.h>
 
 // Constants
-#define MX_BUILTINS_COUNT 8
+#define MX_BUILTINS_COUNT 9
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
 #define MX_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -137,7 +137,8 @@ int mx_ush_echo(char **args, t_ush *ush);
 int mx_ush_exit(char **args, t_ush *ush);
 int mx_ush_export(char **args, t_ush *ush);
 int mx_ush_unset(char **args, t_ush *ush);
-
+int mx_ush_local(char **args, t_ush *ush);
+void mx_print_unset_error(char *flag);
 
     // CD
 

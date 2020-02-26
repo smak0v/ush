@@ -69,6 +69,7 @@ void mx_swap_char(char *s1, char *s2);
 void mx_str_reverse(char *s);
 void mx_strdel(char **str);
 char **mx_pop_string_array(char **arr, char *value);
+char **mx_popn_string_array(char **arr, char *value, int key_len);
 char **mx_strarr_dup(char **strarr);
 char *mx_strarr_to_str(char **strarr, char *separator);
 char **mx_strarr_join(char **arr, char **push);

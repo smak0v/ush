@@ -27,8 +27,13 @@ static int count_flags(int separated_flags_count, char **argv) {
 
 static char **store_flags(int separated_flags_count, char **argv) {
     int flags_count = count_flags(separated_flags_count, argv);
-    char **flags = (char **)malloc(sizeof(char *) * (++flags_count));
     int k = -1;
+    char **flags = NULL;
+
+    if (!flags_count)
+        return NULL;
+    else
+        flags = (char **)malloc(sizeof(char *) * (++flags_count));
 
     for (int i = 1; i <= separated_flags_count; ++i)
         for (int j = 1; j < mx_strlen(argv[i]); ++j)

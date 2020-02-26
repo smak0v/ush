@@ -55,7 +55,7 @@ t_ush *mx_init_shell(void) {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
     char *builtins[] = {"cd", "pwd", "env", "echo", "exit", "bye",
-                           "export", "unset", NULL};
+                           "export", "unset", "local", NULL};
     int *not_found = NULL;
 
     ush->env = mx_strarr_dup(environ);
@@ -65,11 +65,7 @@ t_ush *mx_init_shell(void) {
     ush->export = mx_strarr_dup(ush->env);
     ush->local_variables = mx_strarr_dup(ush->env);
     mx_set_default(ush, not_found);
-    mx_print_strarr(ush->export, "\n");
-    mx_printchar_endl('\n');
-    mx_print_strarr(ush->env, "\n");
-    mx_printchar_endl('\n');
-    mx_print_strarr(ush->local_variables, "\n");
+    mx_bubble_sort(ush->export, mx_strarr_len(ush->export) - 1);
     ush->builtins = mx_strarr_dup(builtins);
 
     return ush;

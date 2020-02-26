@@ -8,7 +8,8 @@ int (*builtin_func[]) (char **, t_ush *) = {
     &mx_ush_exit,
     &mx_ush_exit,
     &mx_ush_export,
-    &mx_ush_unset
+    &mx_ush_unset,
+    &mx_ush_local
 };
 
 int mx_execute(char *cmd, t_ush *ush, char **env) {

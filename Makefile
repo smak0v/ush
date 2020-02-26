@@ -28,7 +28,7 @@ UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
 			 process_home.c
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
-				validation.c cd.c
+				validation.c cd.c mixed_errors.c
 
 ENV_SRCS = env.c env_errors.c parse_env.c
 
