@@ -36,13 +36,26 @@ typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
 typedef struct s_token t_token;
 typedef struct s_env t_env;
+typedef struct s_input t_input;
+
+struct s_input {
+    size_t win_x;
+    size_t cur_x;
+    size_t cur_y;
+    char *line;
+    int key;
+    size_t winsize;
+};
 
 struct s_ush {
     t_dll *trees;
     t_hist *history;
+    t_hist *current;
     struct termios savetty;
     t_list *env;
+    t_input *in;
 };
+
 
 struct s_env {
     bool i;
