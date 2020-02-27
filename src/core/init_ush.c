@@ -22,8 +22,10 @@ t_ush *mx_init_shell() {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
 
+    mx_init_terminal_data();
     ush->env = mx_strarr_dup(environ);
     increase_shell_lvl(ush->env);
+    ush->in = mx_memalloc(sizeof(t_input));
     return ush;
 }
 
