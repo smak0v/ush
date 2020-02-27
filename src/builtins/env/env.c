@@ -2,7 +2,7 @@
 
 static void process_u(char **env, char *u) {
     while (env && *env) {
-        char **tmp = mx_strsplit(*env, '=');
+        char **tmp = mx_split_key_value(*env);
 
         if (!mx_strcmp(tmp[0], u)) {
             free(*env);

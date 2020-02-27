@@ -117,10 +117,11 @@ void mx_print_inorder_tree(t_tree *tree);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
 int mx_printnbr(int i);
-t_list *mx_create_env_list(char **environ);
 void mx_choose_error(char **args, char **env);
 void mx_set_default(t_ush *ush, int *not_found);
 char **mx_process_home(char **arr);
+char **mx_split_key_value(char *str);
+int mx_check_identifier_validity(char *str, int ravno);
 
 // Signals
 void mx_init_signal(void);
@@ -138,7 +139,9 @@ int mx_ush_exit(char **args, t_ush *ush);
 int mx_ush_export(char **args, t_ush *ush);
 int mx_ush_unset(char **args, t_ush *ush);
 int mx_ush_local(char **args, t_ush *ush);
-void mx_print_unset_error(char *flag);
+void mx_unset_invalid_option(char *option);
+void mx_export_invalid_option(char *option);
+void mx_invalid_identifier(char *cmd, char *identifier);
 
     // CD
 
@@ -147,6 +150,13 @@ int mx_env(t_env *env, t_ush *ush);
 t_env *mx_parse_env(char **args);
 void mx_env_illegal_option(char illegal_option);
 void mx_option_requires_an_argument(char option);
+
+    // EXPORT
+void mx_export(char **arguments, t_ush *ush);
+
+    //UNSET
+void mx_unset(t_ush *ush, char **arg);
+void mx_unset_invalid_option(char *option);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);

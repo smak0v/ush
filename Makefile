@@ -24,11 +24,11 @@ CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
-			 mx_printnbr.c create_env_list.c errors.c set_defaults.c \
-			 process_home.c
+			 mx_printnbr.c errors.c set_defaults.c process_home.c \
+			 split_key_value.c check_identifier_validity.c
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
-				validation.c cd.c mixed_errors.c
+				validation.c mixed_errors.c export.c unset.c
 
 ENV_SRCS = env.c env_errors.c parse_env.c
 

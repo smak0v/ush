@@ -4,7 +4,7 @@ static void increase_shell_lvl(char **env) {
     int found = 0;
 
     while (env && *env) {
-        char **tmp = mx_strsplit(*env, '=');
+        char **tmp = mx_split_key_value(*env);
 
         if (!mx_strcmp(tmp[0], "SHLVL")) {
             int shlvl = mx_atoi(tmp[1]);
@@ -40,7 +40,7 @@ static int *set_env(char **env) {
     int *not_found = calloc(6, sizeof(int));
 
     while (env && *env) {
-        char **tmp = mx_strsplit(*env, '=');
+        char **tmp = mx_split_key_value(*env);
 
         process_unfound(not_found, tmp[0]);
         setenv(tmp[0], tmp[1], 1);

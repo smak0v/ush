@@ -23,8 +23,21 @@ int mx_ush_env(char **args, t_ush *ush) {
 }
 
 int mx_ush_export(char **args, t_ush *ush) {
+    char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);
-    mx_print_strarr(arguments, " ");
+
+    if (flags) {
+        mx_export_invalid_option(*flags);
+        mx_del_strarr(&flags);
+        return 1;
+    }
+
+    if (arguments) {
+        mx_export(arguments, ush);
+        mx_del_strarr(&arguments);
+    }
+    else
+        mx_print_strarr(ush->export, "\n");
 
     return 0;
 }
@@ -34,20 +47,13 @@ int mx_ush_unset(char **args, t_ush *ush) {
     char **arg = mx_store_files(args);
 
     if (flags) {
-        mx_print_unset_error(flags[0]);
+        mx_unset_invalid_option(*flags);
         mx_del_strarr(&flags);
         return 1;
     }
-    for (int i = 0; i < mx_strarr_len(arg); i++) {
-        unsetenv(arg[i]);
-        ush->env = mx_popn_string_array(ush->env, arg[i], mx_strlen(arg[i]));
-        ush->export = mx_popn_string_array(ush->export, arg[i], 
-                                           mx_strlen(arg[i]));
-        ush->local_variables = mx_popn_string_array(ush->local_variables,
-                                                    arg[i], mx_strlen(arg[i]));
-    }
+
+
     mx_del_strarr(&args);
-    mx_del_strarr(&arg);
     return 0;
 }
 
