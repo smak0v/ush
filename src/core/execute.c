@@ -24,11 +24,6 @@ int mx_execute(char *cmd, t_ush *ush) {
     for (int i = 0; i < ush_count_builtins(); ++i)
         if (!mx_strcmp(args[0], builtins[i]))
             return (*builtin_func[i])(args, ush);
-    return mx_execute_piped(cmd);
-    // while (*tmp != '\0') {
-    //     if (*tmp == '|')
-    //         return mx_execute_piped(cmd);
-    //     ++tmp;
-    // }
-    // return mx_launch(args);
+    mx_del_strarr(&args);
+    return mx_launch(cmd);
 }

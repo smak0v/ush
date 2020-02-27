@@ -29,6 +29,9 @@
 #define BACKSPACE   127
 #define ENTER       10
 
+#define SUCCESS     0
+#define FAILURE     1
+
 // Macroses
 
 // Structures
@@ -46,7 +49,7 @@ struct s_ush {
 };
 
 struct s_cmd {
-    char **argv;
+    char **args;
 };
 
 struct s_env {
@@ -83,8 +86,7 @@ typedef enum e_builtins {
 int mx_ush_loop(t_ush *ush);
 int mx_proccess_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
-int mx_execute_piped(char *cmd);
-int mx_launch(char **args);
+int mx_launch(char *cmd);
 char *mx_get_line(t_ush *ush);
 t_ush *mx_init_shell();
 void mx_init_terminal_data();
@@ -100,7 +102,6 @@ void mx_print_inorder_tree(t_tree *tree);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
 int mx_printnbr(int i);
-t_list *mx_create_env_list(char **environ);
 
 // Signals
 
@@ -124,3 +125,7 @@ void mx_env_illegal_option(char illegal_option);
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
 void mx_clear_trees(t_ush *ush);
+
+// Errors
+void mx_start_proccess_error(char *process_name);
+void mx_command_not_found_error(char *command_name);
