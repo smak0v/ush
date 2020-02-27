@@ -9,7 +9,7 @@ int mx_launch(char **args) {
             mx_print_error("ush: command not found: ");
             mx_print_error_endl(args[0]);
         }
-        exit(status);
+        return status;
     }
     else if (pid < 0) {
         mx_print_error("ush: error starting a new proccess: ");

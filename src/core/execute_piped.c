@@ -1,48 +1,65 @@
 #include "ush.h"
 
-// TODO (now testing version)
-void mx_execute_piped(char **args, char **piped_args) {
-    int pipe_fd[2];
-    pid_t pipe_1;
-    pid_t pipe_2;
+int spawn_proc(int in, int out, t_cmd *cmd) {
+    pid_t pid = 0;
     int status = 0;
 
-    pipe_1 = fork();
-    if (pipe_1 < 0) {
-        mx_print_error("ush: error starting a new proccess: ");
-        mx_print_error_endl(args[0]);
-        return;
-    }
-    if (pipe_1 == 0) {
-        close(pipe_fd[0]);
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        close(pipe_fd[1]);
-        if ((status = execvp(pipe_fd[0], args)) < 0) {
+    if ((pid = fork()) == 0) {
+        if (in != STDOUT_FILENO) {
+            dup2(in, STDOUT_FILENO);
+            close(in);
+        }
+        if (out != STDOUT_FILENO) {
+            dup2(out, STDOUT_FILENO);
+            close(out);
+        }
+        if ((status = execvp(cmd->argv[0], (char **)cmd->argv)) < 0) {
             mx_print_error("ush: command not found: ");
-            mx_print_error_endl(args[0]);
-            exit(status);
+            mx_print_error_endl(cmd->argv[0]);
         }
+        return status;
     }
-    else {
-        pipe_2 = fork();
-        if (pipe_2 < 0) {
-            mx_print_error("ush: error starting a new proccess: ");
-            mx_print_error_endl(piped_args[0]);
-            return;
-        }
-        if (pipe_2 == 0) {
-            close(pipe_fd[1]);
-            dup2(pipe_fd[0], STDIN_FILENO);
-            close(pipe_fd[0]);
-            if ((status = execvp(piped_args[0], piped_args)) < 0) {
-                mx_print_error("ush: command not found: ");
-                mx_print_error_endl(args[0]);
-                exit(status);
-            }
-        }
-        else {
-            wait(NULL);
-            wait(NULL);
-        }
+    return 0;
+}
+
+int fork_pipes(int n, t_cmd *cmd) {
+    pid_t pid = 0;
+    int status = 0;
+    int i = 0;
+    int in = 0;
+    int fd[2];
+
+    for (i = 0; i < n - 1; ++i) {
+        pipe(fd);
+        status = spawn_proc(in, fd[1], cmd + i);
+        close(fd[1]);
+        in = fd[0];
     }
+    if (in != STDIN_FILENO)
+        dup2(in, STDIN_FILENO);
+    if ((pid = fork()) == 0) {
+        if ((status = execvp(cmd[i].argv[0], (char **) cmd[i].argv)) < 0) {
+            mx_print_error("ush: command not found: ");
+            mx_print_error_endl(cmd->argv[0]);
+        }
+        return status;
+    }
+    return status;
+}
+
+int mx_execute_piped(char *cmd) {
+    char **splited_by_pipes = mx_strsplit(cmd, '|');
+    char **tmp = splited_by_pipes;
+    char *trimmed = NULL;
+    t_cmd *commands = calloc((mx_get_arr_length(tmp) + 1), sizeof(t_cmd *));
+    int count = -1;
+
+    while (*tmp) {
+        trimmed = mx_strtrim(*tmp);
+        commands[++count].argv = mx_split_cmd(trimmed);
+        mx_strdel(&trimmed);
+        ++tmp;
+    }
+    mx_del_strarr(&splited_by_pipes);
+    return fork_pipes(mx_get_arr_length(commands), commands);
 }

@@ -36,12 +36,17 @@ typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
 typedef struct s_token t_token;
 typedef struct s_env t_env;
+typedef struct s_cmd t_cmd;
 
 struct s_ush {
     t_dll *trees;
     t_hist *history;
     struct termios savetty;
     t_list *env;
+};
+
+struct s_cmd {
+    char **argv;
 };
 
 struct s_env {
@@ -78,8 +83,7 @@ typedef enum e_builtins {
 int mx_ush_loop(t_ush *ush);
 int mx_proccess_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
-int mx_execute(char *cmd, t_ush *ush);
-void mx_execute_piped(char **args, char **piped_args);
+int mx_execute_piped(char *cmd);
 int mx_launch(char **args);
 char *mx_get_line(t_ush *ush);
 t_ush *mx_init_shell();
