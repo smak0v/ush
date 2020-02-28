@@ -14,6 +14,7 @@ int (*builtin_func[]) (char **, t_ush *) = {
 
 int mx_execute(char *cmd, t_ush *ush, char **env) {
     char **args = NULL;
+    char *tmp = cmd;
 
     if (!cmd)
         return 1;
@@ -21,5 +22,6 @@ int mx_execute(char *cmd, t_ush *ush, char **env) {
     for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
         if (!mx_strcmp(args[0], (ush->builtins)[i]))
             return (*builtin_func[i])(args, ush);
-    return mx_launch(args, env);
+    mx_del_strarr(&args);
+    return mx_launch(cmd, env);
 }

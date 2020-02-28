@@ -19,13 +19,14 @@ INCS = $(addprefix $(INCD)/, $(INC))
 
 CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
 			execute.c launch.c get_input.c init_ush.c history.c input_mode.c \
-			execute_piped.c signals.c
+			signals.c
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
 			 mx_printnbr.c errors.c set_defaults.c process_home.c \
-			 split_key_value.c check_identifier_validity.c
+			 split_key_value.c check_identifier_validity.c ush_errors.c
+
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
 				validation.c mixed_errors.c export.c unset.c

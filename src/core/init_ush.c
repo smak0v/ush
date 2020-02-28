@@ -58,10 +58,12 @@ t_ush *mx_init_shell(void) {
                            "export", "unset", "local", NULL};
     int *not_found = NULL;
 
+    mx_init_terminal_data();
+    ush->in = mx_memalloc(sizeof(t_input));
+
     ush->env = mx_strarr_dup(environ);
     increase_shell_lvl(ush->env);
     not_found = set_env(ush->env);
-
     ush->export = mx_strarr_dup(ush->env);
     ush->local_variables = mx_strarr_dup(ush->env);
     mx_set_default(ush, not_found);

@@ -19,12 +19,14 @@ void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
         return;
     mx_traverse_and_execute_tree(tree->left, ush, status);
     args = mx_split_cmd(tree->data);
-    if (!mx_strcmp(args[0], "&&"))
-        shell_and_operator(tree, ush, status);
-    else if (!mx_strcmp(args[0], "||"))
-        shell_or_operator(tree, ush, status);
-    else {
-        *status = mx_execute(tree->data, ush, NULL);
-        mx_traverse_and_execute_tree(tree->right, ush, status);
+    if (args && *args) {
+        if (!mx_strcmp(args[0], "&&"))
+            shell_and_operator(tree, ush, status);
+        else if (!mx_strcmp(args[0], "||"))
+            shell_or_operator(tree, ush, status);
+        else {
+            *status = mx_execute(tree->data, ush, ush->env);
+            mx_traverse_and_execute_tree(tree->right, ush, status);
+        }
     }
 }
