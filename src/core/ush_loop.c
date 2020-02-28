@@ -4,7 +4,7 @@ int mx_ush_loop(t_ush *ush) {
     char *line = NULL;
     int status = 0;
 
-    while (1) {
+    while (!ush->exit) {
         mx_printstr("u$h> ");
         line = mx_get_line(ush);
         mx_create_trees(ush, line);

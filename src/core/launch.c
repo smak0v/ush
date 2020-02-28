@@ -1,6 +1,13 @@
 #include "ush.h"
 
-static int exec_proc(int in, int out, t_cmd *cmd, bool last) {
+static int choose_exec(char **args, char **env) {
+    if (!env)
+        return execvp(args[0], args);
+    else 
+        return execve(args[0], args, env);
+}
+
+static int exec_proc(int in, int out, t_cmd *cmd, bool last, char **env) {
     int status = SUCCESS;
 
     if (!last) {
@@ -15,19 +22,19 @@ static int exec_proc(int in, int out, t_cmd *cmd, bool last) {
     }
     else if (in != STDIN_FILENO)
         dup2(in, STDIN_FILENO);
-    if ((status = execvp(cmd->args[0], (char **)cmd->args)) < 0) {
+    if ((status = choose_exec((char **)cmd->args, env)) < 0) {
         mx_command_not_found_error(cmd->args[0]);
         exit(status);
     }
     return status;
 }
 
-static int spawn_and_exec_proc(int in, int out, t_cmd *cmd, bool last) {
+static int spawn_and_exec_proc(int in, int out, t_cmd *cmd, bool last, char **env) {
     pid_t pid = 0;
     int status = SUCCESS;
 
     if ((pid = fork()) == 0)
-        exec_proc(in, out, cmd, last);
+        exec_proc(in, out, cmd, last, env);
     else if (pid < 0) {
         status = FAILURE;
         mx_proccess_start_error(cmd->args[0]);
@@ -40,7 +47,7 @@ static int spawn_and_exec_proc(int in, int out, t_cmd *cmd, bool last) {
     return status;
 }
 
-static int launch(int n, t_cmd *cmd) {
+static int launch(int n, t_cmd *cmd, char **env) {
     pid_t pid = 0;
     int status = SUCCESS;
     int i = 0;
@@ -50,16 +57,16 @@ static int launch(int n, t_cmd *cmd) {
     for (i = 0; i < n; ++i) {
         pipe(fd);
         if (i < n - 1)
-            status = spawn_and_exec_proc(in, fd[1], cmd + i, false);
+            status = spawn_and_exec_proc(in, fd[1], cmd + i, false, env);
         else
-            status = spawn_and_exec_proc(in, fd[1], cmd + i, true);
+            status = spawn_and_exec_proc(in, fd[1], cmd + i, true, env);
         close(fd[1]);
         in = fd[0];
     }
     return status;
 }
 
-int mx_launch(char *cmd) {
+int mx_launch(char *cmd, char **env) {
     char **splited_by_pipes = mx_strsplit(cmd, '|');
     char **tmp = splited_by_pipes;
     char *trimmed = NULL;
@@ -73,5 +80,5 @@ int mx_launch(char *cmd) {
         ++tmp;
     }
     mx_del_strarr(&splited_by_pipes);
-    return launch(mx_get_arr_length(commands), commands);
+    return launch(mx_get_arr_length(commands), commands, env);
 }
