@@ -70,7 +70,6 @@ static int write_args(char **old_arr, t_env *setup) {
 t_env *mx_parse_env(char **args) {
     t_env *setup = mx_memalloc(sizeof(t_env));
     int flag_stop = 0;
-    int name_val_len = 0;
 
     for (int i = 1; args[i]; i++)
         if (!mx_strcmp("--", args[i]))
@@ -81,8 +80,7 @@ t_env *mx_parse_env(char **args) {
         }
         else if (mx_get_char_index(args[i], '=') != -1) {
             flag_stop = 1;
-            name_val_len = write_args(&args[i], setup);
-            i += name_val_len - 1;
+            i += write_args(&args[i], setup) - 1;
         }
         else {
             setup->util = mx_strarr_dup(&args[i]);

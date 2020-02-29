@@ -171,10 +171,11 @@ void mx_env_illegal_option(char illegal_option);
 void mx_option_requires_an_argument(char option);
 
     // EXPORT
-void mx_export(char **arguments, t_ush *ush);
+void mx_export(char **arguments, t_ush *ush, int *status);
+int mx_process_duplicate(t_ush *ush, char *arg, char *key);
 
     //UNSET
-void mx_unset(t_ush *ush, char **arg);
+void mx_unset(t_ush *ush, char **arg, int *status);
 void mx_unset_invalid_option(char *option);
 
 // Data clearing
@@ -182,6 +183,6 @@ void mx_clear_tokens(t_dll **tokens);
 void mx_clear_trees(t_ush *ush);
 
 // Errors
-void mx_start_proccess_error(char *process_name);
+void mx_proccess_start_error(char *process_name);
 void mx_command_not_found_error(char *command_name);
 void mx_no_such_file_or_directory(char *cmd);

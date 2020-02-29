@@ -1,9 +1,11 @@
 #include "ush.h"
 
 static char *check_for_local_value(char **local, char *key) {
-    for (int i = 0; local[i]; i++)
-        if (!mx_strncmp(local[i], key, mx_strlen(key)))
+    for (int i = 0; local[i]; i++) {
+        if (!mx_strncmp(local[i], key, mx_strlen(key))) {
             return mx_strdup(local[i]);
+        }
+    }
 
     return NULL;
 }
@@ -37,36 +39,47 @@ static void save_everywhere(t_ush *ush, char *key_value, char **split) {
     ush->local_variables = mx_strarr_join(ush->local_variables, for_arrays);
     mx_del_strarr(&tmp);
     mx_del_strarr(&split);
+    // mx_strdel(&key_value);
 }
 
 static char *process_only_key(t_ush *ush, char *arg, char **split) {
     char *tmp = check_for_local_value(ush->local_variables, arg);
+
     if (!tmp) {
+        for (int i = 0; ush->export[i]; i++)
+            if (!mx_strcmp(ush->export[i], split[0]))
+                return NULL;
         save_to_export(ush, split[0]);
-        mx_del_strarr(&split);
     }
     return tmp;
 }
 
-void mx_export(char **arguments, t_ush *ush) {
+void mx_export(char **arguments, t_ush *ush, int *status) {
     char **split = NULL;
     char *tmp = NULL;
 
     for (int i = 0; arguments[i]; i++) {
+        mx_strdel(&tmp);
         split = mx_strsplit(arguments[i], '=');
         if (mx_check_identifier_validity(split[0], 0)) {
             mx_invalid_identifier("export", arguments[i]);
             mx_del_strarr(&split);
+            *status = 1;
             continue;
         }
-        //mx_process_duplicates(ush, arguments[i], split[0]);
         if (mx_strarr_len(split) < 2) {
             tmp = process_only_key(ush, arguments[i], split);
-            if (!tmp)
+            if (!tmp) {
+                mx_del_strarr(&split);
                 continue;
+            }
         }
-        tmp = tmp ? tmp : mx_strdup(arguments[i]);
+        tmp = tmp != NULL ? tmp : mx_strdup(arguments[i]);
+        if (mx_process_duplicate(ush, tmp, split[0])) {
+            mx_del_strarr(&split);
+            continue;
+        }
         save_everywhere(ush, tmp, split);
-        mx_strdel(&tmp);
     }
+    mx_strdel(&tmp);
 }

@@ -2,9 +2,9 @@
 
 static char *get_homepath(void) {
     uid_t uid = getuid();
-    struct passwd *pw = (uid == -1 && errno ? NULL : getpwuid (uid));
+    struct passwd *pw = getpwuid(uid);
 
-    if (!pw)
+    if (!pw || !pw->pw_name)
         return mx_strdup("/");
     else
         return mx_strjoin("HOME=/Users/", pw->pw_name);

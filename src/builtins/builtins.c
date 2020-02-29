@@ -46,6 +46,8 @@ int mx_ush_echo(char **args, t_ush *ush) {
     return 0;
 }
 
+
+
 int mx_ush_exit(char **args, t_ush *ush) {
     mx_del_strarr(&args);
     ush->exit = 1;
