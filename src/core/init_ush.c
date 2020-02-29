@@ -55,7 +55,7 @@ t_ush *mx_init_shell(void) {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
     char *builtins[] = {"cd", "pwd", "env", "echo", "exit", "bye",
-                           "export", "unset", "local", NULL};
+                           "export", "unset", "local", "which", NULL};
     int *not_found = NULL;
 
     mx_init_terminal_data();

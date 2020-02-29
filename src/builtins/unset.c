@@ -8,7 +8,7 @@ static int found_key_in_strarr(char **strarr, char *str) {
                 mx_del_strarr(&tmp);
                 return 1;
         }
-        
+
         mx_del_strarr(&tmp);
     }
     return 0;

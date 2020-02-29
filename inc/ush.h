@@ -10,17 +10,20 @@
 #include <string.h>
 #include <termcap.h>
 #include <termios.h>
-#include <stdarg.h>
-
-#include <sys/types.h>
+#include <dirent.h>
 #include <pwd.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <uuid/uuid.h>
 
 // Constants
-#define MX_BUILTINS_COUNT 9
+#define MX_IS_EXEC(mode) ((mode) & S_IXUSR)
+
+#define MX_BUILTINS_COUNT 10
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
-#define MX_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+#define MX_DEFAULT_PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 #define MX_ENV_FLAGS "iPu"
 #define MX_CD_FLAGS "sP"
@@ -67,6 +70,7 @@ struct s_ush {
     char **env;
     char **export;
     char **local_variables;
+    char **hidden;
     bool exit;
     t_input *in;
 };
@@ -141,6 +145,10 @@ void mx_set_default(t_ush *ush, int *not_found);
 char **mx_process_home(char **arr);
 char **mx_split_key_value(char *str);
 int mx_check_identifier_validity(char *str, int ravno);
+char **mx_add_var(char **export, char *keyword);
+char *mx_build_pwd_str(void);
+char *mx_get_pwd(void);
+char *mx_getenv(char **env, char *key);
 
 // Signals
 void mx_init_signal(void);
@@ -149,7 +157,7 @@ void mx_signal_dfl(void);
 // Builtins
 char **mx_store_flags(char **argv);
 char **mx_store_files(char **argv);
-int mx_flags_validation(char **flags, t_blt builtin);
+char *mx_flags_validation(char **flags, t_blt builtin);
 int mx_ush_cd(char **args, t_ush *ush);
 int mx_ush_pwd(char **args, t_ush *ush);
 int mx_ush_env(char **args, t_ush *ush);
@@ -158,8 +166,7 @@ int mx_ush_exit(char **args, t_ush *ush);
 int mx_ush_export(char **args, t_ush *ush);
 int mx_ush_unset(char **args, t_ush *ush);
 int mx_ush_local(char **args, t_ush *ush);
-void mx_unset_invalid_option(char *option);
-void mx_export_invalid_option(char *option);
+int mx_ush_which(char **args, t_ush *ush);
 void mx_invalid_identifier(char *cmd, char *identifier);
 
     // CD
@@ -173,10 +180,15 @@ void mx_option_requires_an_argument(char option);
     // EXPORT
 void mx_export(char **arguments, t_ush *ush, int *status);
 int mx_process_duplicate(t_ush *ush, char *arg, char *key);
+void mx_export_invalid_option(char *option);
 
     //UNSET
 void mx_unset(t_ush *ush, char **arg, int *status);
 void mx_unset_invalid_option(char *option);
+
+    //WHICH
+void mx_which(t_ush *ush, char **flags, char **args, int *status);
+void mx_which_invalid_option(char *option);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);

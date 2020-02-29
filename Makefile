@@ -25,7 +25,8 @@ CLEARING_SRCS = clear_tokens.c clear_trees.c
 
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
 			 mx_printnbr.c errors.c set_defaults.c process_home.c \
-			 split_key_value.c check_identifier_validity.c ush_errors.c
+			 split_key_value.c check_identifier_validity.c ush_errors.c \
+			 build_pwd_string.c getenv.c
 
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
@@ -35,19 +36,23 @@ ENV_SRCS = env.c env_errors.c parse_env.c
 
 EXPORT_SRCS = export.c process_duplicates.c
 
+WHICH_SRCS = which.c
+
 CORE = $(addprefix core/, $(CORE_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
 BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
 ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 EXPORT = $(addprefix builtins/export/, $(EXPORT_SRCS))
+WHICH = $(addprefix builtins/which/, $(WHICH_SRCS))
 
-SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT)
+SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
+	  $(WHICH)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
-	   $(EXPORT_SRCS:%.c=%.o)
+	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o)
 
 all: install
 
@@ -78,4 +83,5 @@ reinstall: uninstall install
 debug:
 	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
 	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
-	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush
+	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
+	src/builtins/which/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

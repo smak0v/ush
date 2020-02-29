@@ -39,7 +39,6 @@ static void save_everywhere(t_ush *ush, char *key_value, char **split) {
     ush->local_variables = mx_strarr_join(ush->local_variables, for_arrays);
     mx_del_strarr(&tmp);
     mx_del_strarr(&split);
-    // mx_strdel(&key_value);
 }
 
 static char *process_only_key(t_ush *ush, char *arg, char **split) {
@@ -54,11 +53,12 @@ static char *process_only_key(t_ush *ush, char *arg, char **split) {
     return tmp;
 }
 
+// TO DO AUDITOR
 void mx_export(char **arguments, t_ush *ush, int *status) {
     char **split = NULL;
     char *tmp = NULL;
 
-    for (int i = 0; arguments[i]; i++) {
+    for (int i = 0; arguments[i]; ++i) {
         mx_strdel(&tmp);
         split = mx_strsplit(arguments[i], '=');
         if (mx_check_identifier_validity(split[0], 0)) {

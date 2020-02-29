@@ -44,8 +44,9 @@ static void overwrite_export_and_local(t_ush *ush, char *arg, char *key) {
 int mx_process_duplicate(t_ush *ush, char *arg, char *key) {
     char *tmp = NULL;
 
-    for (int i = 0; ush->env[i]; i++) {
+    for (int i = 0; ush->env[i]; ++i) {
         char **tmp_arr = mx_split_key_value(ush->env[i]);
+
         if (!mx_strcmp(tmp_arr[0], key)) {
             tmp = ush->env[i];
             ush->env[i] = mx_strdup(arg);

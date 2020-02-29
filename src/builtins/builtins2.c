@@ -16,7 +16,7 @@ int mx_ush_env(char **args, t_ush *ush) {
         mx_option_requires_an_argument('u');
         return 1;
     }
-    
+
     status = mx_env(setup, ush);
 
     return status;
@@ -55,14 +55,11 @@ int mx_ush_unset(char **args, t_ush *ush) {
     }
 
     mx_unset(ush, arg, &status);
-    
-    mx_del_strarr(&args);
 
     return status;
 }
 
 int mx_ush_local(char **args, t_ush *ush) {
-    mx_del_strarr(&args);
     mx_print_strarr(ush->local_variables, "\n");
     return 0;
 }

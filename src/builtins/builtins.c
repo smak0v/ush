@@ -46,11 +46,25 @@ int mx_ush_echo(char **args, t_ush *ush) {
     return 0;
 }
 
+int mx_ush_which(char **args, t_ush *ush) {
+    char **flags = mx_store_flags(args);
+    char **arguments = mx_store_files(args);
+    char *illegal_option = NULL;
+    int status = 0;
 
+
+    if (flags && (illegal_option = mx_flags_validation(flags, which))) {
+        mx_which_invalid_option(illegal_option);
+    }
+
+    if (arguments) {
+        mx_which(ush, flags, arguments, &status);
+    }
+
+    return status;
+}
 
 int mx_ush_exit(char **args, t_ush *ush) {
-    mx_del_strarr(&args);
     ush->exit = 1;
     return 0;
 }
-
