@@ -28,5 +28,6 @@ void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
             *status = mx_execute(tree->data, ush, ush->env);
             mx_traverse_and_execute_tree(tree->right, ush, status);
         }
+        mx_del_strarr(&args);
     }
 }

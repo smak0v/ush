@@ -6,7 +6,7 @@ char **mx_pop_string_array(char **arr, char *value) {
     int flag = 0;
     int j = 0;
 
-    if (len > 1) {
+    if (len > 1 || mx_strcmp(*arr, value)) {
         new_arr = malloc(sizeof(char *) * len);
         for (int i = 0; arr[i]; i++) {
             if (flag == 0 && mx_strcmp(arr[i], value) == 0) {
@@ -29,7 +29,7 @@ char **mx_popn_string_array(char **arr, char *value, int key_len) {
     int flag = 0;
     int j = 0;
 
-    if (len > 1) {
+    if (len > 1 || mx_strncmp(*arr, value, key_len)) {
         new_arr = malloc(sizeof(char *) * len);
         for (int i = 0; arr[i]; i++) {
             if (flag == 0 && mx_strncmp(arr[i], value, key_len) == 0) {

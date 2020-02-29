@@ -22,7 +22,7 @@ static char **set_local(char **arr, int *not_found) {
     return arr;
 }
 
-static char **add_var(char **export, char *keyword) {
+char **add_var(char **export, char *keyword) {
     char **tmp = NULL;
     char *oldpwd[] = {keyword, NULL};
 
@@ -52,7 +52,7 @@ static void set_pwd(t_ush *ush) {
     tmp = ush->export;
     ush->export = mx_strarr_join(ush->export, pwd);
     mx_del_strarr(&tmp);
-    tmp = ush->local_variables;   
+    tmp = ush->local_variables;
     ush->local_variables = mx_strarr_join(ush->local_variables, pwd);
     mx_del_strarr(&tmp);
 }

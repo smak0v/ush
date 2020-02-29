@@ -23,27 +23,31 @@ CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c
 
-UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
-			 mx_printnbr.c errors.c set_defaults.c process_home.c \
-			 split_key_value.c check_identifier_validity.c ush_errors.c
-
+UTILS_SRCS = mx_printnbr.c errors.c set_defaults.c process_home.c \
+			 split_key_value.c check_identifier_validity.c ush_errors.c \
+			 print_tree.c create_trees.c create_tmp_env.c \
+			 setup_underscore_env_var.c
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
 				validation.c mixed_errors.c export.c unset.c
 
 ENV_SRCS = env.c env_errors.c parse_env.c
 
+PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
+
 CORE = $(addprefix core/, $(CORE_SRCS))
+PARSING = $(addprefix parsing/, $(PARSING_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
 BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
 ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 
-SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV)
+SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(PARSING)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
-	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o)
+	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
+	   $(PARSING_SRCS:%.c=%.o)
 
 all: install
 
@@ -70,3 +74,9 @@ uninstall: clean
 	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall install
+
+debug:
+	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
+	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
+	src/builtins/cd/*.c src/builtins/env/*.c src/parsing/*.c \
+	libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

@@ -16,7 +16,7 @@ int mx_ush_env(char **args, t_ush *ush) {
         mx_option_requires_an_argument('u');
         return 1;
     }
-    
+
     status = mx_env(setup, ush);
 
     return status;

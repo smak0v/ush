@@ -8,7 +8,7 @@ static void process_u(char **env, char *u) {
             free(*env);
             for (int i = 0; env[i]; i++)
                 env[i] = env[i + 1];
-            
+
             mx_del_strarr(&tmp);
             break;
         }

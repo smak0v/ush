@@ -36,8 +36,8 @@
 #define BACKSPACE   127
 #define ENTER       10
 
-#define SUCCESS     0
-#define FAILURE     1
+#define MX_SUCCESS     0
+#define MX_FAILURE     1
 
 // Macroses
 
@@ -48,6 +48,19 @@ typedef struct s_token t_token;
 typedef struct s_env t_env;
 typedef struct s_cmd t_cmd;
 typedef struct s_input t_input;
+typedef struct s_builtins t_builtins;
+
+struct s_builtins {
+    int (*mx_ush_cd)(char **, t_ush *);
+    int (*mx_ush_pwd)(char **, t_ush *);
+    int (*mx_ush_env)(char **, t_ush *);
+    int (*mx_ush_echo)(char **, t_ush *);
+    int (*mx_ush_exit)(char **, t_ush *);
+    int (*mx_ush_bye)(char **, t_ush *);
+    int (*mx_ush_export)(char **, t_ush *);
+    int (*mx_ush_unset)(char **, t_ush *);
+    int (*mx_ush_local)(char **, t_ush *);
+};
 
 struct s_input {
     size_t win_x;
@@ -127,9 +140,12 @@ void mx_init_terminal_data(void);
 void mx_enable_input_mode(t_ush *ush);
 void mx_disable_input_mode(t_ush *ush);
 
-// Utils
+// Parsing
+char *mx_proccess_escapings(char *line);
 t_dll *mx_split_token(char *token);
 char **mx_split_cmd(char *cmd);
+
+// Utils
 void mx_create_trees(t_ush *ush, char *line);
 void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
@@ -141,6 +157,9 @@ void mx_set_default(t_ush *ush, int *not_found);
 char **mx_process_home(char **arr);
 char **mx_split_key_value(char *str);
 int mx_check_identifier_validity(char *str, int ravno);
+char **add_var(char **export, char *keyword);
+char **mx_create_tmp_env(t_ush *ush, char ***args);
+void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 
 // Signals
 void mx_init_signal(void);
