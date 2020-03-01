@@ -52,7 +52,7 @@ int mx_ush_unset(char **args, t_ush *ush) {
         return 1;
     }
 
-
+    mx_unset(ush, arg);
     mx_del_strarr(&args);
     return 0;
 }

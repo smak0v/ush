@@ -11,6 +11,7 @@
 #include <termcap.h>
 #include <termios.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #include <sys/types.h>
 #include <pwd.h>
@@ -27,6 +28,8 @@
 #define MX_PWD_FLAGS "LP"
 #define MX_WHICH_FLAGS "as"
 #define MX_ECHO_FLAGS "neE"
+
+#define MAXPROC 709
 
 #define RIGHT       4414235
 #define LEFT        4479771
@@ -48,6 +51,8 @@ typedef struct s_token t_token;
 typedef struct s_env t_env;
 typedef struct s_cmd t_cmd;
 typedef struct s_input t_input;
+typedef struct s_job t_job;
+typedef struct s_process t_process;
 
 struct s_input {
     size_t win_x;
@@ -58,17 +63,31 @@ struct s_input {
     size_t winsize;
 };
 
+struct s_process {
+    char **argv;
+    pid_t pid;
+    int status;
+};
+
+struct s_job {
+    t_process proc[MAXPROC];
+    pid_t pgid;
+    int fd[2];
+    t_job *next;
+};
+
 struct s_ush {
+    t_job *suspended;
     t_dll *trees;
     t_hist *history;
     t_hist *current;
-    struct termios savetty;
+    t_input *in;
     char **builtins;
     char **env;
     char **export;
     char **local_variables;
+    struct termios savetty;
     bool exit;
-    t_input *in;
 };
 
 struct s_cmd {

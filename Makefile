@@ -70,3 +70,9 @@ uninstall: clean
 	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall install
+
+debug:
+	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
+	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
+	src/builtins/cd/*.c src/builtins/env/*.c \
+	libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

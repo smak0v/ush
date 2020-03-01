@@ -1,10 +1,10 @@
 #include "ush.h"
 
 static int choose_exec(char **args, char **env) {
-    if (!env)
+    // if (!env)
         return execvp(args[0], args);
-    else 
-        return execve(args[0], args, env);
+    // else 
+        // return execve(args[0], args, env);
 }
 
 static int exec_proc(int in, int out, t_cmd *cmd, bool last, char **env) {
