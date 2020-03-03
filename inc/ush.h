@@ -63,21 +63,7 @@ struct s_input {
     size_t winsize;
 };
 
-struct s_process {
-    char **argv;
-    pid_t pid;
-    int status;
-};
-
-struct s_job {
-    t_process proc[MAXPROC];
-    pid_t pgid;
-    int fd[2];
-    t_job *next;
-};
-
 struct s_ush {
-    t_job *suspended;
     t_dll *trees;
     t_hist *history;
     t_hist *current;
