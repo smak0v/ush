@@ -18,10 +18,9 @@ INC = ush.h
 INCS = $(addprefix $(INCD)/, $(INC))
 
 CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
-			execute.c launch.c get_input.c init_ush.c history.c input_mode.c \
-			signals.c
+			get_input.c init_ush.c history.c input_mode.c signals.c
 
-CLEARING_SRCS = clear_tokens.c clear_trees.c
+CLEARING_SRCS = clear_tokens.c clear_trees.c clear_processes_data.c
 
 UTILS_SRCS = mx_printnbr.c errors.c set_defaults.c process_home.c \
 			 split_key_value.c check_identifier_validity.c ush_errors.c \
@@ -35,19 +34,23 @@ ENV_SRCS = env.c env_errors.c parse_env.c
 
 PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
 
+JOB_CTRL_SYSTEM_SRCS = jobs.c processes.c launch_job.c launch_proccess.c
+
 CORE = $(addprefix core/, $(CORE_SRCS))
 PARSING = $(addprefix parsing/, $(PARSING_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
 BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
 ENV = $(addprefix builtins/env/, $(ENV_SRCS))
+JOB_CTRL_SYSTEM = $(addprefix job_control_system/, $(JOB_CTRL_SYSTEM_SRCS))
 
-SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(PARSING)
+SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(PARSING) \
+	  $(JOB_CTRL_SYSTEM)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
-	   $(PARSING_SRCS:%.c=%.o)
+	   $(PARSING_SRCS:%.c=%.o) $(JOB_CTRL_SYSTEM_SRCS:%.c=%.o)
 
 all: install
 
@@ -79,4 +82,4 @@ debug:
 	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
 	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
 	src/builtins/cd/*.c src/builtins/env/*.c src/parsing/*.c \
-	libmx/libmx.a -I libmx/inc/ -I inc/ -o ush
+	src/job_control_system/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

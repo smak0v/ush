@@ -39,8 +39,6 @@
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
 
-// Macroses
-
 // Structures
 typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
@@ -49,6 +47,24 @@ typedef struct s_env t_env;
 typedef struct s_cmd t_cmd;
 typedef struct s_input t_input;
 typedef struct s_builtins t_builtins;
+typedef struct s_process t_process;
+typedef struct s_job t_job;
+
+struct s_process {
+    char **argv;
+    int status;
+    pid_t pid;
+    t_process *next;
+};
+
+ struct s_job {
+    char *cmd;
+    pid_t pgid;
+    int stdin;
+    int stdout;
+    int stderr;
+    t_process *processes;
+};
 
 struct s_builtins {
     int (*mx_ush_cd)(char **, t_ush *);
@@ -72,6 +88,7 @@ struct s_input {
 };
 
 struct s_ush {
+    t_job *suspended;
     t_dll *trees;
     t_hist *history;
     t_hist *current;
@@ -132,8 +149,6 @@ typedef enum e_defaults {
 int mx_ush_loop(t_ush *ush);
 int mx_proccess_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
-int mx_execute(char *cmd, t_ush *ush, char **env);
-int mx_launch(char *cmd, char **env);
 char *mx_get_line(t_ush *ush);
 t_ush *mx_init_shell(void);
 void mx_init_terminal_data(void);
@@ -164,6 +179,14 @@ void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 // Signals
 void mx_init_signal(void);
 void mx_signal_dfl(void);
+
+// Job control system
+t_job *mx_create_job(char *cmd);
+void mx_delete_job(t_job **job);
+t_process *mx_create_processes(char *cmd);
+void mx_delete_processes(t_process **processes);
+int mx_launch_job(t_job *job, t_ush *ush, char **env);
+int mx_launch_proccess(t_job *job, t_process *procces, int *fd, t_ush *ush);
 
 // Builtins
 char **mx_store_flags(char **argv);
@@ -199,6 +222,9 @@ void mx_unset_invalid_option(char *option);
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
 void mx_clear_trees(t_ush *ush);
+int mx_clean_data(char **tmp_env);
+void mx_reset_env_and_clean_data(t_ush *ush, char **tmp,
+                                 int (**builtin_func)(char **, t_ush *));
 
 // Errors
 void mx_start_proccess_error(char *process_name);
