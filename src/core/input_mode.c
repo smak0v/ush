@@ -2,7 +2,7 @@
 
 void mx_init_terminal_data() {
     char term_buffer[2048];
-    char *termtype = getenv("TERM");
+    char *termtype = "xterm-256color";
     int success = 0;
 
     if (termtype == 0)

@@ -16,15 +16,16 @@ int mx_ush_env(char **args, t_ush *ush) {
         mx_option_requires_an_argument('u');
         return 1;
     }
-    
-    status = mx_env(setup, ush);
 
+    status = mx_env(setup, ush);
+    mx_env_janitor(&setup);
     return status;
 }
 
 int mx_ush_export(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);
+    int status = 0;
 
     if (flags) {
         mx_export_invalid_option(*flags);
@@ -33,32 +34,30 @@ int mx_ush_export(char **args, t_ush *ush) {
     }
 
     if (arguments) {
-        mx_export(arguments, ush);
+        mx_export(arguments, ush, &status);
         mx_del_strarr(&arguments);
     }
     else
         mx_print_strarr(ush->export, "\n");
 
-    return 0;
+    return status;
 }
 
 int mx_ush_unset(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arg = mx_store_files(args);
+    int status = 0;
 
     if (flags) {
         mx_unset_invalid_option(*flags);
         mx_del_strarr(&flags);
         return 1;
     }
-
-    mx_unset(ush, arg);
-    mx_del_strarr(&args);
-    return 0;
+    mx_unset(ush, arg, &status);
+    return status;
 }
 
 int mx_ush_local(char **args, t_ush *ush) {
-    mx_del_strarr(&args);
     mx_print_strarr(ush->local_variables, "\n");
     return 0;
 }
