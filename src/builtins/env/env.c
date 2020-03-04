@@ -8,7 +8,7 @@ static void process_u(char **env, char *u) {
             free(*env);
             for (int i = 0; env[i]; i++)
                 env[i] = env[i + 1];
-            
+
             mx_del_strarr(&tmp);
             break;
         }
@@ -54,7 +54,7 @@ static void execute(t_ush *ush, t_env *env, char **environment) {
 
 int mx_env(t_env *env, t_ush *ush) {
     char **environment = NULL;
-    char **tmp_env = mx_strarr_dup(ush->env);
+    char **tmp_env = ush->env;
 
     environment = set_environment(env, ush);
     ush->env = environment;

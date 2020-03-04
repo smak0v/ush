@@ -14,8 +14,9 @@ char *select_flags(t_blt builtin) {
     return NULL;
 }
 
-int mx_flags_validation(char **flags, t_blt builtin) {
+char *mx_flags_validation(char **flags, t_blt builtin) {
     char *allowed_flags = select_flags(builtin);
+    char *error = NULL;
     int status = -1;
 
     while (*flags) {
@@ -25,12 +26,12 @@ int mx_flags_validation(char **flags, t_blt builtin) {
                 status = 0;
         }
         if (status == -1) {
-            status = *flags[0];
+            error = *flags;
             break;
         }
         flags++;
     }
 
     mx_strdel(&allowed_flags);
-    return status;
+    return error;
 }

@@ -3,23 +3,19 @@
 int mx_ush_cd(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);
-    char illegal_option = 0;
-    //int status = mx_cd(flags, arguments);
+    char *illegal_option = 0;
+    int status = 0;
 
-    if (*flags && (illegal_option = mx_flags_validation(flags, cd)) != 0) {
+    if (flags && *flags && (illegal_option = mx_flags_validation(flags, cd))) {
         mx_print_error_endl("to do: cd error handling");
         //mx_env_illegal_option(illegal_option);
         return 1;
     }
 
-    // int status = chdir(args[1]);
-    // if (status < 0) {
-    //     mx_print_error("cd: ");
-    //     mx_print_error(strerror(errno));
-    //     mx_print_error(": ");
-    //     mx_print_error_endl(args[1]);
-    // }
-    return 1;
+    status = mx_cd(ush, flags, arguments);
+
+
+    return status;
 }
 
 int mx_ush_pwd(char **args, t_ush *ush) {
@@ -46,9 +42,45 @@ int mx_ush_echo(char **args, t_ush *ush) {
     return 0;
 }
 
-int mx_ush_exit(char **args, t_ush *ush) {
-    mx_del_strarr(&args);
-    ush->exit = 1;
-    return 0;
+int mx_ush_which(char **args, t_ush *ush) {
+    char **flags = mx_store_flags(args);
+    char **arguments = mx_store_files(args);
+    char *illegal_option = NULL;
+    int status = 0;
+
+
+    if (flags && (illegal_option = mx_flags_validation(flags, which))) {
+        mx_which_invalid_option(illegal_option);
+    }
+    if (arguments) {
+        mx_which(ush, flags, arguments, &status);
+    }
+    else {
+        mx_print_error_endl("usage: which [-as] program ...");
+        status = 1;
+    }
+
+    mx_del_strarr(&flags);
+    mx_del_strarr(&arguments);
+    return status;
 }
 
+int mx_ush_exit(char **args, t_ush *ush) {
+    char **arg = mx_store_files(args);
+    short int code = 0;
+    int exit = 1;
+
+    if (!arg) {
+        // code = ush->prev_code?
+    }
+    else {
+        code = mx_exit(arg, &exit);
+    }
+
+    if (exit)
+        ush->exit = &code;
+
+    mx_del_strarr(&arg);
+
+    return code;
+}
