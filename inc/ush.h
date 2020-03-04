@@ -32,6 +32,8 @@
 #define MX_WHICH_FLAGS "as"
 #define MX_ECHO_FLAGS "neE"
 
+#define MAXPROC 709
+
 #define RIGHT       4414235
 #define LEFT        4479771
 #define UP          4283163
@@ -52,6 +54,8 @@ typedef struct s_token t_token;
 typedef struct s_env t_env;
 typedef struct s_cmd t_cmd;
 typedef struct s_input t_input;
+typedef struct s_job t_job;
+typedef struct s_process t_process;
 
 struct s_input {
     size_t win_x;
@@ -66,12 +70,13 @@ struct s_ush {
     t_dll *trees;
     t_hist *history;
     t_hist *current;
-    struct termios savetty;
+    t_input *in;
     char **builtins;
     char **env;
     char **export;
     char **local_variables;
     char **hidden;
+    struct termios savetty;
     short int *exit;
     t_input *in;
 };
