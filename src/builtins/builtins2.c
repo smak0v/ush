@@ -18,7 +18,7 @@ int mx_ush_env(char **args, t_ush *ush) {
     }
 
     status = mx_env(setup, ush);
-
+    mx_env_janitor(&setup);
     return status;
 }
 

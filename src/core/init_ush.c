@@ -69,6 +69,7 @@ t_ush *mx_init_shell(void) {
     mx_set_default(ush, not_found);
     mx_bubble_sort(ush->export, mx_strarr_len(ush->export) - 1);
     ush->builtins = mx_strarr_dup(builtins);
+    free(not_found);
 
     return ush;
 }

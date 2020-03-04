@@ -10,36 +10,26 @@ static char *check_for_local_value(char **local, char *key) {
     return NULL;
 }
 
-static void save_to_export(t_ush *ush, char *key) {
-    char *new_var[] = {key, NULL};
-    char **tmp = ush->export;
+// static void save_everywhere(t_ush *ush, char *key_value, char **split) {
+//     char **for_setenv = mx_split_key_value(key_value);
+//     char *for_arrays[] = {key_value, NULL};
+//     char **tmp = NULL;
 
-    ush->export = mx_strarr_join(ush->export, new_var);
-    mx_bubble_sort(ush->export, mx_strarr_len(ush->export));
-    mx_del_strarr(&tmp);
-}
+//     setenv(for_setenv[0], for_setenv[1], 1);
 
-static void save_everywhere(t_ush *ush, char *key_value, char **split) {
-    char **for_setenv = mx_split_key_value(key_value);
-    char *for_arrays[] = {key_value, NULL};
-    char **tmp = NULL;
+//     tmp = ush->env;
+//     ush->env = mx_strarr_join(ush->env, for_arrays);
+//     mx_del_strarr(&tmp);
 
-    setenv(for_setenv[0], for_setenv[1], 1);
+//     tmp = ush->export;
+//     ush->export = mx_strarr_join(ush->export, for_arrays);
+//     mx_bubble_sort(ush->export, mx_strarr_len(ush->export));
+//     mx_del_strarr(&tmp);
 
-    tmp = ush->env;
-    ush->env = mx_strarr_join(ush->env, for_arrays);
-    mx_del_strarr(&tmp);
-
-    tmp = ush->export;
-    ush->export = mx_strarr_join(ush->export, for_arrays);
-    mx_bubble_sort(ush->export, mx_strarr_len(ush->export));
-    mx_del_strarr(&tmp);
-
-    tmp = ush->local_variables;
-    ush->local_variables = mx_strarr_join(ush->local_variables, for_arrays);
-    mx_del_strarr(&tmp);
-    mx_del_strarr(&split);
-}
+//     tmp = ush->local_variables;
+//     ush->local_variables = mx_strarr_join(ush->local_variables, for_arrays);
+//     mx_del_strarr(&tmp);
+// }
 
 static char *process_only_key(t_ush *ush, char *arg, char **split) {
     char *tmp = check_for_local_value(ush->local_variables, arg);
@@ -48,22 +38,52 @@ static char *process_only_key(t_ush *ush, char *arg, char **split) {
         for (int i = 0; ush->export[i]; i++)
             if (!mx_strcmp(ush->export[i], split[0]))
                 return NULL;
-        save_to_export(ush, split[0]);
+        ush->export = mx_add_var(ush->export, split[0]);
+        mx_bubble_sort(ush->export, mx_strarr_len(ush->export));
     }
     return tmp;
 }
 
-// TO DO AUDITOR
+void export_to_export(t_ush *ush, char **split, char *tmp) {
+    if (mx_check_duplicate(&ush->export, split[0]))
+        mx_overwrite_strarr_value(&ush->export, split[0], split[1]);
+    else {
+        ush->export = mx_add_var(ush->export, tmp);
+        mx_bubble_sort(ush->export, mx_strarr_len(ush->export));
+    }
+}
+
+void process_export(t_ush *ush, char ***strarr, char **str) {
+    char **split = *strarr;
+    char *tmp = *str;
+
+    mx_del_strarr(&split);
+    split = mx_split_key_value(tmp);
+    setenv(split[0], split[1], 1);
+    if (mx_check_duplicate(&ush->env, split[0]))
+        mx_overwrite_strarr_value(&ush->env, split[0], split[1]);
+    else
+        ush->env = mx_add_var(ush->env, tmp);
+
+    export_to_export(ush, split, tmp);
+
+    if (mx_check_duplicate(&ush->local_variables, split[0]))
+        mx_overwrite_strarr_value(&ush->local_variables, split[0], split[1]);
+    else
+        ush->local_variables = mx_add_var(ush->local_variables, tmp);
+
+    mx_strdel(str);
+    mx_del_strarr(&split);
+}
+
 void mx_export(char **arguments, t_ush *ush, int *status) {
     char **split = NULL;
     char *tmp = NULL;
 
     for (int i = 0; arguments[i]; ++i) {
-        mx_strdel(&tmp);
-        split = mx_strsplit(arguments[i], '=');
-        if (mx_check_identifier_validity(split[0], 0)) {
+        split = mx_safe_split(arguments[i]);
+        if (mx_check_identifier_validity(split, 0)) {
             mx_invalid_identifier("export", arguments[i]);
-            mx_del_strarr(&split);
             *status = 1;
             continue;
         }
@@ -75,11 +95,8 @@ void mx_export(char **arguments, t_ush *ush, int *status) {
             }
         }
         tmp = tmp != NULL ? tmp : mx_strdup(arguments[i]);
-        if (mx_process_duplicate(ush, tmp, split[0])) {
-            mx_del_strarr(&split);
-            continue;
-        }
-        save_everywhere(ush, tmp, split);
+        process_export(ush, &split, &tmp);
     }
-    mx_strdel(&tmp);
 }
+
+

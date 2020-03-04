@@ -18,7 +18,7 @@ void mx_unset(t_ush *ush, char **arg, int *status) {
     for (int i = 0; i < mx_strarr_len(arg); i++) {
         int len = mx_strlen(arg[i]);
 
-        if (mx_check_identifier_validity(arg[i], 0)) {
+        if (mx_check_identifier_validity_unset(arg[i], 0)) {
             mx_invalid_identifier("unset", arg[i]);
             *status = 1;
             continue;

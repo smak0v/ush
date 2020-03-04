@@ -12,6 +12,7 @@
 #include <termios.h>
 #include <dirent.h>
 #include <pwd.h>
+#include <stdlib.h>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -71,7 +72,7 @@ struct s_ush {
     char **export;
     char **local_variables;
     char **hidden;
-    bool exit;
+    short int *exit;
     t_input *in;
 };
 
@@ -144,11 +145,17 @@ void mx_choose_error(char **args, char **env);
 void mx_set_default(t_ush *ush, int *not_found);
 char **mx_process_home(char **arr);
 char **mx_split_key_value(char *str);
-int mx_check_identifier_validity(char *str, int ravno);
+int mx_check_identifier_validity(char **strarr, int ravno);
+int mx_check_identifier_validity_unset(char *str, int ravno);
 char **mx_add_var(char **export, char *keyword);
 char *mx_build_pwd_str(void);
 char *mx_get_pwd(void);
 char *mx_getenv(char **env, char *key);
+char *mx_get_homepath(void);
+void mx_overwrite_strarr_value(char ***arr, char *key, char *value);
+char *mx_build_key_value_str(char *key, char *value);
+int mx_check_duplicate(char ***array, char *key);
+char **mx_safe_split(char *arg);
 
 // Signals
 void mx_init_signal(void);
@@ -176,6 +183,7 @@ int mx_env(t_env *env, t_ush *ush);
 t_env *mx_parse_env(char **args);
 void mx_env_illegal_option(char illegal_option);
 void mx_option_requires_an_argument(char option);
+void mx_env_janitor(t_env **env_struct);
 
     // EXPORT
 void mx_export(char **arguments, t_ush *ush, int *status);
@@ -189,6 +197,9 @@ void mx_unset_invalid_option(char *option);
     //WHICH
 void mx_which(t_ush *ush, char **flags, char **args, int *status);
 void mx_which_invalid_option(char *option);
+
+    //EXIT
+short int mx_exit(char **args, int *exit);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);

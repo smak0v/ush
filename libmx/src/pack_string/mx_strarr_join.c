@@ -8,9 +8,9 @@ char **mx_strarr_join(char **arr, char **push) {
         int new_len = mx_strarr_len(push);
         int i = arr_len;
 
-        new_arr = realloc(new_arr, sizeof(char *) 
-                                * (arr_len + new_len + 1));
-        for (int j = 0; i < arr_len + new_len; j++)
+        new_arr = realloc(new_arr, sizeof(char *)
+                          * (arr_len + new_len + 1));
+        for (int j = 0; i < arr_len + new_len; ++j)
             new_arr[i++] = mx_strdup(push[j]);
         new_arr[i] = NULL;
     }

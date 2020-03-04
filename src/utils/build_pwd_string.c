@@ -3,7 +3,6 @@
 char *mx_get_pwd(void) {
     long size = pathconf(".", _PC_PATH_MAX);
     char *path = mx_strnew(size);
-    char *tmp_str = NULL;
 
     getcwd(path, (size_t)size);
     return path;

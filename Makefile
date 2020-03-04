@@ -26,17 +26,19 @@ CLEARING_SRCS = clear_tokens.c clear_trees.c
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
 			 mx_printnbr.c errors.c set_defaults.c process_home.c \
 			 split_key_value.c check_identifier_validity.c ush_errors.c \
-			 build_pwd_string.c getenv.c
+			 build_pwd_string.c getenv.c overwrite_strarr_value.c
 
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
-				validation.c mixed_errors.c unset.c
+				validation.c mixed_errors.c unset.c exit.c
 
-ENV_SRCS = env.c env_errors.c parse_env.c
+ENV_SRCS = env.c env_errors.c parse_env.c janitor.c
 
 EXPORT_SRCS = export.c process_duplicates.c
 
 WHICH_SRCS = which.c
+
+CD_SRCS = cd.c
 
 CORE = $(addprefix core/, $(CORE_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
@@ -45,14 +47,15 @@ BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
 ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 EXPORT = $(addprefix builtins/export/, $(EXPORT_SRCS))
 WHICH = $(addprefix builtins/which/, $(WHICH_SRCS))
+CD = $(addprefix builtins/cd/, $(CD_SRCS))
 
 SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
-	  $(WHICH)
+	  $(WHICH) $(CD)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
-	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o)
+	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o)
 
 all: install
 
