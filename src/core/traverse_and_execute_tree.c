@@ -14,6 +14,7 @@ static void shell_or_operator(t_tree *tree, t_ush *ush, int *status) {
 
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
     char **args = NULL;
+    t_job *job = NULL;
 
     if (!tree)
         return;
@@ -25,8 +26,11 @@ void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
         else if (!mx_strcmp(args[0], "||"))
             shell_or_operator(tree, ush, status);
         else {
-            *status = mx_execute(tree->data, ush, ush->env);
+            job = mx_create_job(tree->data);
+            *status = mx_launch_job(job, ush, ush->env);
+            mx_delete_job(&job);
             mx_traverse_and_execute_tree(tree->right, ush, status);
         }
+        mx_del_strarr(&args);
     }
 }

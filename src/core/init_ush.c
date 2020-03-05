@@ -51,6 +51,15 @@ static int *set_env(char **env) {
     return not_found;
 }
 
+static void init_shell_pgid(void) {
+    gid_t ush_pgid = getpid();
+
+    if (setpgid(ush_pgid, ush_pgid) < 0) {
+        mx_print_error("ush: couldn't put the shell");
+        mx_print_error_endl("in its own process group");
+    }
+}
+
 t_ush *mx_init_shell(void) {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
@@ -58,9 +67,10 @@ t_ush *mx_init_shell(void) {
                            "export", "unset", "local", "which", NULL};
     int *not_found = NULL;
 
+    init_shell_pgid();
+    mx_init_custom_signals();
     mx_init_terminal_data();
     ush->in = mx_memalloc(sizeof(t_input));
-
     ush->env = mx_strarr_dup(environ);
     increase_shell_lvl(ush->env);
     not_found = set_env(ush->env);
@@ -70,6 +80,5 @@ t_ush *mx_init_shell(void) {
     mx_bubble_sort(ush->export, mx_strarr_len(ush->export) - 1);
     ush->builtins = mx_strarr_dup(builtins);
     free(not_found);
-
     return ush;
 }

@@ -14,6 +14,5 @@ char **mx_strarr_join(char **arr, char **push) {
             new_arr[i++] = mx_strdup(push[j]);
         new_arr[i] = NULL;
     }
-
     return new_arr;
 }

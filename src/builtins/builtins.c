@@ -42,6 +42,7 @@ int mx_ush_echo(char **args, t_ush *ush) {
     return 0;
 }
 
+
 int mx_ush_which(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);

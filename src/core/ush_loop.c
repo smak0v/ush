@@ -82,7 +82,6 @@ void mx_expansions(t_ush *ush) {
 }
 
 int mx_ush_loop(t_ush *ush) {
-    char *line = NULL;
     int status = 0;
 
     while (!ush->exit) {
@@ -91,6 +90,7 @@ int mx_ush_loop(t_ush *ush) {
         // tilde expansion
         mx_expansions(ush);
         mx_create_trees(ush, ush->in->line);
+        // ush->in->line = mx_proccess_escapings(line)
         status = mx_proccess_commands_list(ush);
         mx_clear_trees(ush);
         mx_strdel(&ush->in->line);
