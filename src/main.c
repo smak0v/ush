@@ -6,6 +6,6 @@ int main() {
     t_ush *ush = mx_init_shell();
 
     exit_code = mx_ush_loop(ush);
-    system("leaks ush");
+    // system("leaks ush");
     return exit_code;
 }

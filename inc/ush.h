@@ -197,9 +197,8 @@ void mx_init_custom_signals(void);
 char *mx_get_line(t_ush *ush);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
-bool mx_check_path(char *line, size_t start_index);
-char *mx_replace_tilde(t_ush *ush, size_t index, char *postfix);
 void mx_expand_tilde(t_ush *ush, size_t index, char *postfix);
+void mx_expand_dollar(t_ush *ush, size_t index, char *postfix);
 void mx_expansions(t_ush *ush);
 
 // Job control system
