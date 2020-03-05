@@ -16,8 +16,10 @@ static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
         }
         else {
             procces->pid = pid;
+            if (!job->pgid)
+                job->pgid = pid;
             waitpid(pid, &status, WUNTRACED);
-            while (!WIFEXITED(status) && !WIFSIGNALED(status))
+            while (!WIFEXITED(status) && !WIFSIGNALED(status) && !WIFSTOPPED(status))
                 waitpid(pid, &status, WUNTRACED);
         }
     }

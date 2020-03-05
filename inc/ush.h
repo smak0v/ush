@@ -179,6 +179,7 @@ void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 // Signals
 void mx_init_signal(void);
 void mx_signal_dfl(void);
+void mx_init_custom_signals(void);
 
 // Job control system
 t_job *mx_create_job(char *cmd);

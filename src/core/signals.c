@@ -15,3 +15,14 @@ void mx_signal_dfl(void) {
     signal(SIGTTOU, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
 }
+
+//============================================================================
+void mx_susspend_process(void) {
+    // mx_printint_endl(getpid());
+    // kill(getpid(), SIGSTOP);
+}
+
+void mx_init_custom_signals(void) {
+    signal(SIGTSTP, mx_susspend_process);
+}
+//============================================================================
