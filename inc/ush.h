@@ -32,13 +32,13 @@
 #define MX_WHICH_FLAGS "as"
 #define MX_ECHO_FLAGS "neE"
 
-#define RIGHT       4414235
-#define LEFT        4479771
-#define UP          4283163
-#define DOWN        4348699
-#define ESC         27
-#define BACKSPACE   127
-#define ENTER       10
+#define MX_RIGHT       4414235
+#define MX_LEFT        4479771
+#define MX_UP          4283163
+#define MX_DOWN        4348699
+#define MX_ESC         27
+#define MX_BACKSPACE   127
+#define MX_ENTER       10
 
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
@@ -155,7 +155,6 @@ typedef enum e_defaults {
 int mx_ush_loop(t_ush *ush);
 int mx_proccess_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
-char *mx_get_line(t_ush *ush);
 t_ush *mx_init_shell(void);
 void mx_init_terminal_data(void);
 void mx_enable_input_mode(t_ush *ush);
@@ -170,8 +169,6 @@ char **mx_split_cmd(char *cmd);
 void mx_create_trees(t_ush *ush, char *line);
 void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
-void mx_add_cmd(t_hist **hist, t_hist *node);
-t_hist *mx_create_hist_node(char *cmd);
 int mx_printnbr(int i);
 void mx_choose_error(char **args, char **env);
 void mx_set_default(t_ush *ush, int *not_found);
@@ -195,6 +192,15 @@ void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 void mx_init_signal(void);
 void mx_signal_dfl(void);
 void mx_init_custom_signals(void);
+
+// Input
+char *mx_get_line(t_ush *ush);
+void mx_add_cmd(t_hist **hist, t_hist *node);
+t_hist *mx_create_hist_node(char *cmd);
+bool mx_check_path(char *line, size_t start_index);
+char *mx_replace_tilde(t_ush *ush, size_t index, char *postfix);
+void mx_expand_tilde(t_ush *ush, size_t index, char *postfix);
+void mx_expansions(t_ush *ush);
 
 // Job control system
 t_job *mx_create_job(char *cmd);

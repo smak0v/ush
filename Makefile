@@ -18,7 +18,9 @@ INC = ush.h
 INCS = $(addprefix $(INCD)/, $(INC))
 
 CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
-			get_input.c init_ush.c history.c input_mode.c signals.c
+			init_ush.c input_mode.c signals.c
+
+INPUT_SRCS = get_input.c history.c expansions.c
 
 UTILS_SRCS = build_pwd_string.c getenv.c set_defaults.c \
 			 check_identifier_validity.c mx_printnbr.c \
@@ -45,6 +47,7 @@ PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
 JOB_CTRL_SYSTEM_SRCS = jobs.c processes.c launch_job.c launch_proccess.c
 
 CORE = $(addprefix core/, $(CORE_SRCS))
+INPUT = $(addprefix input/, $(INPUT_SRCS))
 PARSING = $(addprefix parsing/, $(PARSING_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
@@ -57,13 +60,14 @@ CD = $(addprefix builtins/cd/, $(CD_SRCS))
 JOB_CTRL_SYSTEM = $(addprefix job_control_system/, $(JOB_CTRL_SYSTEM_SRCS))
 
 SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
-	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING)
+	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING) $(INPUT)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
 	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o) \
-	   $(PARSING_SRCS:%.c=%.o) $(JOB_CTRL_SYSTEM_SRCS:%.c=%.o)
+	   $(PARSING_SRCS:%.c=%.o) $(JOB_CTRL_SYSTEM_SRCS:%.c=%.o) \
+	   $(INPUT_SRCS:%.c=%.o)
 
 all: install
 
@@ -95,5 +99,6 @@ debug:
 	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
 	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
 	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
-	src/builtins/which/*.c src/parsing/*.c \
+	src/builtins/which/*.c src/parsing/*.c src/input/*.c \
 	src/job_control_system/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush
+	@rm -rf ush.dSYM

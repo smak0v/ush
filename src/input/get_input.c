@@ -68,7 +68,7 @@ void arrow_down(t_ush *ush) {
 }
 
 static void shuffle_text(t_input *in) {
-    if (in->key == BACKSPACE) {
+    if (in->key == MX_BACKSPACE) {
         for (size_t i = in->cur_x; i <= strlen(in->line); i++)
             in->line[i] = in->line[i + 1];
     } else {
@@ -90,7 +90,7 @@ void print_line(t_input *in) {
 }
 
 static void edit_line(t_input *in) {
-    if (in->key == LEFT && in->cur_x != 0) {
+    if (in->key == MX_LEFT && in->cur_x != 0) {
         if (in->win_x == 1) {
             tputs(tgetstr("up", NULL), 1, mx_printnbr);
             while (in->win_x++ != in->winsize)
@@ -101,11 +101,11 @@ static void edit_line(t_input *in) {
             --(in->cur_x);
             --(in->win_x);
         }
-    } else if (in->key == RIGHT && in->cur_x < strlen(in->line)) {
+    } else if (in->key == MX_RIGHT && in->cur_x < strlen(in->line)) {
         tputs(tgetstr("nd", NULL), 1, mx_printnbr);
         ++(in->cur_x);
         ++(in->win_x);
-    } else if (in->key == BACKSPACE && in->cur_x != 0) {
+    } else if (in->key == MX_BACKSPACE && in->cur_x != 0) {
         tputs(tgetstr("le", NULL), 1, mx_printnbr);
         tputs(tgetstr("dc", NULL), 1, mx_printnbr);
         --(in->cur_x);
@@ -122,9 +122,9 @@ static void read_input(t_ush *ush) {
     if ((ush->in->key >= 32 && ush->in->key < 127)) {
         print_line(ush->in);
     }
-    if (ush->in->key == UP)
+    if (ush->in->key == MX_UP)
         ush->history ? arrow_up(ush) : (void)0;
-    if (ush->in->key == DOWN)
+    if (ush->in->key == MX_DOWN)
         ush->history ? arrow_down(ush) : (void)0;
 }
 
@@ -135,7 +135,7 @@ char *mx_get_line(t_ush *ush) {
     ush->in->win_x = 5;
     ush->in->cur_y = 1;
     mx_enable_input_mode(ush);
-    while (ush->in->key != ENTER) {
+    while (ush->in->key != MX_ENTER) {
         read_input(ush);
         edit_line(ush->in);
     }
