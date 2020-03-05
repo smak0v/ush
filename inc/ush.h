@@ -78,7 +78,6 @@ struct s_ush {
     char **hidden;
     struct termios savetty;
     short int *exit;
-    t_input *in;
 };
 
 struct s_cmd {

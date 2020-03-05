@@ -1,19 +1,5 @@
 #include "ush.h"
 
-char *mx_get_home(t_ush *ush) {
-    char *home = NULL;
-    char **tmp = NULL;
-    int i = -1;
-
-    while (ush->local_variables[++i] && home == NULL) {
-        tmp = mx_strsplit(ush->local_variables[i], '=');
-        if (strcmp(tmp[0], "HOME") == 0)
-            home = mx_strdup(tmp[1]);
-        mx_del_strarr(&tmp);
-    }
-    return home;
-}
-
 bool mx_check_path(char *line, size_t start_index) {
     char *user_path = NULL;
     char *path = NULL;
@@ -34,27 +20,44 @@ bool mx_check_path(char *line, size_t start_index) {
     return path;
 }
 
+char *mx_replace_tilde(t_ush *ush, size_t index, char *postfix) {
+    char *tilde = NULL;
+
+    if (postfix[0] == '+') {
+        if (strlen(postfix) > 1 && !isspace(postfix[1]))
+            return NULL;
+        tilde = mx_getenv(ush->hidden, "PWD");
+    }
+    else if (postfix[0] == '-') {
+        if (strlen(postfix) > 1 && !isspace(postfix[1]))
+            return NULL;
+        tilde = mx_getenv(ush->hidden, "OLDPWD");
+    }
+    else if (!postfix[0] || isspace(postfix[0]) || postfix[0] == '/')
+        tilde = mx_getenv(ush->hidden, "HOME");
+    else
+        tilde = mx_check_path(ush->in->line, index) ? strdup("/Users/") : NULL;
+    return tilde;
+}
+
 void mx_expand_tilde(t_ush *ush, size_t index, char *postfix) {
-    char *home = NULL;
+    char *tilde = NULL;
     char *line = ush->in->line;
     char *tmp = mx_strdup(line + index + 1);
 
-    if (index != 0 && !isspace(line[index - 1]))
+    if (index != 0 && !isspace(line[index - 1])) {
+        mx_strdel(&tmp);
         return;
-    if (strcmp(postfix, "+") == 0)
-        return;  // home = $PWD
-    else if (strcmp(postfix, "-") == 0)
-        return;  // home = $OLDPWD
-    else if (!postfix[0] || isspace(postfix[0]) || postfix[0] == '/')
-        home = mx_get_home(ush);
-    else
-        home = mx_check_path(line, index) ? strdup("/Users/") : strdup("~");
-    if (strlen(home) + strlen(line) >= malloc_size(line))
-        ush->in->line = realloc(line, malloc_size(line) + strlen(home));
-    memmove(line + index, home, strlen(home));
-    memmove(line + index + strlen(home), tmp, strlen(tmp));
+    }
+    tilde = mx_replace_tilde(ush, index, postfix);
+    if (tilde) {
+        if (strlen(tilde) + strlen(line) >= malloc_size(line))
+            ush->in->line = realloc(line, malloc_size(line) + strlen(tilde));
+        memmove(line + index, tilde, strlen(tilde));
+        memmove(line + index + strlen(tilde) + (tmp[0] == '+' || tmp[0] == '-'), tmp, strlen(tmp));
+        mx_strdel(&tilde);
+    }
     mx_strdel(&tmp);
-    mx_strdel(&home);
 }
 
 // создать папку input, закинуть туда все, что связано с инпутом и вынести все приколы отсюда
