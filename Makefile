@@ -42,9 +42,14 @@ WHICH_SRCS = which.c
 
 CD_SRCS = cd.c
 
+FG_SRCS = fg.c
+
+JOBS_SRCS = jobs.c
+
 PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
 
-JOB_CTRL_SYSTEM_SRCS = jobs.c processes.c launch_job.c launch_proccess.c
+JOB_CTRL_SYSTEM_SRCS = jcs_utils.c job_utils.c process_utils.c launch_job.c \
+					   launch_process.c
 
 CORE = $(addprefix core/, $(CORE_SRCS))
 INPUT = $(addprefix input/, $(INPUT_SRCS))
@@ -56,18 +61,19 @@ ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 EXPORT = $(addprefix builtins/export/, $(EXPORT_SRCS))
 WHICH = $(addprefix builtins/which/, $(WHICH_SRCS))
 CD = $(addprefix builtins/cd/, $(CD_SRCS))
-
+FG = $(addprefix builtins/fg/, $(FG_SRCS))
+JOBS = $(addprefix builtins/jobs/, $(JOBS_SRCS))
 JOB_CTRL_SYSTEM = $(addprefix job_control_system/, $(JOB_CTRL_SYSTEM_SRCS))
 
 SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
-	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING) $(INPUT)
+	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING) $(INPUT) $(FG) $(JOBS)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
 	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o) \
 	   $(PARSING_SRCS:%.c=%.o) $(JOB_CTRL_SYSTEM_SRCS:%.c=%.o) \
-	   $(INPUT_SRCS:%.c=%.o)
+	   $(INPUT_SRCS:%.c=%.o) $(FG_SRCS:%.c=%.o) $(JOBS_SRCS:%.c=%.o)
 
 all: install
 
@@ -100,5 +106,5 @@ debug:
 	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
 	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
 	src/builtins/which/*.c src/parsing/*.c src/input/*.c \
-	src/job_control_system/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush
-	@rm -rf ush.dSYM
+	src/job_control_system/*.c src/builtins/jobs/*.c src/builtins/fg/*.c \
+	libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

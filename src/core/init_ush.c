@@ -17,7 +17,7 @@ static void increase_shell_lvl(char **env) {
         }
 
         mx_del_strarr(&tmp);
-        *env++;
+        env++;
     }
 }
 
@@ -52,23 +52,26 @@ static int *set_env(char **env) {
 }
 
 static void init_shell_pgid(void) {
-    gid_t ush_pgid = getpid();
+    pid_t ush_pgid = 0;
+    struct termios tty;
 
-    if (setpgid(ush_pgid, ush_pgid) < 0) {
-        mx_print_error("ush: couldn't put the shell");
-        mx_print_error_endl("in its own process group");
-    }
+    while (tcgetpgrp(STDIN_FILENO) != (ush_pgid = getpgrp()))
+        kill(-ush_pgid, SIGTTIN);
+    mx_ignore_signals();
+    ush_pgid = getpid();
+    setpgid(ush_pgid, ush_pgid);
+    tcsetpgrp(STDIN_FILENO, ush_pgid);
+    tcgetattr(STDIN_FILENO, &tty);
 }
 
 t_ush *mx_init_shell(void) {
     extern char **environ;
     t_ush *ush = mx_memalloc(sizeof(t_ush));
-    char *builtins[] = {"cd", "pwd", "env", "echo", "exit", "bye",
-                           "export", "unset", "local", "which", NULL};
+    char *builtins[] = {"cd", "pwd", "echo", "which", "exit", "bye", "env",
+                        "export", "unset", "local", "jobs", "fg", NULL};
     int *not_found = NULL;
 
     init_shell_pgid();
-    mx_init_custom_signals();
     mx_init_terminal_data();
     ush->in = mx_memalloc(sizeof(t_input));
     ush->env = mx_strarr_dup(environ);
@@ -79,6 +82,6 @@ t_ush *mx_init_shell(void) {
     mx_set_default(ush, not_found);
     mx_bubble_sort(ush->export, mx_strarr_len(ush->export) - 1);
     ush->builtins = mx_strarr_dup(builtins);
-    free(not_found);
+    mx_intdel(&not_found);
     return ush;
 }

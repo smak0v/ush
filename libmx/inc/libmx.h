@@ -31,6 +31,7 @@ typedef struct s_tree {
 // Utils pack
 void mx_printchar(char c);
 void mx_printchar_endl(char c);
+void mx_printchar_ntimes(char ch, int count);
 void mx_print_unicode(wchar_t c);
 void mx_printstr(const char *s);
 void mx_printstr_endl(const char *s);

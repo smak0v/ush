@@ -1,7 +1,6 @@
 #include "ush.h"
 
 int main() {
-    // mx_printint_endl(getpid());
     int exit_code = 0;
     t_ush *ush = mx_init_shell();
 

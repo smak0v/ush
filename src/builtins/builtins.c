@@ -71,6 +71,7 @@ int mx_ush_exit(char **args, t_ush *ush) {
     short int code = 0;
     int exit = 1;
 
+    mx_kill_suspended_jobs(ush->suspended);
     if (!arg) {
         // code = ush->prev_code?
     }

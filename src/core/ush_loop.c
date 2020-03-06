@@ -4,6 +4,7 @@ int mx_ush_loop(t_ush *ush) {
     int status = 0;
 
     while (!ush->exit) {
+        tcsetpgrp(STDIN_FILENO, getpid());
         mx_printstr("u$h> ");
         ush->in->line = mx_get_line(ush);
         mx_expansions(ush);

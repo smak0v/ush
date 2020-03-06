@@ -21,7 +21,7 @@
 // Constants
 #define MX_IS_EXEC(mode) ((mode) & S_IXUSR)
 
-#define MX_BUILTINS_COUNT 10
+#define MX_BUILTINS_COUNT 12
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
 #define MX_DEFAULT_PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -68,19 +68,22 @@ struct s_process {
     int stdout;
     int stderr;
     t_process *processes;
+    t_job *next;
 };
 
 struct s_builtins {
     int (*mx_ush_cd)(char **, t_ush *);
     int (*mx_ush_pwd)(char **, t_ush *);
-    int (*mx_ush_env)(char **, t_ush *);
     int (*mx_ush_echo)(char **, t_ush *);
+    int (*mx_ush_which)(char **, t_ush *);
     int (*mx_ush_exit)(char **, t_ush *);
     int (*mx_ush_bye)(char **, t_ush *);
+    int (*mx_ush_env)(char **, t_ush *);
     int (*mx_ush_export)(char **, t_ush *);
     int (*mx_ush_unset)(char **, t_ush *);
     int (*mx_ush_local)(char **, t_ush *);
-    int (*mx_ush_which)(char **, t_ush *);
+    int (*mx_ush_jobs)(char **, t_ush *);
+    int (*mx_ush_fg)(char **, t_ush *);
 };
 
 struct s_input {
@@ -189,9 +192,8 @@ char **mx_create_tmp_env(t_ush *ush, char ***args);
 void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 
 // Signals
-void mx_init_signal(void);
-void mx_signal_dfl(void);
-void mx_init_custom_signals(void);
+void mx_ignore_signals(void);
+void mx_default_signals(void);
 
 // Input
 char *mx_get_line(t_ush *ush);
@@ -204,11 +206,18 @@ void mx_expansions(t_ush *ush);
 
 // Job control system
 t_job *mx_create_job(char *cmd);
+t_job *mx_copy_job(t_job *job);
+void mx_push_front_job(t_job **jobs, t_job *job);
 void mx_delete_job(t_job **job);
+int mx_suspended_jobs_list_size(t_job *suspended_jobs);
+void mx_kill_suspended_jobs(t_job *jobs);
+t_process *create_process(char *cmd);
 t_process *mx_create_processes(char *cmd);
+t_process *mx_copy_processes(t_process *processes);
+void push_back_proccess(t_process **processes, t_process *process);
 void mx_delete_processes(t_process **processes);
 int mx_launch_job(t_job *job, t_ush *ush, char **env);
-int mx_launch_proccess(t_job *job, t_process *procces, int *fd, t_ush *ush);
+int mx_launch_proccess(pid_t pgid, t_process *procces, int *fd, t_ush *ush);
 
 // Builtins
 char **mx_store_flags(char **argv);
@@ -239,16 +248,22 @@ void mx_export(char **arguments, t_ush *ush, int *status);
 int mx_process_duplicate(t_ush *ush, char *arg, char *key);
 void mx_export_invalid_option(char *option);
 
-    //UNSET
+    // UNSET
 void mx_unset(t_ush *ush, char **arg, int *status);
 void mx_unset_invalid_option(char *option);
 
-    //WHICH
+    // WHICH
 void mx_which(t_ush *ush, char **flags, char **args, int *status);
 void mx_which_invalid_option(char *option);
 
-    //EXIT
+    // EXIT
 short int mx_exit(char **args, int *exit);
+
+    // JOBS
+int mx_ush_jobs(char **args, t_ush *ush);
+
+    // FG
+int mx_ush_fg(char **args, t_ush *ush);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
