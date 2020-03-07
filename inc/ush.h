@@ -190,6 +190,7 @@ int mx_check_duplicate(char ***array, char *key);
 char **mx_safe_split(char *arg);
 char **mx_create_tmp_env(t_ush *ush, char ***args);
 void mx_setup_underscore_env_var(t_ush *ush, char *arg);
+int mx_check_flag(char **flags, char flag);
 
 // Signals
 void mx_ignore_signals(void);

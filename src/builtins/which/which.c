@@ -1,16 +1,5 @@
 #include "ush.h"
 
-static int check_flag(char **flags, char flag) {
-    if (!flags)
-        return 0;
-
-    for (int i = 0; flags[i]; ++i) {
-        if (*flags[i] == flag)
-            return 1;
-    }
-    return 0;
-}
-
 static char *mx_get_full_filename(char *dirpath, char *filename) {
     char *tmp = NULL;
     char *full_filename = NULL;
@@ -38,9 +27,9 @@ static int check_match(DIR *dir, char **flags, char *path, char *command) {
 
             if (MX_IS_EXEC(st.st_mode)) {
                 found = 1;
-                if (!check_flag(flags, 's'))
+                if (!mx_check_flag(flags, 's'))
                     mx_printstr_endl(full_filename);
-                if (!check_flag(flags, 'a')) {
+                if (!mx_check_flag(flags, 'a')) {
                     mx_strdel(&full_filename);
                     break;
                 }
@@ -69,6 +58,17 @@ static int scan_dir(char **flags, char **path, char *command) {
     return found;
 }
 
+static char check_builtins(t_ush *ush, char *arg) {
+    for (int i = 0; ush->builtins[i]; ++i) {
+        if (!mx_strcmp(arg, ush->builtins[i])) {
+            mx_printstr(arg);
+            mx_printstr_endl(": shell built-in command");
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void mx_which(t_ush *ush, char **flags, char **args, int *status) {
     char *env_path = NULL;
     char *malloced_env_path = NULL;
@@ -82,6 +82,8 @@ void mx_which(t_ush *ush, char **flags, char **args, int *status) {
     }
 
     for (int j = 0; args[j]; ++j) {
+        if (check_builtins(ush, args[j]) && !mx_check_flag(flags, 'a'))
+            continue;
         if (scan_dir(flags, path, args[j]) == 0)
             *status = 1;
     }

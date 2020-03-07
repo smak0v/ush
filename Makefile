@@ -27,7 +27,7 @@ UTILS_SRCS = build_pwd_string.c getenv.c set_defaults.c \
 			 setup_underscore_env_var.c create_tmp_env.c \
 			 overwrite_strarr_value.c split_key_value.c \
 			 create_trees.c print_tree.c ush_errors.c \
-			 errors.c process_home.c
+			 errors.c process_home.c check_flag.c
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c clear_processes_data.c
 
@@ -102,7 +102,7 @@ uninstall: clean
 reinstall: uninstall install
 
 debug:
-	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
+	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -O0 -g \
 	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
 	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
 	src/builtins/which/*.c src/parsing/*.c src/input/*.c \

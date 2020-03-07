@@ -49,18 +49,14 @@ int mx_ush_which(char **args, t_ush *ush) {
     char *illegal_option = NULL;
     int status = 0;
 
-
-    if (flags && (illegal_option = mx_flags_validation(flags, which))) {
+    if (flags && (illegal_option = mx_flags_validation(flags, which)))
         mx_which_invalid_option(illegal_option);
-    }
-    if (arguments) {
+    if (arguments)
         mx_which(ush, flags, arguments, &status);
-    }
     else {
         mx_print_error_endl("usage: which [-as] program ...");
         status = 1;
     }
-
     mx_del_strarr(&flags);
     mx_del_strarr(&arguments);
     return status;
