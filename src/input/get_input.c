@@ -114,6 +114,12 @@ static void edit_line(t_input *in) {
     }
 }
 
+// void mx_skip_line(t_ush *ush) {
+//     mx_printstr("\nu$h> ");
+//     mx_strdel(&ush->in->line);
+//     mx_get_line(ush);
+// }
+
 static void read_input(t_ush *ush) {
     mx_init_terminal_data();
     ush->in->winsize = tgetnum("co");
@@ -122,6 +128,8 @@ static void read_input(t_ush *ush) {
     if ((ush->in->key >= 32 && ush->in->key < 127)) {
         print_line(ush->in);
     }
+    // if (ush->in->key == MX_CTRL_C)
+    //     mx_skip_line(ush);
     if (ush->in->key == MX_UP)
         ush->history ? arrow_up(ush) : (void)0;
     if (ush->in->key == MX_DOWN)

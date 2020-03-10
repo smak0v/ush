@@ -39,6 +39,7 @@
 #define MX_ESC         27
 #define MX_BACKSPACE   127
 #define MX_ENTER       10
+#define MX_CTRL_C      130
 
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
