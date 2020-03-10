@@ -32,7 +32,6 @@ int mx_ush_export(char **args, t_ush *ush) {
         mx_del_strarr(&flags);
         return 1;
     }
-
     if (arguments) {
         mx_export(arguments, ush, &status);
         mx_del_strarr(&arguments);
