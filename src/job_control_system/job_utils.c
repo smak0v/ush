@@ -26,6 +26,8 @@ void mx_delete_job(t_job **job) {
 
 void mx_push_front_job(t_job **jobs, t_job *job) {
     job->next = *jobs;
+    if (*jobs)
+        (*jobs)->prev = job;
     *jobs = job;
 }
 

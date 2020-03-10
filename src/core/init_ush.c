@@ -51,16 +51,15 @@ static int *set_env(char **env) {
     return not_found;
 }
 
-static void init_shell_pgid(void) {
-    pid_t ush_pgid = 0;
+static void init_shell_pgid(t_ush *ush) {
     struct termios tty;
 
-    while (tcgetpgrp(STDIN_FILENO) != (ush_pgid = getpgrp()))
-        kill(-ush_pgid, SIGTTIN);
+    while (tcgetpgrp(STDIN_FILENO) != (ush->pgid = getpgrp()))
+        kill(-ush->pgid, SIGTTIN);
     mx_ignore_signals();
-    ush_pgid = getpid();
-    setpgid(ush_pgid, ush_pgid);
-    tcsetpgrp(STDIN_FILENO, ush_pgid);
+    ush->pgid = getpid();
+    setpgid(ush->pgid, ush->pgid);
+    tcsetpgrp(STDIN_FILENO, ush->pgid);
     tcgetattr(STDIN_FILENO, &tty);
 }
 
@@ -71,7 +70,7 @@ t_ush *mx_init_shell(void) {
                         "export", "unset", "local", "jobs", "fg", NULL};
     int *not_found = NULL;
 
-    init_shell_pgid();
+    init_shell_pgid(ush);
     mx_init_terminal_data();
     ush->in = mx_memalloc(sizeof(t_input));
     ush->env = mx_strarr_dup(environ);

@@ -69,6 +69,7 @@ struct s_process {
     int stderr;
     t_process *processes;
     t_job *next;
+    t_job *prev;
 };
 
 struct s_builtins {
@@ -108,6 +109,7 @@ struct s_ush {
     char **hidden;
     struct termios savetty;
     short int *exit;
+    pid_t pgid;
 };
 
 struct s_cmd {

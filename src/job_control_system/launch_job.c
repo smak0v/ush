@@ -1,5 +1,15 @@
 #include "ush.h"
 
+static void check_status(t_ush *ush, t_job *job, int status) {
+    if (WIFSTOPPED(status)) {
+        mx_printstr("\n[");
+        mx_printint(mx_suspended_jobs_list_size(ush->suspended) + 1);
+        mx_printstr("]+  Stopped                 ");
+        mx_printstr_endl(job->cmd);
+        mx_push_front_job(&ush->suspended, mx_copy_job(job));
+    }
+}
+
 static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
                            int *fd) {
     int status = MX_SUCCESS;
@@ -21,19 +31,12 @@ static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
             if (!job->pgid)
                 job->pgid = pid;
             setpgid(pid, job->pgid);
-            waitpid(pid, &status, WUNTRACED);
+            waitpid(pid, &status, WUNTRACED|WCONTINUED);
             while (!WIFEXITED(status)
                    && !WIFSIGNALED(status)
                    && !WIFSTOPPED(status))
-                waitpid(pid, &status, WUNTRACED);
-            if (WIFSTOPPED(status)) {
-                mx_printstr("\n[");
-                mx_printint(mx_suspended_jobs_list_size(ush->suspended) + 1);
-                mx_printstr("]+  Stopped");
-                mx_printchar_ntimes(' ', 17);
-                mx_printstr_endl(job->cmd);
-                mx_push_front_job(&ush->suspended, mx_copy_job(job));
-            }
+                waitpid(pid, &status, WUNTRACED|WCONTINUED);
+            check_status(ush, job, status);
         }
     }
     return status;
