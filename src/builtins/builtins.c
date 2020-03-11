@@ -5,6 +5,7 @@ int mx_ush_cd(char **args, t_ush *ush) {
     char **arguments = mx_store_files(args);
     char *illegal_option = 0;
     int status = 0;
+    char *destination = NULL;
 
     if (flags && *flags && (illegal_option = mx_flags_validation(flags, cd))) {
         mx_print_error_endl("to do: cd error handling");
@@ -12,8 +13,12 @@ int mx_ush_cd(char **args, t_ush *ush) {
         return 1;
     }
 
-    status = mx_cd(ush, flags, arguments);
+    if (!arguments)
+        destination = mx_getenv(ush->hidden, "HOME");
+    else
+        destination = *arguments;
 
+    status = mx_cd(ush, flags, destination);
 
     return status;
 }

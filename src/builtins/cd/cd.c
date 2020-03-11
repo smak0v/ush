@@ -4,22 +4,70 @@ static char **build_export_args(char *key, char *value) {
     char **export = mx_memalloc(sizeof(char *) * 3);
 
     export[0] = mx_strdup("export");
-    export[1] = mx_strjoin(key, value);
+    export[1] = mx_build_key_value_str(key, value);
     export[2] = NULL;
 
     return export;
 }
 
-int mx_cd(t_ush *ush, char **flags, char **args) {
-    char **export = NULL;
+static void export(t_ush *ush, char *key, char *value) {
+    char **export = build_export_args(key, value);
 
-    if (!args) {
-        char *home = mx_getenv(ush->hidden, "HOME");
+    mx_overwrite_strarr_value(&ush->hidden, key, value);
+    mx_ush_export(export, ush);
+    mx_del_strarr(&export);
+}
 
-        chdir(home);
-        export = build_export_args("PWD=", home);
-        mx_ush_export(export, ush);
+static char includes_link(char *pwd, char *destination) {
+    char **split = mx_strsplit(destination, '/');
+    char *path = NULL;
+    char *full_path = NULL;
+
+    while (split[0]) {
+        path = mx_strarr_to_str(split, "/");
+        if (destination[0] == '/')
+            full_path = mx_strjoin("/", path);
+        else
+            full_path = mx_build_path(pwd, path);
+        if (mx_check_link(&path, full_path)) {
+            mx_del_strarr(&split);
+            mx_strdel(&full_path);
+            return 1;
+        }
+        mx_strdel(&split[mx_strarr_len(split) - 1]);
+        mx_strdel(&full_path);
     }
+    free(split);
+    return 0;
+}
 
+char mx_check_link(char **path, char *full_path) {
+    struct stat st;
 
+    mx_strdel(path);
+    if (lstat(full_path, &st) != -1 && MX_IS_LNK(st.st_mode))
+        return 1;
+
+    return 0;
+}
+
+int mx_cd(t_ush *ush, char **flags, char *destination) {
+    char *path = NULL;
+    char *real_path = realpath(destination, NULL);
+    char *pwd = mx_getenv(ush->hidden, "PWD");
+    int status = 0;
+
+    if (mx_check_flag(flags, 's') && includes_link(pwd, destination))
+        return mx_cd_not_a_directory_error(&pwd, destination);
+    if (chdir(destination) == -1)
+        mx_printstr_endl("error");
+    else {
+        if (mx_check_flag(flags, 'P'))
+            path = mx_get_pwd();
+        else
+            path = mx_build_logical_path(pwd, destination, real_path);
+        export(ush, mx_strdup("OLDPWD"), pwd);
+        export(ush, "PWD", path);
+    }
+    return 0;
 }

@@ -26,7 +26,7 @@ CLEARING_SRCS = clear_tokens.c clear_trees.c
 UTILS_SRCS = print_tree.c split_token.c create_trees.c split_cmd.c \
 			 mx_printnbr.c errors.c set_defaults.c process_home.c \
 			 split_key_value.c check_identifier_validity.c ush_errors.c \
-			 build_pwd_string.c getenv.c overwrite_strarr_value.c
+			 build_pwd_string.c getenv.c overwrite_strarr_value.c check_flag.c
 
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
@@ -38,7 +38,7 @@ EXPORT_SRCS = export.c process_duplicates.c
 
 WHICH_SRCS = which.c
 
-CD_SRCS = cd.c
+CD_SRCS = cd.c path.c cd_errors.c build_logical_path.c
 
 CORE = $(addprefix core/, $(CORE_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
