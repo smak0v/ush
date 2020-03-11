@@ -3,7 +3,7 @@
 static int choose_exec(char **args, char **env) {
     if (!env)
         return execvp(args[0], args);
-    else 
+    else
         return execve(args[0], args, env);
 }
 

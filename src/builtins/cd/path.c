@@ -6,7 +6,6 @@ static char *path_constructor(char *path, char *fname) {
     char tmp[len];
     char *res = NULL;
 
-    mx_strdel(&path);
     if (fname[len - 1] != '/')
         res = mx_strjoin(path_with_slash, fname);
     else {
@@ -20,7 +19,6 @@ static char *path_constructor(char *path, char *fname) {
 }
 
 char *mx_build_path(char *pwd, char *fname) {
-    struct stat st;
     char *full_path = NULL;
 
     if (fname[0] == '/')

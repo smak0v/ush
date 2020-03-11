@@ -183,6 +183,8 @@ void mx_invalid_identifier(char *cmd, char *identifier);
 int mx_cd(t_ush *ush, char **flags, char *destination);
 char *mx_build_path(char *pwd, char *fname);
 int mx_cd_not_a_directory_error(char **delstr, char *destination);
+int mx_cd_no_such_file_or_dir(char **delstr, char *destination);
+int mx_cd_invalid_option(char *option);
 char mx_check_link(char **path, char *full_path);
 char *mx_build_logical_path(char *pwd, char *dest, char *realpath);
 

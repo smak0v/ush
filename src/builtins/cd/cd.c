@@ -53,21 +53,25 @@ char mx_check_link(char **path, char *full_path) {
 
 int mx_cd(t_ush *ush, char **flags, char *destination) {
     char *path = NULL;
-    char *real_path = realpath(destination, NULL);
     char *pwd = mx_getenv(ush->hidden, "PWD");
     int status = 0;
+    char *real_path = NULL;
 
     if (mx_check_flag(flags, 's') && includes_link(pwd, destination))
         return mx_cd_not_a_directory_error(&pwd, destination);
-    if (chdir(destination) == -1)
-        mx_printstr_endl("error");
+    real_path = realpath(destination, NULL);
+    if (chdir(destination) == -1) {
+        mx_strdel(&realpath);
+        return mx_cd_no_such_file_or_dir(&pwd, destination);
+    }
     else {
-        if (mx_check_flag(flags, 'P'))
-            path = mx_get_pwd();
-        else
-            path = mx_build_logical_path(pwd, destination, real_path);
+        path = mx_check_flag(flags, 'P') ? mx_get_pwd()
+               : mx_strdup(mx_build_logical_path(pwd, destination, real_path));
         export(ush, mx_strdup("OLDPWD"), pwd);
         export(ush, "PWD", path);
+        mx_strdel(&real_path);
+        mx_strdel(&pwd);
+        mx_strdel(&path);
     }
     return 0;
 }
