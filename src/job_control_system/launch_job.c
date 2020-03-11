@@ -1,42 +1,24 @@
 #include "ush.h"
 
-static void check_status(t_ush *ush, t_job *job, int status) {
-    if (WIFSTOPPED(status)) {
-        mx_printstr("\n[");
-        mx_printint(mx_suspended_jobs_list_size(ush->suspended) + 1);
-        mx_printstr("]+  Stopped                 ");
-        mx_printstr_endl(job->cmd);
-        mx_push_front_job(&ush->suspended, mx_copy_job(job));
-    }
-}
-
 static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
                            int *fd) {
     int status = MX_SUCCESS;
     pid_t pid = 0;
 
-    if ((!mx_strcmp(procces->argv[0], "exit")
-        || (!mx_strcmp(procces->argv[0], "bye")))
-        && !procces->next)
-        status = mx_ush_exit(procces->argv, ush);
+    mx_ignore_signals();
+    if (!job->processes->next && mx_is_builtin(job->processes->argv[0], ush))
+        status = mx_launch_simple_builtin(ush, procces->argv);
     else {
         if ((pid = fork()) == 0)
             status = mx_launch_proccess(job->pgid, procces, fd, ush);
-        else if (pid < 0) {
-            status = MX_FAILURE;
+        else if (pid < 0 && (status = MX_FAILURE))
             mx_proccess_start_error(procces->argv[0]);
-        }
         else {
             procces->pid = pid;
             if (!job->pgid)
                 job->pgid = pid;
             setpgid(pid, job->pgid);
-            waitpid(pid, &status, WUNTRACED|WCONTINUED);
-            while (!WIFEXITED(status)
-                   && !WIFSIGNALED(status)
-                   && !WIFSTOPPED(status))
-                waitpid(pid, &status, WUNTRACED|WCONTINUED);
-            check_status(ush, job, status);
+            status = mx_wait_and_check_status(ush, job, status, pid);
         }
     }
     return status;

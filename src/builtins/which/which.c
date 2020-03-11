@@ -80,7 +80,6 @@ void mx_which(t_ush *ush, char **flags, char **args, int *status) {
         malloced_env_path = mx_getenv(ush->local_variables, "PATH");
         path = mx_strsplit(malloced_env_path, ':');
     }
-
     for (int j = 0; args[j]; ++j) {
         if (check_builtins(ush, args[j]) && !mx_check_flag(flags, 'a'))
             continue;

@@ -27,7 +27,8 @@ UTILS_SRCS = build_pwd_string.c getenv.c set_defaults.c \
 			 setup_underscore_env_var.c create_tmp_env.c \
 			 overwrite_strarr_value.c split_key_value.c \
 			 create_trees.c print_tree.c ush_errors.c \
-			 errors.c process_home.c check_flag.c
+			 errors.c process_home.c check_flag.c is_builtin.c \
+			 init_builtins.c
 
 CLEARING_SRCS = clear_tokens.c clear_trees.c clear_processes_data.c
 
@@ -42,7 +43,7 @@ WHICH_SRCS = which.c
 
 CD_SRCS = cd.c
 
-FG_SRCS = fg.c
+FG_SRCS = fg.c fg_errors.c
 
 JOBS_SRCS = jobs.c
 

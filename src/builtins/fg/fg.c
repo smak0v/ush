@@ -1,58 +1,89 @@
 #include "ush.h"
 
-static void check_status(t_ush *ush, t_job *job, int status) {
-    if (WIFSTOPPED(status)) {
-        mx_printstr("\n[");
-        mx_printint(mx_suspended_jobs_list_size(ush->suspended) + 1);
-        mx_printstr("]+  Stopped                 ");
-        mx_printstr_endl(job->cmd);
-        mx_push_front_job(&ush->suspended, mx_copy_job(job));
-    }
+static int fg(t_ush *ush, t_job *job) {
+    int status = MX_SUCCESS;
+
+    tcsetpgrp(STDIN_FILENO, job->pgid);
+    tcsetattr(ush->pgid, TCSADRAIN, &job->tmodes);
+    kill(-job->pgid, SIGCONT);
+    status = mx_wait_and_check_status(ush, job, status, job->pgid);
+    tcsetpgrp(STDIN_FILENO, ush->pgid);
+    tcgetattr(STDIN_FILENO, &job->tmodes);
+    tcsetattr(STDIN_FILENO, TCSADRAIN, &ush->savetty);
+    return status;
 }
 
-static int fg(char **args, t_ush *ush) {
-     t_job *job = ush->suspended;
+static bool is_job_number(char *job_arg) {
+    bool flag = false;
 
-    // tcsetpgrp(STDIN_FILENO, job->pgid);
-    mx_default_signals();
-    if ((kill(-job->pgid, SIGCONT)) < 0) {
-        printf("ush: fg %d: job not found\n", job->pgid);
-        return MX_FAILURE;
+    for (int i = 0; i < mx_strlen(job_arg); ++i) {
+        if (job_arg[i] == '%' && !flag)
+            continue;
+        flag = true;
+        if (!mx_isdigit(job_arg[i]))
+            return false;
     }
-    return MX_SUCCESS;
+    return true;
+}
+
+static t_job *find_job_by_number(char *job_arg, t_job *jobs) {
+    bool flag = false;
+    t_job *job = NULL;
+    t_job *tmp_job = jobs;
+    char *tmp = NULL;
+    int number = 0;
+    int counter = 1;
+
+    for (int i = 0; i < mx_strlen(job_arg); ++i) {
+        if (job_arg[i] == '%' && !flag)
+            continue;
+        if (job_arg[i] == '%' && flag)
+            break;
+        flag = true;
+        tmp = mx_strndup(&(job_arg[i]), mx_strlen(job_arg) - i);
+        number = mx_atoi(tmp);
+        mx_strdel(&tmp);
+    }
+    while (tmp_job)
+        tmp_job = tmp_job->next;
+    while (tmp_job->prev) {
+        if (counter == number)
+            job = tmp_job;
+        ++counter;
+        tmp_job = tmp_job->prev;
+    }
+    return job;
 }
 
 int mx_ush_fg(char **args, t_ush *ush) {
-    t_job *next = NULL;
-    t_job *job = NULL;
-    pid_t pid = 0;
     int status = MX_SUCCESS;
+    char *job_arg = NULL;
+    t_job *job = NULL;
 
     if (ush->suspended) {
-        job = ush->suspended;
-        next = job->next;
-        mx_printstr_endl(job->cmd);
-        if ((pid = fork()) == 0)
-            status = fg(args, ush);
-        else if (pid < 0) {
-            status = MX_FAILURE;
-            mx_proccess_start_error(args[0]);
+        if (mx_get_arr_length(args) > 1)
+            job_arg = args[1];
+        if (job_arg) {
+            if (is_job_number(job_arg))
+                job = find_job_by_number(job_arg, ush->suspended);
+            else
+                job = NULL;
+            if (!job)
+                mx_no_such_job_error(job_arg);
+            else {
+                mx_printstr_endl(job->cmd);
+                status = fg(ush, job);
+            }
         }
         else {
-            setpgid(pid, job->pgid);
-            waitpid(pid, &status, WUNTRACED|WCONTINUED);
-            while (!WIFEXITED(status)
-                   && !WIFSIGNALED(status)
-                   && !WIFSTOPPED(status))
-                waitpid(pid, &status, WUNTRACED|WCONTINUED);
-            check_status(ush, job, status);
+            job = ush->suspended;
+            mx_printstr_endl(job->cmd);
+            status = fg(ush, job);
         }
-        mx_delete_job(&job);
-        ush->suspended = next;
-        if (ush->suspended)
-            ush->suspended->prev = NULL;
     }
-    else
+    else {
         mx_printstr("ush: fg: current: no such job\n");
-    return MX_SUCCESS;
+        status = MX_FAILURE;
+    }
+    return status;
 }

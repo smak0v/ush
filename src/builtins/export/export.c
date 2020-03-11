@@ -10,26 +10,6 @@ static char *check_for_local_value(char **local, char *key) {
     return NULL;
 }
 
-// static void save_everywhere(t_ush *ush, char *key_value, char **split) {
-//     char **for_setenv = mx_split_key_value(key_value);
-//     char *for_arrays[] = {key_value, NULL};
-//     char **tmp = NULL;
-
-//     setenv(for_setenv[0], for_setenv[1], 1);
-
-//     tmp = ush->env;
-//     ush->env = mx_strarr_join(ush->env, for_arrays);
-//     mx_del_strarr(&tmp);
-
-//     tmp = ush->export;
-//     ush->export = mx_strarr_join(ush->export, for_arrays);
-//     mx_bubble_sort(ush->export, mx_strarr_len(ush->export));
-//     mx_del_strarr(&tmp);
-
-//     tmp = ush->local_variables;
-//     ush->local_variables = mx_strarr_join(ush->local_variables, for_arrays);
-//     mx_del_strarr(&tmp);
-// }
 
 static char *process_only_key(t_ush *ush, char *arg, char **split) {
     char *tmp = check_for_local_value(ush->local_variables, arg);
