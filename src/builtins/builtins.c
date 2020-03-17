@@ -71,8 +71,6 @@ int mx_ush_exit(char **args, t_ush *ush) {
         ush->delete_suspended = true;
         mx_have_suspended_jobs_error();
     }
-    else if (ush->delete_suspended && (exit = 1) && (code = MX_FAILURE))
-        mx_kill_suspended_jobs(ush->suspended);
     else
         exit = 1;
     if (!arg)

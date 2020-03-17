@@ -44,15 +44,6 @@ void mx_delete_suspended_job(t_job **suspended_jobs, pid_t pgid) {
     delete_suspended_job(suspended_jobs, current);
 }
 
-void mx_kill_suspended_jobs(t_job *jobs) {
-    t_job *tmp = jobs;
-
-    while (tmp) {
-        kill(-tmp->pgid, SIGKILL);
-        tmp = tmp->next;
-    }
-}
-
 int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid) {
     int index = -1;
 
