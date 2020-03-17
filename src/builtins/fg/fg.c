@@ -1,8 +1,18 @@
 #include "ush.h"
 
-static int fg(t_ush *ush, t_job *job) {
+static int fg(t_ush *ush, int job_index) {
+    t_job *job = ush->suspended;
     int status = MX_SUCCESS;
+    int counter = -1;
 
+    while (job->next)
+        job = job->next;
+    while (job) {
+        if (++counter == job_index)
+            break;
+        job = job->prev;
+    }
+    mx_printstr_endl(job->cmd);
     tcsetpgrp(STDIN_FILENO, job->pgid);
     tcsetattr(ush->pgid, TCSADRAIN, &job->tmodes);
     kill(-job->pgid, SIGCONT);
@@ -13,76 +23,36 @@ static int fg(t_ush *ush, t_job *job) {
     return status;
 }
 
-static bool is_job_number(char *job_arg) {
-    bool flag = false;
+static int fg_with_arguments(t_ush *ush, char *arg) {
+    int status = MX_SUCCESS;
+    int job_index = -1;
 
-    for (int i = 0; i < mx_strlen(job_arg); ++i) {
-        if (job_arg[i] == '%' && !flag)
-            continue;
-        flag = true;
-        if (!mx_isdigit(job_arg[i]))
-            return false;
+    if (mx_job_is_number(arg))
+        job_index = mx_get_job_index_by_number(arg, ush->suspended);
+    else
+        job_index = mx_get_job_index_by_name(arg, ush->suspended);
+    if (job_index == -1) {
+        mx_no_such_job_error(arg);
+        status = MX_FAILURE;
     }
-    return true;
-}
-
-static t_job *find_job_by_number(char *job_arg, t_job *jobs) {
-    bool flag = false;
-    t_job *job = NULL;
-    t_job *tmp_job = jobs;
-    char *tmp = NULL;
-    int number = 0;
-    int counter = 1;
-
-    for (int i = 0; i < mx_strlen(job_arg); ++i) {
-        if (job_arg[i] == '%' && !flag)
-            continue;
-        if (job_arg[i] == '%' && flag)
-            break;
-        flag = true;
-        tmp = mx_strndup(&(job_arg[i]), mx_strlen(job_arg) - i);
-        number = mx_atoi(tmp);
-        mx_strdel(&tmp);
-    }
-    while (tmp_job)
-        tmp_job = tmp_job->next;
-    while (tmp_job->prev) {
-        if (counter == number)
-            job = tmp_job;
-        ++counter;
-        tmp_job = tmp_job->prev;
-    }
-    return job;
+    else if (job_index == -2)
+        status = MX_FAILURE;
+    else
+        status = fg(ush, job_index);
+    return status;
 }
 
 int mx_ush_fg(char **args, t_ush *ush) {
     int status = MX_SUCCESS;
-    char *job_arg = NULL;
-    t_job *job = NULL;
 
     if (ush->suspended) {
-        if (mx_get_arr_length(args) > 1)
-            job_arg = args[1];
-        if (job_arg) {
-            if (is_job_number(job_arg))
-                job = find_job_by_number(job_arg, ush->suspended);
-            else
-                job = NULL;
-            if (!job)
-                mx_no_such_job_error(job_arg);
-            else {
-                mx_printstr_endl(job->cmd);
-                status = fg(ush, job);
-            }
-        }
-        else {
-            job = ush->suspended;
-            mx_printstr_endl(job->cmd);
-            status = fg(ush, job);
-        }
+        if (mx_get_arr_length(args) > 1 && args[1])
+            status = fg_with_arguments(ush, args[1]);
+        else
+            status = fg(ush, 0);
     }
     else {
-        mx_printstr("ush: fg: current: no such job\n");
+        mx_no_such_job_error("current");
         status = MX_FAILURE;
     }
     return status;

@@ -43,9 +43,9 @@ WHICH_SRCS = which.c
 
 CD_SRCS = cd.c
 
-FG_SRCS = fg.c fg_errors.c
+FG_SRCS = fg.c fg_errors.c fg_utils.c
 
-JOBS_SRCS = jobs.c
+JOBS_SRCS = jobs.c jobs_errors.c
 
 PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
 

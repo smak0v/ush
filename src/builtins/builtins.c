@@ -63,22 +63,24 @@ int mx_ush_which(char **args, t_ush *ush) {
 }
 
 int mx_ush_exit(char **args, t_ush *ush) {
-    char **arg = mx_store_files(args);
-    short int code = 0;
-    int exit = 1;
+    char **arg = mx_store_files(args);;
+    int code = 0;
+    int exit = 0;
 
-    mx_kill_suspended_jobs(ush->suspended);
-    if (!arg) {
-        // code = ush->prev_code?
+    if ((ush->suspended && !ush->delete_suspended) && (code = MX_FAILURE)) {
+        ush->delete_suspended = true;
+        mx_have_suspended_jobs_error();
     }
-    else {
+    else if (ush->delete_suspended && (exit = 1) && (code = MX_FAILURE))
+        mx_kill_suspended_jobs(ush->suspended);
+    else
+        exit = 1;
+    if (!arg)
+        code = ush->exit_code > 0 ? 1 : 0;
+    else
         code = mx_exit(arg, &exit);
-    }
-
     if (exit)
         ush->exit = &code;
-
     mx_del_strarr(&arg);
-
     return code;
 }

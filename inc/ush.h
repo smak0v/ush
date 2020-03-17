@@ -100,6 +100,7 @@ struct s_input {
 
 struct s_ush {
     t_job *suspended;
+    bool delete_suspended;
     t_dll *trees;
     t_hist *history;
     t_hist *current;
@@ -110,7 +111,8 @@ struct s_ush {
     char **local_variables;
     char **hidden;
     struct termios savetty;
-    short int *exit;
+    int *exit;
+    int exit_code;
     pid_t pgid;
 };
 
@@ -215,6 +217,7 @@ t_job *mx_create_job(char *cmd);
 t_job *mx_copy_job(t_job *job);
 void mx_push_front_job(t_job **jobs, t_job *job);
 void mx_delete_job(t_job **job);
+int mx_get_job_index(t_job *jobs, t_job *job);
 int mx_suspended_jobs_list_size(t_job *suspended_jobs);
 void mx_kill_suspended_jobs(t_job *jobs);
 t_process *create_process(char *cmd);
@@ -269,10 +272,15 @@ short int mx_exit(char **args, int *exit);
 
     // JOBS
 int mx_ush_jobs(char **args, t_ush *ush);
+void mx_have_suspended_jobs_error(void);
 
     // FG
 int mx_ush_fg(char **args, t_ush *ush);
 void mx_no_such_job_error(char *name);
+void mx_ambiguous_job_spec_error(char *name);
+bool mx_job_is_number(char *job_arg);
+int mx_get_job_index_by_number(char *job_arg, t_job *jobs);
+int mx_get_job_index_by_name(char *job_arg, t_job *jobs);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
