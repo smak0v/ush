@@ -43,7 +43,7 @@ int mx_get_job_index_by_number(char *job_arg, t_job *jobs) {
     while (tmp_job->next)
         tmp_job = tmp_job->next;
     while (tmp_job) {
-        if (i + 1 == number) {
+        if (tmp_job->index == number) {
             job_index = i;
             break;
         }

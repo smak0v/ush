@@ -24,9 +24,9 @@ static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
     return status;
 }
 
-int mx_launch_job(t_job *job, t_ush *ush, char **env) {
-    int status = MX_SUCCESS;
+static int loop_by_processes(t_job *job, t_ush *ush, char **env) {
     t_process *procces = NULL;
+    int status = MX_SUCCESS;
     int fd[2] = {job->stdin, 0};
     int pipes[2];
 
@@ -43,4 +43,12 @@ int mx_launch_job(t_job *job, t_ush *ush, char **env) {
         fd[0] = pipes[0];
     }
     return status;
+}
+
+int mx_launch_job(t_job *job, t_ush *ush, char **env) {
+    if (!mx_strcmp(job->processes->argv[0], "exit") && job->processes->next)
+        return MX_SUCCESS;
+    if (mx_strcmp(job->processes->argv[0], "exit"))
+        ush->delete_suspended = false;
+    return loop_by_processes(job, ush, env);
 }

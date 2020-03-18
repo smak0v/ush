@@ -12,6 +12,18 @@ static void delete_suspended_job(t_job **suspended_jobs, t_job *job) {
     mx_delete_job(&job);
 }
 
+int get_jobs_max_index(t_job *jobs) {
+    t_job *tmp = jobs;
+    int index = 0;
+
+    while (tmp) {
+        if (tmp->index > index)
+            index = tmp->index;
+        tmp = tmp->next;
+    }
+    return index;
+}
+
 int mx_get_job_index(t_job *jobs, t_job *job) {
     t_job *tmp = jobs;
     int index = 0;
@@ -55,7 +67,7 @@ int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid) {
         if ((index == 0 && !ush->suspended) || (index < 0))
             mx_push_front_job(&ush->suspended, mx_copy_job(job));
         mx_printstr("\n[");
-        mx_printint(mx_get_job_index(ush->suspended, job));
+        mx_printint(get_jobs_max_index(ush->suspended));
         mx_printstr("]+  Stopped                 ");
         mx_printstr_endl(job->cmd);
     }

@@ -72,6 +72,7 @@ struct s_process {
     t_process *processes;
     t_job *next;
     t_job *prev;
+    int index;
 };
 
 struct s_builtins {
@@ -213,6 +214,7 @@ void mx_expand_dollar(t_ush *ush, size_t index, char *postfix);
 void mx_expansions(t_ush *ush);
 
 // Job control system
+int get_jobs_max_index(t_job *jobs);
 t_job *mx_create_job(char *cmd);
 t_job *mx_copy_job(t_job *job);
 void mx_push_front_job(t_job **jobs, t_job *job);
