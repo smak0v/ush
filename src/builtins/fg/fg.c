@@ -1,17 +1,48 @@
 #include "ush.h"
 
+static t_job *find_job(t_job **jobs, t_job *job) {
+    t_job *tmp = *jobs;
+
+    while (tmp) {
+        if (tmp->pgid == job->pgid)
+            break;
+        tmp = tmp->next;
+    }
+    return tmp;
+}
+
+static void move_job_to_front(t_job **jobs, t_job *job) {
+    t_job *tmp = find_job(jobs, job);
+    t_job *last = *jobs;
+
+    while (last->next)
+        last = last->next;
+    if (job == last) {
+        tmp->prev->next = NULL;
+        last = tmp->prev;
+    }
+    else {
+        tmp->prev->next = tmp->next;
+        tmp->next->prev = tmp->prev;
+    }
+    tmp->prev = NULL;
+    tmp->next = *jobs;
+    (*jobs)->prev = tmp;
+    *jobs = tmp;
+}
+
 static int fg(t_ush *ush, int job_index) {
     t_job *job = ush->suspended;
     int status = MX_SUCCESS;
     int counter = -1;
 
-    while (job->next)
-        job = job->next;
     while (job) {
         if (++counter == job_index)
             break;
-        job = job->prev;
+        job = job->next;
     }
+    if (job_index > 0)
+        move_job_to_front(&ush->suspended, job);
     mx_printstr_endl(job->cmd);
     tcsetpgrp(STDIN_FILENO, job->pgid);
     tcsetattr(ush->pgid, TCSADRAIN, &job->tmodes);

@@ -67,7 +67,7 @@ int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid) {
         if ((index == 0 && !ush->suspended) || (index < 0))
             mx_push_front_job(&ush->suspended, mx_copy_job(job));
         mx_printstr("\n[");
-        mx_printint(get_jobs_max_index(ush->suspended));
+        mx_printint(ush->suspended->index);
         mx_printstr("]+  Stopped                 ");
         mx_printstr_endl(job->cmd);
     }

@@ -54,6 +54,7 @@ typedef struct s_input t_input;
 typedef struct s_builtins t_builtins;
 typedef struct s_process t_process;
 typedef struct s_job t_job;
+typedef struct s_builtin_job t_builtin_job;
 
 struct s_process {
     char **argv;
@@ -62,7 +63,7 @@ struct s_process {
     t_process *next;
 };
 
- struct s_job {
+struct s_job {
     struct termios tmodes;
     char *cmd;
     pid_t pgid;
@@ -73,6 +74,12 @@ struct s_process {
     t_job *next;
     t_job *prev;
     int index;
+};
+
+struct s_builtin_job {
+    int index;
+    pid_t pgid;
+    char *cmd;
 };
 
 struct s_builtins {
@@ -221,7 +228,6 @@ void mx_push_front_job(t_job **jobs, t_job *job);
 void mx_delete_job(t_job **job);
 int mx_get_job_index(t_job *jobs, t_job *job);
 int mx_suspended_jobs_list_size(t_job *suspended_jobs);
-void mx_kill_suspended_jobs(t_job *jobs);
 t_process *create_process(char *cmd);
 t_process *mx_create_processes(char *cmd);
 t_process *mx_copy_processes(t_process *processes);
@@ -231,6 +237,7 @@ int mx_launch_job(t_job *job, t_ush *ush, char **env);
 int mx_launch_proccess(pid_t pgid, t_process *procces, int *fd, t_ush *ush);
 int mx_launch_simple_builtin(t_ush *ush, char **argv);
 int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
+t_job *mx_sort_jobs(t_job *head);
 
 // Builtins
 char **mx_store_flags(char **argv);
@@ -280,6 +287,7 @@ void mx_have_suspended_jobs_error(void);
 int mx_ush_fg(char **args, t_ush *ush);
 void mx_no_such_job_error(char *name);
 void mx_ambiguous_job_spec_error(char *name);
+void mx_invalid_option_error(char *name);
 bool mx_job_is_number(char *job_arg);
 int mx_get_job_index_by_number(char *job_arg, t_job *jobs);
 int mx_get_job_index_by_name(char *job_arg, t_job *jobs);
