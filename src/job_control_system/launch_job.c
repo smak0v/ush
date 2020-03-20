@@ -5,7 +5,6 @@ static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
     int status = MX_SUCCESS;
     pid_t pid = 0;
 
-    mx_ignore_signals();
     if (!job->processes->next && mx_is_builtin(job->processes->argv[0], ush))
         status = mx_launch_simple_builtin(ush, procces->argv);
     else {
@@ -48,6 +47,8 @@ static int loop_by_processes(t_job *job, t_ush *ush, char **env) {
 int mx_launch_job(t_job *job, t_ush *ush, char **env) {
     if (!mx_strcmp(job->processes->argv[0], "exit") && job->processes->next)
         return MX_SUCCESS;
+    if (!mx_strcmp(job->processes->argv[0], "fg") && job->processes->next)
+        return mx_no_job_control_error();
     if (mx_strcmp(job->processes->argv[0], "exit"))
         ush->delete_suspended = false;
     return loop_by_processes(job, ush, env);

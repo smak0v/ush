@@ -10,14 +10,14 @@ static int launch_process(t_process *process, t_ush *ush) {
         if (!mx_strcmp(process->argv[0], ush->builtins[i])) {
             status = builtin_func[i](process->argv, ush);
             mx_reset_env_and_clean_data(ush, tmp, builtin_func);
-            exit(status);
+            _exit(status);
         }
     if ((status = execvp(process->argv[0], process->argv)) < 0) {
         mx_command_not_found_error(process->argv[0]);
-        exit(status);
+        _exit(status);
     }
     mx_reset_env_and_clean_data(ush, tmp, builtin_func);
-    exit(status);
+    _exit(status);
 }
 
 static void manage_fds(t_process *process, int *fd) {

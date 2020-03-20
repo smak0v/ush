@@ -285,6 +285,7 @@ void mx_have_suspended_jobs_error(void);
 
     // FG
 int mx_ush_fg(char **args, t_ush *ush);
+int mx_no_job_control_error(void);
 void mx_no_such_job_error(char *name);
 void mx_ambiguous_job_spec_error(char *name);
 void mx_invalid_option_error(char *name);

@@ -1,5 +1,10 @@
 #include "ush.h"
 
+int mx_no_job_control_error(void) {
+    mx_print_error("ush: fg: no job control\n");
+    return MX_FAILURE;
+}
+
 void mx_no_such_job_error(char *name) {
     mx_print_error("ush: fg: ");
     mx_print_error(name);
