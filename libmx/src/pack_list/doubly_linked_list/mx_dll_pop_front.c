@@ -5,7 +5,7 @@ void mx_dll_pop_front(t_dll **head) {
 
     if (!head || !(*head))
         return;
-    if ((*head)->next == NULL) {
+    if (!(*head)->next) {
         free(*head);
         *head = NULL;
     }

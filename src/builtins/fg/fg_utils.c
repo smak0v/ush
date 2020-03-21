@@ -9,7 +9,7 @@ static char *clear_fg_arg(char *job_arg) {
         if (job_arg[i] == '%' && !flag)
             continue;
         if (job_arg[i] == '%' && flag)
-            return -1;
+            return NULL;
         flag = true;
         tmp = mx_strndup(&(job_arg[i]), len - i);
         break;
@@ -80,8 +80,8 @@ int mx_get_job_index_by_name(char *job_arg, t_job *jobs) {
         return 0;
     }
     else if (tmp
-             && (mx_strlen(tmp) == 1 && tmp[0] == '-')
-             || (mx_strlen(tmp) == 2 && tmp[0] == '-' && tmp[1] == '-')) {
+             && ((mx_strlen(tmp) == 1 && tmp[0] == '-')
+             || (mx_strlen(tmp) == 2 && tmp[0] == '-' && tmp[1] == '-'))) {
         mx_strdel(&tmp);
         return jobs->next ? 1 : 0;
     }

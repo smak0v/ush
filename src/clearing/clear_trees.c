@@ -1,15 +1,16 @@
 #include "ush.h"
 
-static void clear_tree(t_tree *tree) {
+static void clear_tree(t_tree **tree) {
     char *data = NULL;
 
-    if (!tree)
+    if (!(*tree))
         return;
-    clear_tree(tree->left);
-    data = (char *)tree->data;
+    clear_tree(&(*tree)->left);
+    data = (char *)(*tree)->data;
     mx_strdel(&data);
-    clear_tree(tree->right);
-    free(tree);
+    clear_tree(&(*tree)->right);
+    free(*tree);
+    *tree = NULL;
 }
 
 void mx_clear_trees(t_ush *ush) {
@@ -18,8 +19,7 @@ void mx_clear_trees(t_ush *ush) {
 
     while (trees) {
         tree = (t_tree *)trees->data;
-        clear_tree(tree);
-        tree = NULL;
+        clear_tree(&tree);
         mx_dll_pop_front(&trees);
     }
     ush->trees = NULL;

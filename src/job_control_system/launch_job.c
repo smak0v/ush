@@ -29,6 +29,7 @@ static int loop_by_processes(t_job *job, t_ush *ush, char **env) {
     int fd[2] = {job->stdin, 0};
     int pipes[2];
 
+    env = NULL;
     for (procces = job->processes; procces; procces = procces->next) {
         if (procces->next && !pipe(pipes))
             fd[1] = pipes[1];

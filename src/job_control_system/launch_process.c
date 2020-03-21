@@ -22,10 +22,14 @@ static int launch_process(t_process *process, t_ush *ush) {
 
 static void manage_fds(t_process *process, int *fd) {
     if (process->next) {
-        if (fd[0] != STDIN_FILENO && dup2(fd[0], STDIN_FILENO))
+        if (fd[0] != STDIN_FILENO) {
+            dup2(fd[0], STDIN_FILENO);
             close(fd[0]);
-        if (fd[1] != STDOUT_FILENO && dup2(fd[1], STDOUT_FILENO))
+        }
+        if (fd[1] != STDOUT_FILENO) {
+            dup2(fd[1], STDOUT_FILENO);
             close(fd[1]);
+        }
     }
     else if (fd[0] != STDIN_FILENO)
         dup2(fd[0], STDIN_FILENO);

@@ -62,6 +62,7 @@ int mx_ush_jobs(char **args, t_ush *ush) {
     t_list *jobs = NULL;
     t_list *temp = NULL;
 
+    args = NULL;
     ush->delete_suspended = true;
     if (!mx_suspended_jobs_list_size(ush->suspended))
         return MX_SUCCESS;

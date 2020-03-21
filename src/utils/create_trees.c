@@ -1,8 +1,23 @@
 #include "ush.h"
 
+static void free_token(t_token *token) {
+    mx_strdel(&token->data);
+    free(token);
+    token = NULL;
+}
+
 static void right_branch(t_dll *tmp, t_tree **leaf) {
+    t_token *token = (t_token *)tmp->data;
+    t_token *next_token = (t_token *)tmp->next->data;
+
     tmp->next->prev = NULL;
     mx_create_tree(tmp->next, &(*leaf)->right);
+    free_token(next_token);
+    free(tmp->next);
+    tmp->next = NULL;
+    free_token(token);
+    free(tmp);
+    tmp = NULL;
 }
 
 static void left_branch(t_dll *tmp, t_tree **leaf) {
