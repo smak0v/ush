@@ -7,7 +7,6 @@ int mx_ush_loop(t_ush *ush) {
         ush->in->line = mx_get_line(ush);
         mx_expansions(ush);
         mx_create_trees(ush, ush->in->line);
-        // ush->in->line = mx_proccess_escapings(line)
         ush->exit_code = mx_proccess_commands_list(ush);
         mx_clear_trees(ush);
         mx_strdel(&ush->in->line);
