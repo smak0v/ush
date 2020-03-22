@@ -1,6 +1,6 @@
 #include "ush.h"
 
-static char *mx_get_full_filename(char *dirpath, char *filename) {
+static char *get_full_filename(char *dirpath, char *filename) {
     char *tmp = NULL;
     char *full_filename = NULL;
 
@@ -22,7 +22,7 @@ static int check_match(DIR *dir, char **flags, char *path, char *command) {
 
     while ((dirnt = readdir(dir)) != NULL) {
         if (!mx_strcmp(dirnt->d_name, command)) {
-            full_filename = mx_get_full_filename(path, command);
+            full_filename = get_full_filename(path, command);
             lstat(full_filename, &st);
 
             if (MX_IS_EXEC(st.st_mode)) {
@@ -71,15 +71,15 @@ static char check_builtins(t_ush *ush, char *arg) {
 
 void mx_which(t_ush *ush, char **flags, char **args, int *status) {
     char *env_path = NULL;
-    char *malloced_env_path = NULL;
     char **path = NULL;
 
-    if (env_path == getenv("PATH"))
-        path = mx_strsplit(env_path, ':');
-    else {
-        malloced_env_path = mx_getenv(ush->local_variables, "PATH");
-        path = mx_strsplit(malloced_env_path, ':');
-    }
+    env_path = getenv("PATH");
+    if (!env_path)
+        env_path = mx_getenv(ush->local_variables, "PATH");
+    else
+        env_path = mx_strdup(env_path);
+    path = mx_strsplit(env_path, ':');
+
     for (int j = 0; args[j]; ++j) {
         if (check_builtins(ush, args[j]) && !mx_check_flag(flags, 'a'))
             continue;
@@ -88,6 +88,5 @@ void mx_which(t_ush *ush, char **flags, char **args, int *status) {
     }
 
     mx_del_strarr(&path);
-    if (malloced_env_path)
-        mx_strdel(&malloced_env_path);
+    mx_strdel(&env_path);
 }

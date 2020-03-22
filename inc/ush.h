@@ -3,6 +3,7 @@
 // Includes
 #include "libmx.h"
 
+#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -20,6 +21,7 @@
 
 // Constants
 #define MX_IS_EXEC(mode) ((mode) & S_IXUSR)
+#define MX_IS_LNK(mode) (((mode) & S_IFMT) == S_IFLNK)
 
 #define MX_BUILTINS_COUNT 12
 #define MX_USH_TOK_BUFFSIZE 64
@@ -255,6 +257,13 @@ int mx_ush_which(char **args, t_ush *ush);
 void mx_invalid_identifier(char *cmd, char *identifier);
 
     // CD
+int mx_cd(t_ush *ush, char **flags, char *destination);
+char *mx_build_path(char *pwd, char *fname);
+int mx_cd_not_a_directory_error(char **delstr, char *destination);
+int mx_cd_no_such_file_or_dir(char **delstr, char *destination);
+int mx_cd_invalid_option(char *option);
+char mx_check_link(char **path, char *full_path);
+char *mx_build_logical_path(char *pwd, char *dest, char *realpath);
 
     // ENV
 int mx_env(t_env *env, t_ush *ush);

@@ -41,7 +41,7 @@ EXPORT_SRCS = export.c process_duplicates.c
 
 WHICH_SRCS = which.c
 
-CD_SRCS = cd.c
+CD_SRCS = cd.c path.c cd_errors.c build_logical_path.c
 
 FG_SRCS = fg.c fg_errors.c fg_utils.c
 

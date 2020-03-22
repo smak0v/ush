@@ -10,7 +10,6 @@ static char *check_for_local_value(char **local, char *key) {
     return NULL;
 }
 
-
 static char *process_only_key(t_ush *ush, char *arg, char **split) {
     char *tmp = check_for_local_value(ush->local_variables, arg);
 
@@ -78,5 +77,3 @@ void mx_export(char **arguments, t_ush *ush, int *status) {
         process_export(ush, &split, &tmp);
     }
 }
-
-

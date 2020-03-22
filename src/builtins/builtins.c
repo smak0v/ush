@@ -5,24 +5,38 @@ int mx_ush_cd(char **args, t_ush *ush) {
     char **arguments = mx_store_files(args);
     char *illegal_option = 0;
     int status = 0;
+    char *destination = NULL;
 
-    if (flags && *flags && (illegal_option = mx_flags_validation(flags, cd))) {
-        mx_print_error_endl("to do: cd error handling");
-        //mx_env_illegal_option(illegal_option);
-        return 1;
-    }
+    if (flags && *flags && (illegal_option = mx_flags_validation(flags, cd)))
+        return mx_cd_invalid_option(illegal_option);
 
-    status = mx_cd(ush, flags, arguments);
+    if (!arguments)
+        destination = mx_getenv(ush->hidden, "HOME");
+    else if (!mx_strcmp(*arguments, "-"))
+        destination = mx_getenv(ush->hidden, "OLDPWD");
+    else
+        destination = *arguments;
 
+    status = mx_cd(ush, flags, destination);
 
     return status;
 }
 
 int mx_ush_pwd(char **args, t_ush *ush) {
-    long size = pathconf(".", _PC_PATH_MAX);
-    char *path = mx_strnew(size);
+    char **flags = mx_store_flags(args);
+    char *path = NULL;
+    char *option = 0;
 
-    getcwd(path, (size_t)size);
+    if (flags && *flags && (option = mx_flags_validation(flags, pwd))) {
+        mx_print_error_endl("to do: pwd error handling");
+        return 1;
+    }
+
+    if (flags && *flags && flags[mx_strarr_len(flags) - 1][0] == 'P')
+        path = mx_get_pwd();
+    else
+        path = mx_getenv(ush->hidden, "PWD");
+
     mx_printstr_endl(path);
     mx_strdel(&path);
     return 0;
