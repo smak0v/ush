@@ -26,7 +26,7 @@ static int process_flags(t_env *setup, char **args, int *i) {
     int step = 0;
 
     for (int j = 1; args[*i][j]; j++) {
-        if (args[*i][j] != 'i' && args[*i][j] != 'P' 
+        if (args[*i][j] != 'i' && args[*i][j] != 'P'
             && args[*i][j] != 'u') {
             setup->error = args[*i][j];
             return 1;
@@ -55,7 +55,7 @@ static int count_name_val(char **args) {
 static int write_args(char **old_arr, t_env *setup) {
     int len = count_name_val(old_arr);
     int i = 0;
-    
+
     setup->name_val = malloc(sizeof(char *) * (len + 1));
     while (i < len) {
         setup->name_val[i] = mx_strdup(old_arr[i]);

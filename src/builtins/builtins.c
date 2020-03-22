@@ -53,6 +53,8 @@ int mx_ush_echo(char **args, t_ush *ush) {
     //     return 1;
     // }
     mx_print_strarr(arguments, " ");
+    mx_del_strarr(&flags);
+    mx_del_strarr(&arguments);
     return 0;
 }
 
