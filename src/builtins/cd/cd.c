@@ -61,7 +61,7 @@ int mx_cd(t_ush *ush, char **flags, char *destination) {
         return mx_cd_not_a_directory_error(&pwd, destination);
     real_path = realpath(destination, NULL);
     if (chdir(destination) == -1) {
-        mx_strdel(&realpath);
+        mx_strdel(&real_path);
         return mx_cd_no_such_file_or_dir(&pwd, destination);
     }
     else {
@@ -69,9 +69,7 @@ int mx_cd(t_ush *ush, char **flags, char *destination) {
                : mx_strdup(mx_build_logical_path(pwd, destination, real_path));
         export(ush, mx_strdup("OLDPWD"), pwd);
         export(ush, "PWD", path);
-        mx_strdel(&real_path);
-        mx_strdel(&pwd);
-        mx_strdel(&path);
+        mx_delete_strings(&real_path, &pwd, &path);
     }
     return 0;
 }

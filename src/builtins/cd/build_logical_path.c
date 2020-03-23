@@ -20,8 +20,6 @@ char *mx_build_logical_path(char *pwd, char *dest, char *realpath) {
     char **dest_split = mx_strsplit(dest, '/');
     char *path = NULL;
     char *full_path = NULL;
-    char *tmp = NULL;
-    int size = 0;
 
     while (dest_split[0]) {
         path = mx_strarr_to_str(dest_split, "/");
@@ -37,4 +35,10 @@ char *mx_build_logical_path(char *pwd, char *dest, char *realpath) {
     }
 
     return realpath;
+}
+
+void mx_delete_strings(char **str1, char **str2, char **str3) {
+    mx_strdel(str1);
+    mx_strdel(str2);
+    mx_strdel(str3);
 }

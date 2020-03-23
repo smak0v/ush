@@ -40,6 +40,8 @@ WHICH_SRCS = which.c
 
 CD_SRCS = cd.c path.c cd_errors.c build_logical_path.c
 
+ECHO_SRCS = echo_parsing.c
+
 CORE = $(addprefix core/, $(CORE_SRCS))
 CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
 UTILS = $(addprefix utils/, $(UTILS_SRCS))
@@ -48,14 +50,16 @@ ENV = $(addprefix builtins/env/, $(ENV_SRCS))
 EXPORT = $(addprefix builtins/export/, $(EXPORT_SRCS))
 WHICH = $(addprefix builtins/which/, $(WHICH_SRCS))
 CD = $(addprefix builtins/cd/, $(CD_SRCS))
+ECHO = $(addprefix builtins/echo/, $(ECHO_SRCS))
 
 SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
-	  $(WHICH) $(CD)
+	  $(WHICH) $(CD) $(ECHO)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
-	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o)
+	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o) \
+	   $(ECHO_SRCS:%.c=%.o)
 
 all: install
 
@@ -87,4 +91,4 @@ debug:
 	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -g \
 	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
 	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
-	src/builtins/which/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush
+	src/builtins/which/*.c src/builtins/echo/*.c libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

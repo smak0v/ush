@@ -52,6 +52,7 @@ typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
 typedef struct s_token t_token;
 typedef struct s_env t_env;
+typedef struct s_echo t_echo;
 typedef struct s_cmd t_cmd;
 typedef struct s_input t_input;
 
@@ -89,6 +90,12 @@ struct s_env {
     char **name_val;
     char **util;
     char error;
+};
+
+struct s_echo {
+    bool new_line;
+    bool escape;
+    char **line;
 };
 
 struct s_token {
@@ -187,6 +194,10 @@ int mx_cd_no_such_file_or_dir(char **delstr, char *destination);
 int mx_cd_invalid_option(char *option);
 char mx_check_link(char **path, char *full_path);
 char *mx_build_logical_path(char *pwd, char *dest, char *realpath);
+void mx_delete_strings(char **str1, char **str2, char **str3);
+
+    // ECHO
+t_echo *mx_echo_parsing(char **args);
 
     // ENV
 int mx_env(t_env *env, t_ush *ush);

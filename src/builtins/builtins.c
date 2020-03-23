@@ -43,16 +43,9 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 }
 
 int mx_ush_echo(char **args, t_ush *ush) {
-    char **flags = mx_store_flags(args);
-    char **arguments = mx_store_files(args);
-    char illegal_option = 0;
+    t_echo *setup = mx_echo_parsing(args + 1);
 
-    // if (flags && (illegal_option = mx_flags_validation(flags, echo)) != 0) {
-    //     mx_print_error_endl("to do: echo error handling");
-    //     //mx_env_illegal_option(illegal_option);
-    //     return 1;
-    // }
-    mx_print_strarr(arguments, " ");
+    // mx_print_strarr(arguments, " ");
     return 0;
 }
 
