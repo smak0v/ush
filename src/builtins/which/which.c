@@ -14,11 +14,11 @@ static char *get_full_filename(char *dirpath, char *filename) {
     return full_filename;
 }
 
-static int check_match(DIR *dir, char **flags, char *path, char *command) {
+static char **check_match(DIR *dir, char **flags, char *path, char *command) {
     char *full_filename = NULL;
+    char **res = NULL;
     struct dirent *dirnt;
     struct stat st;
-    int found = 0;
 
     while ((dirnt = readdir(dir)) != NULL) {
         if (!mx_strcmp(dirnt->d_name, command)) {
@@ -26,9 +26,7 @@ static int check_match(DIR *dir, char **flags, char *path, char *command) {
             lstat(full_filename, &st);
 
             if (MX_IS_EXEC(st.st_mode)) {
-                found = 1;
-                if (!mx_check_flag(flags, 's'))
-                    mx_printstr_endl(full_filename);
+                res = mx_push_to_strarr(res, full_filename);
                 if (!mx_check_flag(flags, 'a')) {
                     mx_strdel(&full_filename);
                     break;
@@ -37,11 +35,13 @@ static int check_match(DIR *dir, char **flags, char *path, char *command) {
             mx_strdel(&full_filename);
         }
     }
-    return found;
+    return res;
 }
 
-static int scan_dir(char **flags, char **path, char *command) {
-    int found = 0;
+static int scan_dir(char ***output, char **flags, char **path, char *arg) {
+    int flag = 0;
+    char **tmp = NULL;
+    char **res = NULL;
 
     for (int i = 0; path[i]; ++i) {
         DIR *dir = opendir(path[i]);
@@ -49,29 +49,41 @@ static int scan_dir(char **flags, char **path, char *command) {
         if (!dir)
             continue;
 
-        if (check_match(dir, flags, path[i], command) == 1 && found == 0)
-            found = 1;
-
+        if ((tmp = check_match(dir, flags, path[i], arg)) && flag == 0) {
+            res = mx_strarr_join(*output, tmp);
+            mx_del_strarr(&tmp);
+            *output = res;
+            output = &res;
+            flag = 1;
+        }
         closedir(dir);
     }
 
-    return found;
+    return flag;
 }
 
-static char check_builtins(t_ush *ush, char *arg) {
+static char **check_builtins(t_ush *ush, char *arg) {
+    char **output = NULL;
+    int len = mx_strlen(arg) + mx_strlen(": shell built-in command") + 1;
+    char *str = NULL;
+
     for (int i = 0; ush->builtins[i]; ++i) {
         if (!mx_strcmp(arg, ush->builtins[i])) {
-            mx_printstr(arg);
-            mx_printstr_endl(": shell built-in command");
-            return 1;
+            str = malloc(sizeof(char) * len + 1);
+            mx_strcpy(str, arg);
+            mx_strcpy(str + mx_strlen(arg), ": shell built-in command");
+            output = mx_push_to_strarr(output, str);
+            mx_strdel(&str);
+            return output;
         }
     }
-    return 0;
+    return NULL;
 }
 
-void mx_which(t_ush *ush, char **flags, char **args, int *status) {
+char **mx_which(t_ush *ush, char **flags, char **args, int *status) {
     char *env_path = NULL;
     char **path = NULL;
+    char **res = NULL;
 
     env_path = getenv("PATH");
     if (!env_path)
@@ -81,12 +93,14 @@ void mx_which(t_ush *ush, char **flags, char **args, int *status) {
     path = mx_strsplit(env_path, ':');
 
     for (int j = 0; args[j]; ++j) {
-        if (check_builtins(ush, args[j]) && !mx_check_flag(flags, 'a'))
+        if ((res = check_builtins(ush, args[j])) && !mx_check_flag(flags, 'a'))
             continue;
-        if (scan_dir(flags, path, args[j]) == 0)
+        if (scan_dir(&res, flags, path, args[j]) == 0)
             *status = 1;
     }
 
     mx_del_strarr(&path);
     mx_strdel(&env_path);
+
+    return res;
 }

@@ -282,7 +282,7 @@ void mx_unset(t_ush *ush, char **arg, int *status);
 void mx_unset_invalid_option(char *option);
 
     // WHICH
-void mx_which(t_ush *ush, char **flags, char **args, int *status);
+char **mx_which(t_ush *ush, char **flags, char **args, int *status);
 void mx_which_invalid_option(char *option);
 
     // EXIT

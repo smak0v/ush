@@ -62,13 +62,18 @@ int mx_ush_echo(char **args, t_ush *ush) {
 int mx_ush_which(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);
+    char **output = NULL;
     char *illegal_option = NULL;
     int status = 0;
 
     if (flags && (illegal_option = mx_flags_validation(flags, which)))
         mx_which_invalid_option(illegal_option);
-    if (arguments)
-        mx_which(ush, flags, arguments, &status);
+    else if (arguments) {
+        output = mx_which(ush, flags, arguments, &status);
+        if (!mx_check_flag(flags, 's'))
+            mx_print_strarr(output, "\n");
+        mx_del_strarr(&output);
+    }
     else {
         mx_print_error_endl("usage: which [-as] program ...");
         status = 1;
