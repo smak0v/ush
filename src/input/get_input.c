@@ -17,8 +17,10 @@ void mx_ctrl_d(t_ush *ush) {
         mx_printstr(ush->in->line + ush->in->cur_x);
         mx_update_cursor(ush->in);
     }
-    else
+    else {
+        mx_printstr("\n");
         exit(ush->exit_code > 0);
+    }
 }
 
 static void read_input(t_ush *ush) {
