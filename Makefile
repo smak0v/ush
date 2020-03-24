@@ -20,7 +20,8 @@ INCS = $(addprefix $(INCD)/, $(INC))
 CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
 			init_ush.c input_mode.c signals.c
 
-INPUT_SRCS = get_input.c history.c expansions.c tilde_exp.c dollar_exp.c
+INPUT_SRCS = get_input.c history.c expansions.c tilde_exp.c dollar_exp.c \
+			 input_keys.c input_utils.c
 
 UTILS_SRCS = build_pwd_string.c getenv.c set_defaults.c \
 			 check_identifier_validity.c mx_printnbr.c \

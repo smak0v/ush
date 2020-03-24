@@ -41,7 +41,8 @@
 #define MX_ESC         27
 #define MX_BACKSPACE   127
 #define MX_ENTER       10
-#define MX_CTRL_C      130
+#define MX_CTRL_C      3
+#define MX_CTRL_D      4
 
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
@@ -216,11 +217,20 @@ void mx_default_signals(void);
 
 // Input
 char *mx_get_line(t_ush *ush);
+void mx_shuffle_text(t_input *in);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
 void mx_expand_tilde(t_ush *ush, size_t index, char *postfix);
 void mx_expand_dollar(t_ush *ush, size_t index, char *postfix);
 void mx_expansions(t_ush *ush);
+void mx_arrow_left(t_input *in);
+void mx_arrow_right(t_input *in);
+void mx_arrow_up(t_ush *ush);
+void mx_arrow_down(t_ush *ush);
+void mx_backspace(t_input *in);
+void mx_init_line(t_ush *ush);
+void mx_update_cursor(t_input *in);
+void mx_cursor_to_promt(t_input *in);
 
 // Job control system
 int get_jobs_max_index(t_job *jobs);
