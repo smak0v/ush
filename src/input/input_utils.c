@@ -38,3 +38,16 @@ void mx_update_cursor(t_input *in) {
         in->win_x = 0;
     }
 }
+
+void mx_cursor_to_promt(t_input *in) {
+    while (in->cur_y > 1) {
+        tputs(tgetstr("up", NULL), 1, mx_printnbr);
+        --(in->cur_y);
+    }
+    tputs(tgetstr("cr", NULL), 1, mx_printnbr);
+    in->win_x = 0;
+    while (in->win_x < 5) {
+        tputs(tgetstr("nd", NULL), 1, mx_printnbr);
+        ++(in->win_x);
+    }
+}

@@ -33,47 +33,39 @@ void mx_arrow_right(t_input *in) {
 }
 
 void mx_arrow_up(t_ush *ush) {
-    while (ush->in->cur_y != 1) {
-        tputs(tgetstr("up", NULL), 1, mx_printnbr);
-        --(ush->in->cur_y);
-    }
-    while (ush->in->win_x != 5) {
-        tputs(tgetstr("le", NULL), 1, mx_printnbr);
-        --(ush->in->win_x);
-    }
+    mx_cursor_to_promt(ush->in);
     tputs(tgetstr("cd", NULL), 1, mx_printnbr);
     mx_init_line(ush);
     mx_strcat(ush->in->line, ush->current->cmd);
-    if (ush->current->next)
+    if (ush->current->next) {
+        ush->current->next->prev = ush->current;
         ush->current = ush->current->next;
+    }
     mx_printstr(ush->in->line);
     ush->in->cur_x = strlen(ush->in->line);
-    ush->in->cur_y += (strlen(ush->in->line) + 4) / ush->in->winsize;
-    ush->in->win_x = (ush->in->cur_x > ush->in->winsize
-        ? ((ush->in->cur_x + 5)) - (ush->in->winsize * ush->in->cur_y)
+    ush->in->cur_y += ((ush->in->cur_x + 4) / ush->in->winsize);
+    ush->in->win_x = ((ush->in->cur_x + 5) > ush->in->winsize
+        ? (ush->in->cur_x + 5 - (ush->in->winsize * (ush->in->cur_y - 1)))
         : (ush->in->cur_x + 5));
-    // printf("\n cur_x = %d\n win_x = %d\n cur_y = %d\n", ush->in->cur_x, ush->in->win_x, ush->in->cur_y);
+    mx_update_cursor(ush->in);
 }
 
 void mx_arrow_down(t_ush *ush) {
-    mx_memset(ush->in->line, 0, strlen(ush->in->line));
-    mx_strcat(ush->in->line, ush->current->cmd);
-    if (ush->current->prev)
-        ush->current = ush->current->prev;
-    while (ush->in->cur_y != 1) {
-        tputs(tgetstr("up", NULL), 1, mx_printnbr);
-        --(ush->in->cur_y);
-    }
-    while (ush->in->win_x != 5) {
-        tputs(tgetstr("le", NULL), 1, mx_printnbr);
-        --(ush->in->win_x);
-    }
+    mx_cursor_to_promt(ush->in);
     tputs(tgetstr("cd", NULL), 1, mx_printnbr);
-    mx_printstr(ush->in->line);
-    ush->in->cur_x = strlen(ush->in->line);
-    ush->in->win_x = (ush->in->cur_x > ush->in->winsize
-                          ? (ush->in->cur_x + 5) - (ush->in->winsize * ush->in->cur_y)
-                          : (ush->in->cur_x + 5));
+    mx_init_line(ush);
+    if (ush->current->prev) {
+        ush->current->prev->next = ush->current;
+        ush->current = ush->current->prev;
+        mx_strcat(ush->in->line, ush->current->cmd);
+        mx_printstr(ush->in->line);
+        ush->in->cur_x = strlen(ush->in->line);
+        ush->in->cur_y += ((ush->in->cur_x + 4) / ush->in->winsize);
+        ush->in->win_x = ((ush->in->cur_x + 5) > ush->in->winsize
+            ? (ush->in->cur_x + 5 - (ush->in->winsize * (ush->in->cur_y - 1)))
+            : (ush->in->cur_x + 5));
+        mx_update_cursor(ush->in);
+    }
 }
 
 void mx_backspace(t_input *in) {

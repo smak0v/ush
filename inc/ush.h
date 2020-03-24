@@ -42,6 +42,7 @@
 #define MX_BACKSPACE   127
 #define MX_ENTER       10
 #define MX_CTRL_C      3
+#define MX_CTRL_D      4
 
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
@@ -229,6 +230,7 @@ void mx_arrow_down(t_ush *ush);
 void mx_backspace(t_input *in);
 void mx_init_line(t_ush *ush);
 void mx_update_cursor(t_input *in);
+void mx_cursor_to_promt(t_input *in);
 
 // Job control system
 int get_jobs_max_index(t_job *jobs);
