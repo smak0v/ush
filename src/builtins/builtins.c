@@ -74,10 +74,9 @@ int mx_ush_which(char **args, t_ush *ush) {
             mx_print_strarr(output, "\n");
         mx_del_strarr(&output);
     }
-    else {
-        mx_print_error_endl("usage: which [-as] program ...");
-        status = 1;
-    }
+    else
+        mx_which_usage_error(&status);
+
     mx_del_strarr(&flags);
     mx_del_strarr(&arguments);
     return status;

@@ -39,7 +39,7 @@ ENV_SRCS = env.c env_errors.c parse_env.c janitor.c
 
 EXPORT_SRCS = export.c process_duplicates.c
 
-WHICH_SRCS = which.c
+WHICH_SRCS = which.c which_utils.c
 
 CD_SRCS = cd.c path.c cd_errors.c build_logical_path.c
 

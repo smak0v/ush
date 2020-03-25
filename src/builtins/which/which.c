@@ -81,26 +81,22 @@ static char **check_builtins(t_ush *ush, char *arg) {
 }
 
 char **mx_which(t_ush *ush, char **flags, char **args, int *status) {
-    char *env_path = NULL;
-    char **path = NULL;
+    char **path = mx_get_split_path(ush);
     char **res = NULL;
-
-    env_path = getenv("PATH");
-    if (!env_path)
-        env_path = mx_getenv(ush->local_variables, "PATH");
-    else
-        env_path = mx_strdup(env_path);
-    path = mx_strsplit(env_path, ':');
-
+    char **mem_clean = NULL;
+    char **tmp = NULL;
+    
     for (int j = 0; args[j]; ++j) {
-        if ((res = check_builtins(ush, args[j])) && !mx_check_flag(flags, 'a'))
-            continue;
-        if (scan_dir(&res, flags, path, args[j]) == 0)
-            *status = 1;
+        tmp = check_builtins(ush, args[j]);
+        if (!tmp || mx_check_flag(flags, 'a'))
+            if (scan_dir(&tmp, flags, path, args[j]) == 0)
+                *status = 1;
+        mem_clean = res;
+        res = mx_strarr_join(res, tmp);
+        mx_del_strarr(&mem_clean);
+        mx_del_strarr(&tmp);
     }
 
     mx_del_strarr(&path);
-    mx_strdel(&env_path);
-
     return res;
 }

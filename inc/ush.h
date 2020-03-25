@@ -284,6 +284,8 @@ void mx_unset_invalid_option(char *option);
     // WHICH
 char **mx_which(t_ush *ush, char **flags, char **args, int *status);
 void mx_which_invalid_option(char *option);
+void mx_which_usage_error(int *status);
+char **mx_get_split_path(t_ush *ush);
 
     // EXIT
 short int mx_exit(char **args, int *exit);
