@@ -20,7 +20,8 @@ void mx_enable_input_mode(t_ush *ush) {
     !isatty(0) ? mx_terminate("stdin not terminal") : (void)0;
     tcgetattr(0, &tty);
     ush->savetty = tty;
-    tty.c_lflag &= ~(ICANON | ECHO);
+    tty.c_lflag &= ~(ICANON|ECHO|ISIG|BRKINT|ICRNL
+        |INPCK|ISTRIP|IXON|OPOST|IEXTEN);
     tty.c_cc[VMIN] = 1;
     tty.c_cc[VDSUSP] = _POSIX_VDISABLE;
     tty.c_cc[VTIME] = 0;
