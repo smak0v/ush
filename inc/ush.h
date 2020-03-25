@@ -318,8 +318,7 @@ int mx_get_job_index_by_name(char *job_arg, t_job *jobs);
 void mx_clear_tokens(t_dll **tokens);
 void mx_clear_trees(t_ush *ush);
 int mx_clean_data(char **tmp_env);
-void mx_reset_env_and_clean_data(t_ush *ush, char **tmp,
-                                 int (**builtin_func)(char **, t_ush *));
+void mx_reset_env_and_clean_data(int (**builtin_func)(char **, t_ush *));
 
 // Errors
 void mx_proccess_start_error(char *process_name);

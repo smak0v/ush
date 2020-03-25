@@ -3,20 +3,19 @@
 static int launch_process(t_process *process, t_ush *ush) {
     int (**builtin_func)(char **, t_ush *) = (
         int (**)(char **, t_ush *))mx_init_builtins();
-    char **tmp = mx_strarr_dup(ush->env);
     int status = MX_SUCCESS;
 
     for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
         if (!mx_strcmp(process->argv[0], ush->builtins[i])) {
             status = builtin_func[i](process->argv, ush);
-            mx_reset_env_and_clean_data(ush, tmp, builtin_func);
+            mx_reset_env_and_clean_data(builtin_func);
             _exit(status);
         }
     if ((status = execvp(process->argv[0], process->argv)) < 0) {
         mx_command_not_found_error(process->argv[0]);
         _exit(status);
     }
-    mx_reset_env_and_clean_data(ush, tmp, builtin_func);
+    mx_reset_env_and_clean_data(builtin_func);
     _exit(status);
 }
 
@@ -51,7 +50,7 @@ int mx_launch_simple_builtin(t_ush *ush, char **argv) {
     for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
         if (!mx_strcmp(argv[0], ush->builtins[i])) {
             status = builtin_func[i](argv, ush);
-            mx_reset_env_and_clean_data(ush, tmp, builtin_func);
+            mx_reset_env_and_clean_data(builtin_func);
         }
     mx_del_strarr(&tmp);
     return status;
