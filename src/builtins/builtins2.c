@@ -57,6 +57,7 @@ int mx_ush_unset(char **args, t_ush *ush) {
 }
 
 int mx_ush_local(char **args, t_ush *ush) {
+    args += 1;
     mx_print_strarr(ush->local_variables, "\n");
     return 0;
 }

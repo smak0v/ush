@@ -19,6 +19,8 @@ int mx_ush_cd(char **args, t_ush *ush) {
 
     status = mx_cd(ush, flags, destination);
 
+    mx_del_strarr(&flags);
+    mx_del_strarr(&arguments);
     return status;
 }
 
@@ -45,7 +47,6 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 int mx_ush_echo(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char **arguments = mx_store_files(args);
-    char illegal_option = 0;
 
     // if (flags && (illegal_option = mx_flags_validation(flags, echo)) != 0) {
     //     mx_print_error_endl("to do: echo error handling");

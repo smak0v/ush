@@ -45,7 +45,7 @@ static char **set_environment(t_env *env, t_ush *ush) {
     return environment;
 }
 
-static void execute(t_ush *ush, t_env *env, char **environment) {
+static void execute(t_ush *ush, t_env *env) {
     char *cmd = mx_strarr_to_str(env->util, " ");
     t_job *job = mx_create_job(cmd);
 
@@ -69,7 +69,7 @@ int mx_env(t_env *env, t_ush *ush) {
     if (!mx_strcmp("env", env->util[0]) && !env->util[1])
         mx_print_strarr(environment, "\n");
     else
-        execute(ush, env, environment);
+        execute(ush, env);
 
     ush->env = tmp_env;
     mx_del_strarr(&environment);

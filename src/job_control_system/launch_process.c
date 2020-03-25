@@ -53,6 +53,7 @@ int mx_launch_simple_builtin(t_ush *ush, char **argv) {
             status = builtin_func[i](argv, ush);
             mx_reset_env_and_clean_data(ush, tmp, builtin_func);
         }
+    mx_del_strarr(&tmp);
     return status;
 }
 
