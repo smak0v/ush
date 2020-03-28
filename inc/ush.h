@@ -47,6 +47,8 @@
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
 
+#define MX_CMD_SUBST_FILE "/.cmd_subst.file"
+
 // Structures
 typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
@@ -58,6 +60,7 @@ typedef struct s_builtins t_builtins;
 typedef struct s_process t_process;
 typedef struct s_job t_job;
 typedef struct s_builtin_job t_builtin_job;
+typedef struct s_cmd_subst t_cmd_subst;
 
 struct s_process {
     char **argv;
@@ -125,6 +128,8 @@ struct s_ush {
     int *exit;
     int exit_code;
     pid_t pgid;
+    bool cmd_subst;
+    char *cmd_substs_file;
 };
 
 struct s_cmd {
@@ -173,7 +178,7 @@ typedef enum e_defaults {
 // Functions
 // Core
 int mx_ush_loop(t_ush *ush);
-int mx_proccess_commands_list(t_ush *ush);
+int mx_process_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
 t_ush *mx_init_shell(void);
 void mx_init_terminal_data(void);
@@ -250,6 +255,11 @@ int mx_launch_proccess(pid_t pgid, t_process *procces, int *fd, t_ush *ush);
 int mx_launch_simple_builtin(t_ush *ush, char **argv);
 int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
 t_job *mx_sort_jobs(t_job *head);
+
+// Command substitutions
+void mx_command_substitutions(t_ush *ush);
+char *mx_get_cmd_substs_filename(void);
+void mx_change_line(t_ush *ush, char **new_cmd_subst, int start, int end);
 
 // Builtins
 char **mx_store_flags(char **argv);

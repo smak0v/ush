@@ -17,7 +17,7 @@ LIBMXI := $(LIBMXD)/inc
 INC = ush.h
 INCS = $(addprefix $(INCD)/, $(INC))
 
-CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
+CORE_SRCS = ush_loop.c process_commands_list.c traverse_and_execute_tree.c \
 			init_ush.c input_mode.c signals.c
 
 INPUT_SRCS = get_input.c history.c expansions.c tilde_exp.c dollar_exp.c \
@@ -53,6 +53,8 @@ PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
 JOB_CTRL_SYSTEM_SRCS = jcs_utils.c job_utils.c process_utils.c launch_job.c \
 					   launch_process.c
 
+CMD_SUBSTS_SRCS = cmd_substs.c cmd_substs_utils.c
+
 CORE = $(addprefix core/, $(CORE_SRCS))
 INPUT = $(addprefix input/, $(INPUT_SRCS))
 PARSING = $(addprefix parsing/, $(PARSING_SRCS))
@@ -66,16 +68,19 @@ CD = $(addprefix builtins/cd/, $(CD_SRCS))
 FG = $(addprefix builtins/fg/, $(FG_SRCS))
 JOBS = $(addprefix builtins/jobs/, $(JOBS_SRCS))
 JOB_CTRL_SYSTEM = $(addprefix job_control_system/, $(JOB_CTRL_SYSTEM_SRCS))
+CMD_SUBSTS = $(addprefix cmd_substitutions/, $(CMD_SUBSTS_SRCS))
 
 SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
-	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING) $(INPUT) $(FG) $(JOBS)
+	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING) $(INPUT) $(FG) $(JOBS) \
+	  $(CMD_SUBSTS)
 
 SRCS = $(addprefix $(SRCD)/, $(SRC))
 OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
 	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
 	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o) \
 	   $(PARSING_SRCS:%.c=%.o) $(JOB_CTRL_SYSTEM_SRCS:%.c=%.o) \
-	   $(INPUT_SRCS:%.c=%.o) $(FG_SRCS:%.c=%.o) $(JOBS_SRCS:%.c=%.o)
+	   $(INPUT_SRCS:%.c=%.o) $(FG_SRCS:%.c=%.o) $(JOBS_SRCS:%.c=%.o) \
+	   $(CMD_SUBSTS_SRCS:%.c=%.o)
 
 all: install
 
@@ -102,11 +107,3 @@ uninstall: clean
 	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall install
-
-debug:
-	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -O0 -g \
-	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
-	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
-	src/builtins/which/*.c src/parsing/*.c src/input/*.c \
-	src/job_control_system/*.c src/builtins/jobs/*.c src/builtins/fg/*.c \
-	libmx/libmx.a -I libmx/inc/ -I inc/ -o ush

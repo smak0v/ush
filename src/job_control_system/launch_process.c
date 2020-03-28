@@ -19,7 +19,9 @@ static int launch_process(t_process *process, t_ush *ush) {
     _exit(status);
 }
 
-static void manage_fds(t_process *process, int *fd) {
+static void manage_fds(t_process *process, int *fd, t_ush *ush) {
+    int out = -1;
+
     if (process->next) {
         if (fd[0] != STDIN_FILENO) {
             dup2(fd[0], STDIN_FILENO);
@@ -30,8 +32,14 @@ static void manage_fds(t_process *process, int *fd) {
             close(fd[1]);
         }
     }
-    else if (fd[0] != STDIN_FILENO)
-        dup2(fd[0], STDIN_FILENO);
+    else {
+        if (ush->cmd_subst) {
+            out = open(ush->cmd_substs_file, O_WRONLY|O_CREAT|O_APPEND, 0600);
+            dup2(out, STDOUT_FILENO);
+        }
+        else if (fd[0] != STDIN_FILENO)
+            dup2(fd[0], STDIN_FILENO);
+    }
 }
 
 int mx_launch_simple_builtin(t_ush *ush, char **argv) {
@@ -70,7 +78,10 @@ int mx_launch_proccess(pid_t pgid, t_process *process, int *fd, t_ush *ush) {
         pgid = pid;
     setpgid(pid, pgid);
     tcsetpgrp(STDIN_FILENO, pgid);
-    mx_default_signals();
-    manage_fds(process, fd);
+    if (ush->cmd_subst)
+        mx_ignore_signals();
+    else
+        mx_default_signals();
+    manage_fds(process, fd, ush);
     return launch_process(process, ush);
 }

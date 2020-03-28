@@ -51,7 +51,7 @@ static int *set_env(char **env) {
     return not_found;
 }
 
-static void init_shell_pgid(t_ush *ush) {
+static void init_shell_for_jobs_and_cmd_substs(t_ush *ush) {
     struct termios tty;
 
     while (tcgetpgrp(STDIN_FILENO) != (ush->pgid = getpgrp()))
@@ -61,6 +61,8 @@ static void init_shell_pgid(t_ush *ush) {
     setpgid(ush->pgid, ush->pgid);
     tcsetpgrp(STDIN_FILENO, ush->pgid);
     tcgetattr(STDIN_FILENO, &tty);
+    ush->cmd_substs_file = mx_get_cmd_substs_filename();
+    remove(ush->cmd_substs_file);
 }
 
 t_ush *mx_init_shell(void) {
@@ -70,7 +72,7 @@ t_ush *mx_init_shell(void) {
                         "export", "unset", "local", "jobs", "fg", NULL};
     int *not_found = NULL;
 
-    init_shell_pgid(ush);
+    init_shell_for_jobs_and_cmd_substs(ush);
     mx_init_terminal_data();
     ush->in = mx_memalloc(sizeof(t_input));
     ush->env = mx_strarr_dup(environ);

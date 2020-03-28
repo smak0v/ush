@@ -1,6 +1,6 @@
 #include "ush.h"
 
-int mx_proccess_commands_list(t_ush *ush) {
+int mx_process_commands_list(t_ush *ush) {
     t_dll *tree = ush->trees;
     int status = 0;
 
