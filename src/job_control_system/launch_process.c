@@ -37,7 +37,7 @@ static void manage_fds(t_process *process, int *fd, t_ush *ush) {
             out = open(ush->cmd_substs_file, O_WRONLY|O_CREAT|O_APPEND, 0600);
             dup2(out, STDOUT_FILENO);
         }
-        else if (fd[0] != STDIN_FILENO)
+        if (fd[0] != STDIN_FILENO)
             dup2(fd[0], STDIN_FILENO);
     }
 }
