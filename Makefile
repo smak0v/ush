@@ -107,6 +107,28 @@ CD						= $(addprefix builtins/cd/, $(CD_SRCS))
 FG						= $(addprefix builtins/fg/, $(FG_SRCS))
 JOBS					= $(addprefix builtins/jobs/, $(JOBS_SRCS))
 
+#=================================RULES=======================================#
+all: install
+
+install: $(LIBMXA) $(APP_NAME)
+
+$(OBJ_DIRS):
+	@mkdir -p $@
+
+$(LIBMXA):
+	@make -sC $(LIBMXD)
+
+clean:
+	@rm -rf $(OBJD)
+	@printf "$(DIR_NAME)/$(OBJD)\t\t   \033[31;1mdeleted\033[0m\n"
+
+uninstall: clean
+	@make -sC $(LIBMXD) $@
+	@rm -rf $(APP_NAME)
+	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
+
+reinstall: uninstall install
+
 #==============================DEPENDENCIES===================================#
 $(APP_NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) $(LINKER_FLAGS) $(OBJS) -L $(LIBMXD) -lmx -o $@
@@ -173,25 +195,3 @@ $(OBJD)/cmd_substitutions/%.o: $(SRCD)/cmd_substitutions/%.c $(INCS)
 	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
 
 $(OBJS): | $(OBJ_DIRS)
-
-#=================================RULES=======================================#
-all: install
-
-install: $(LIBMXA) $(APP_NAME)
-
-$(OBJ_DIRS):
-	@mkdir -p $@
-
-$(LIBMXA):
-	@make -sC $(LIBMXD)
-
-clean:
-	@rm -rf $(OBJD)
-	@printf "$(DIR_NAME)/$(OBJD)\t\t   \033[31;1mdeleted\033[0m\n"
-
-uninstall: clean
-	@make -sC $(LIBMXD) $@
-	@rm -rf $(APP_NAME)
-	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
-
-reinstall: uninstall install

@@ -89,6 +89,24 @@ MEMORY					= $(addprefix pack_memory/, $(MEMORY_SRCS))
 DOUBLY_LINKED_LIST		= $(addprefix doubly_linked_list/, $(DLL_SRCS))
 SINGLY_LINKED_LIST		= $(addprefix singly_linked_list/, $(SLL_SRCS))
 
+#=================================RULES=======================================#
+all: install
+
+install: $(APP_NAME)
+
+$(OBJ_DIRS):
+	@mkdir -p $@
+
+clean:
+	@rm -rf $(OBJD)
+	@printf "$(DIR_NAME)/$(OBJD)\t   \033[31;1mdeleted\033[0m\n"
+
+uninstall: clean
+	@rm -rf $(APP_NAME)
+	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
+
+reinstall: uninstall install
+
 #==============================DEPENDENCIES===================================#
 $(APP_NAME): $(OBJS)
 	@ar rcs $@ $^
@@ -127,21 +145,3 @@ $(OBJD)/pack_util/%.o: $(SRCD)/pack_util/%.c $(INCS)
 	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
 
 $(OBJS): | $(OBJ_DIRS)
-
-#=================================RULES=======================================#
-all: install
-
-install: $(APP_NAME)
-
-$(OBJ_DIRS):
-	@mkdir -p $@
-
-clean:
-	@rm -rf $(OBJD)
-	@printf "$(DIR_NAME)/$(OBJD)\t   \033[31;1mdeleted\033[0m\n"
-
-uninstall: clean
-	@rm -rf $(APP_NAME)
-	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
-
-reinstall: uninstall install
