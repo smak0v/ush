@@ -2,23 +2,31 @@
 APP_NAME				= ush
 
 CC						= clang
-CFLAGS					= -std=c11 -Wall -Wextra -Wpedantic
-ADDITIONAl_FLAGS		= -g
+
+DIR						= ush
+
+#=================================FLAGS=======================================#
+C_FLAGS					= -std=c11 $(addprefix -W, all extra pedantic)
+
+ADD_FLAGS				= -g
+
 LINKER_FLAGS			= -ltermcap
 
-DIR_NAME				= ush
-
-SRCD					= src
-INCD					= inc
-
+#=================================LIBMX=======================================#
 LIBMXD					= libmx
+
 LIBMXA					:= $(LIBMXD)/libmx.a
+
 LIBMXI					:= $(LIBMXD)/inc
 
+#==================================INC========================================#
+INCD					= inc
+
 INC						= ush.h
+
 INCS					= $(addprefix $(INCD)/, $(INC))
 
-#===================================OBJ=======================================#
+#==================================OBJ========================================#
 OBJD					= obj
 
 CORE_OBJD				= $(OBJD)/core
@@ -107,6 +115,14 @@ CD						= $(addprefix builtins/cd/, $(CD_SRCS))
 FG						= $(addprefix builtins/fg/, $(FG_SRCS))
 JOBS					= $(addprefix builtins/jobs/, $(JOBS_SRCS))
 
+SRCD					= src
+
+#================================FUNCTIONS====================================#
+define compile_dependency
+	@$(CC) $(C_FLAGS) $(ADD_FLAGS) -c $(1) -o $(2) -I $(INCD) -I $(LIBMXI)
+	@printf "\r\33[2K$(DIR)\t\t\033[33;1mcompile\t\t\033[0m$(<:$(SRCD)%.c=%)"
+endef
+
 #=================================RULES=======================================#
 all: install
 
@@ -120,78 +136,64 @@ $(LIBMXA):
 
 clean:
 	@rm -rf $(OBJD)
-	@printf "$(DIR_NAME)/$(OBJD)\t\t   \033[31;1mdeleted\033[0m\n"
+	@printf "$(DIR)/$(OBJD)\t\t\033[31;1mdeleted\033[0m\n"
 
 uninstall: clean
 	@make -sC $(LIBMXD) $@
 	@rm -rf $(APP_NAME)
-	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
+	@printf "$(APP_NAME)\t\t\033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall install
 
-#==============================DEPENDENCIES===================================#
+#================================DEPENDENCIES=================================#
 $(APP_NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) $(LINKER_FLAGS) $(OBJS) -L $(LIBMXD) -lmx -o $@
-	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
+	@$(CC) $(C_FLAGS) $(ADD_FLAGS) $(LINKER_FLAGS) \
+												$(OBJS) -L $(LIBMXD) -lmx -o $@
+	@printf "\r\33[2K$@\t\t\033[32;1mcreated\033[0m\n"
 
 $(OBJD)/%.o: $(SRCD)/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/core/%.o: $(SRCD)/core/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(CORE_OBJD)/%.o: $(SRCD)/core/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/input/%.o: $(SRCD)/input/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(INPUT_OBJD)/%.o: $(SRCD)/input/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/utils/%.o: $(SRCD)/utils/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(UTILS_OBJD)/%.o: $(SRCD)/utils/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/clearing/%.o: $(SRCD)/clearing/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(CLEARING_OBJD)/%.o: $(SRCD)/clearing/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/%.o: $(SRCD)/builtins/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(BUILTINS_OBJD)/%.o: $(SRCD)/builtins/%.c $(INCS)
+	@$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/env/%.o: $(SRCD)/builtins/env/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(ENV_OBJD)/%.o: $(SRCD)/builtins/env/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/export/%.o: $(SRCD)/builtins/export/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(EXPORT_OBJD)/%.o: $(SRCD)/builtins/export/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/which/%.o: $(SRCD)/builtins/which/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(WHICH_OBJD)/%.o: $(SRCD)/builtins/which/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/cd/%.o: $(SRCD)/builtins/cd/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(CD_OBJD)/%.o: $(SRCD)/builtins/cd/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/fg/%.o: $(SRCD)/builtins/fg/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(FG_OBJD)/%.o: $(SRCD)/builtins/fg/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/builtins/jobs/%.o: $(SRCD)/builtins/jobs/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(JOBS_OBJD)/%.o: $(SRCD)/builtins/jobs/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/parsing/%.o: $(SRCD)/parsing/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(PARSING_OBJD)/%.o: $(SRCD)/parsing/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/job_control_system/%.o: $(SRCD)/job_control_system/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(JOB_CTRL_SYSTEM_OBJD)/%.o: $(SRCD)/job_control_system/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/cmd_substitutions/%.o: $(SRCD)/cmd_substitutions/%.c $(INCS)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD) -I $(LIBMXI)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)%.c=%)"
+$(CMD_SUBSTS_OBJD)/%.o: $(SRCD)/cmd_substitutions/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
 $(OBJS): | $(OBJ_DIRS)

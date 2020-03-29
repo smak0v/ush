@@ -6,7 +6,9 @@ char *mx_itoa(int number) {
 
     if ((number != 0) && (number != -2147483648)) {
         str_integer = mx_strnew(length);
-        for (int i = 0; i < length; i++) {
+        if (number < 0)
+            --length;
+        for (int i = 0; i < length; ++i) {
             if (number < 0) {
                 str_integer[length] = '-';
                 number *= -1;

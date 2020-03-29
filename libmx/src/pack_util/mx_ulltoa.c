@@ -6,7 +6,7 @@ char *mx_ulltoa(unsigned long long value) {
 
     if (value) {
         str_value = mx_strnew(length);
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; ++i) {
             str_value[i] = (value % 10) + 48;
             value /= 10;
         }

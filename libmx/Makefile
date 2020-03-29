@@ -1,16 +1,22 @@
 #================================COMMON=======================================#
 APP_NAME				= libmx.a
 
-CFLAGS					= -std=c11 -Wall -Wextra -Werror -Wpedantic
-ADDITIONAl_FLAGS		= -g
 CC						= clang
 
-DIR_NAME				= libmx
+DIR						= libmx
 
-SRCD					= src
+#=================================FLAGS=======================================#
+C_FLAGS					= -std=c11 $(addprefix -W, all extra error pedantic)
+
+ADD_FLAGS				= -g
+
+LINKER_FLAGS			=
+
+#==================================INC========================================#
 INCD					= inc
 
 INC						= libmx.h
+
 INCS					= $(addprefix $(INCD)/, $(INC))
 
 #===================================OBJ=======================================#
@@ -89,6 +95,14 @@ MEMORY					= $(addprefix pack_memory/, $(MEMORY_SRCS))
 DOUBLY_LINKED_LIST		= $(addprefix doubly_linked_list/, $(DLL_SRCS))
 SINGLY_LINKED_LIST		= $(addprefix singly_linked_list/, $(SLL_SRCS))
 
+SRCD					= src
+
+#================================FUNCTIONS====================================#
+define compile_dependency
+	@clang $(C_FLAGS) $(ADD_FLAGS) -c $(1) -o $(2) -I $(INCD)
+	@printf "\r\33[2K$(DIR)\t\t\033[33;1mcompile\t\t\033[0m$(<:$(SRCD)/%.c=%)"
+endef
+
 #=================================RULES=======================================#
 all: install
 
@@ -99,49 +113,41 @@ $(OBJ_DIRS):
 
 clean:
 	@rm -rf $(OBJD)
-	@printf "$(DIR_NAME)/$(OBJD)\t   \033[31;1mdeleted\033[0m\n"
+	@printf "$(DIR)/$(OBJD)\t\033[31;1mdeleted\033[0m\n"
 
 uninstall: clean
 	@rm -rf $(APP_NAME)
-	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
+	@printf "$(APP_NAME)\t\t\033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall install
 
-#==============================DEPENDENCIES===================================#
+#================================DEPENDENCIES=================================#
 $(APP_NAME): $(OBJS)
 	@ar rcs $@ $^
-	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
+	@printf "\r\33[2K$@\t\t\033[32;1mcreated\033[0m\n"
 
 $(OBJD)/%.o: $(SRCD)/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_list/doubly_linked_list/%.o: $(SRCD)/pack_list/doubly_linked_list/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_DLL_LIST_OBJD)/%.o: $(SRCD)/pack_list/doubly_linked_list/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_list/singly_linked_list/%.o: $(SRCD)/pack_list/singly_linked_list/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_SLL_LIST_OBJD)/%.o: $(SRCD)/pack_list/singly_linked_list/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_memory/%.o: $(SRCD)/pack_memory/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_MEMORY_OBJD)/%.o: $(SRCD)/pack_memory/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_set/%.o: $(SRCD)/pack_set/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_SET_OBJD)/%.o: $(SRCD)/pack_set/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_string/%.o: $(SRCD)/pack_string/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_STRING_OBJD)/%.o: $(SRCD)/pack_string/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_tree/%.o: $(SRCD)/pack_tree/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_TREE_OBJD)/%.o: $(SRCD)/pack_tree/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
-$(OBJD)/pack_util/%.o: $(SRCD)/pack_util/%.c $(INCS)
-	@clang $(CFLAGS) $(ADDITIONAl_FLAGS) -c $< -o $@ -I $(INCD)
-	@printf "\r\33[2K$(DIR_NAME)\t   \033[33;1mcompile\t\033[0m$(<:$(SRCD)/%.c=%)"
+$(PACK_UTIL_OBJD)/%.o: $(SRCD)/pack_util/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
 
 $(OBJS): | $(OBJ_DIRS)
