@@ -129,6 +129,7 @@ struct s_ush {
     int exit_code;
     pid_t pgid;
     bool cmd_subst;
+    bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
 };
 

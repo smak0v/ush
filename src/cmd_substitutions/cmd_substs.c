@@ -5,6 +5,10 @@ static char *process_output_data(t_ush *ush) {
     char *new_cmd_subst = NULL;
     int j = 0;
 
+    if (!ush->cmd_subst_replace_spaces) {
+        remove(ush->cmd_substs_file);
+        return cmd_subst;
+    }
     for (int i = 0; i < mx_strlen(cmd_subst) - 1; ++i) {
         new_cmd_subst = realloc(new_cmd_subst, mx_strlen(new_cmd_subst) + 2);
         if (mx_isspace(cmd_subst[i])) {
@@ -66,14 +70,20 @@ void mx_command_substitutions(t_ush *ush) {
             && ush->in->line[i + 1] == '(') {
                 if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
                     continue;
+                if ((i - 1 >= 0) && ush->in->line[i - 1] != '"')
+                    ush->cmd_subst_replace_spaces = true;
                 process_command_substitution(ush, "$(", i);
                 i = 0;
+                ush->cmd_subst_replace_spaces = false;
             }
         else if (ush->in->line[i] == '`') {
             if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
                 continue;
+            if ((i - 1 >= 0) && ush->in->line[i - 1] != '"')
+                ush->cmd_subst_replace_spaces = true;
             process_command_substitution(ush, "`", i);
             i = 0;
+            ush->cmd_subst_replace_spaces = false;
         }
     }
 }

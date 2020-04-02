@@ -6,39 +6,34 @@ static void copy_character(char **args,  int *j, int count, char ch) {
     args[count][*j + 1] = '\0';
 }
 
-static bool copy_double_quoted_string(char **args, int *count, char *cmd,
-                                      int *j) {
+static bool copy_quoted_string(char **args, char *cmd, int *j, char ch) {
     int len = mx_strlen(cmd);
     int counter = 0;
 
     for (int i = 0; i < len; ++i, ++counter) {
-        if (cmd[i] != '"')
+        if (cmd[i] != ch)
             continue;
-        if (cmd[i] == '"' && cmd[i - 1] != '\\') {
+        if (cmd[i] == ch && cmd[i - 1] != '\\') {
             *j += counter + 2;
-            args[*count] = mx_strndup(cmd, counter);
-            ++(*count);
+            *args = mx_strndup(cmd, counter);
             return true;
         }
     }
     return false;
 }
 
-static bool copy_quoted_string(char **args, int *count, char *cmd, int *j) {
-    int len = mx_strlen(cmd);
-    int counter = 0;
+static char **quoted_string_multiline_error(char ***args) {
+    mx_del_strarr(args);
+    mx_print_error("ush: multiline input not supported\n");
+    return NULL;
+}
 
-    for (int i = 0; i < len; ++i, ++counter) {
-        if (cmd[i] != '\'')
-            continue;
-        if (cmd[i] == '\'' && cmd[i - 1] != '\\') {
-            *j += counter + 2;
-            args[*count] = mx_strndup(cmd, counter);
-            ++(*count);
-            return true;
-        }
-    }
-    return false;
+static void skip_spaces(int *count, int *j, int *i, char *cmd) {
+    ++(*count);
+    *j = -1;
+    while (mx_isspace(cmd[*i]))
+        ++(*i);
+    --(*i);
 }
 
 char **mx_split_cmd(char *cmd) {
@@ -49,29 +44,21 @@ char **mx_split_cmd(char *cmd) {
 
     for (int i = 0; i < mx_strlen(cmd); ++i) {
         if (cmd[i] == '"' && cmd[i - 1] != '\\' && (i + 1 < mx_strlen(cmd)))
-            if (!copy_double_quoted_string(args, &count, &cmd[i + 1], &i)) {
-                mx_del_strarr(&args);
-                mx_print_error("ush: multiline input not supported\n");
-                return NULL;
-            }
+            if (!copy_quoted_string(&args[count++], &cmd[i + 1], &i, '"'))
+                return quoted_string_multiline_error(&args);
             else
                 continue;
         else if (cmd[i] == '\'' && cmd[i - 1] != '\\' && (i + 1 < mx_strlen(cmd)))
-            if (!copy_quoted_string(args, &count, &cmd[i + 1], &i)) {
-                mx_del_strarr(&args);
-                mx_print_error("ush: multiline input not supported\n");
-                return NULL;
-            }
+            if (!copy_quoted_string(&args[count++], &cmd[i + 1], &i, '\''))
+                return quoted_string_multiline_error(&args);
             else
                 continue;
         else if (!mx_isspace(cmd[i]) && cmd[i] != '\\')
             copy_character(args, &j, count, cmd[i]);
         else if (cmd[i] == '\\' && (i + 1 < mx_strlen(cmd)) && (++i))
             copy_character(args, &j, count, cmd[i]);
-        else {
-            ++count;
-            j = -1;
-        }
+        else
+            skip_spaces(&count, &j, &i, cmd);
         if (count >= buff_size && (buff_size += MX_USH_TOK_BUFFSIZE))
             args = realloc(args, buff_size * sizeof(char *));
     }
