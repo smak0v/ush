@@ -2,7 +2,7 @@
 
 static char *process_output_data(t_ush *ush) {
     char *cmd_subst = mx_file_to_str(ush->cmd_substs_file);
-    char *new_cmd_subst = NULL;
+    char *new_cmd_subst = mx_strnew(0);
     int j = 0;
 
     if (!ush->cmd_subst_replace_spaces) {

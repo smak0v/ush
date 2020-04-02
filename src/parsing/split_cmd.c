@@ -1,7 +1,10 @@
 #include "ush.h"
 
 static void copy_character(char **args,  int *j, int count, char ch) {
-    args[count] = realloc(args[count], mx_strlen(args[count]) + 2);
+    if (!args[count])
+        args[count] = mx_strnew(0);
+    else
+        args[count] = realloc(args[count], strlen(args[count]) + 2);
     args[count][++(*j)] = ch;
     args[count][*j + 1] = '\0';
 }
@@ -28,6 +31,16 @@ static void skip_spaces(int *count, int *j, size_t *i, char *cmd) {
     --(*i);
 }
 
+static char **realloc_args(int count, int *buff_size, char **args) {
+    if (count >= *buff_size) {
+        *buff_size += MX_USH_TOK_BUFFSIZE;
+        args = realloc(args, *buff_size * sizeof(char *));
+        for (int p = count; p < *buff_size; ++p)
+            args[p] = NULL;
+    }
+    return args;
+}
+
 char **mx_split_cmd(char *cmd) {
     int buff_size = MX_USH_TOK_BUFFSIZE;
     char **args = calloc(buff_size, sizeof(char *));
@@ -45,8 +58,7 @@ char **mx_split_cmd(char *cmd) {
             copy_character(args, &j, count, cmd[i]);
         else
             skip_spaces(&count, &j, &i, cmd);
-        if (count >= buff_size && (buff_size += MX_USH_TOK_BUFFSIZE))
-            args = realloc(args, buff_size * sizeof(char *));
+        args = realloc_args(count, &buff_size, args);
     }
     return args;
 }
