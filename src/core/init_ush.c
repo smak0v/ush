@@ -53,6 +53,7 @@ static int *set_env(char **env) {
 
 static void init_shell_for_jobs_and_cmd_substs(t_ush *ush) {
     struct termios tty;
+    char *home = mx_getenv(ush->hidden, "HOME");
 
     while (tcgetpgrp(STDIN_FILENO) != (ush->pgid = getpgrp()))
         kill(-ush->pgid, SIGTTIN);
@@ -61,8 +62,9 @@ static void init_shell_for_jobs_and_cmd_substs(t_ush *ush) {
     setpgid(ush->pgid, ush->pgid);
     tcsetpgrp(STDIN_FILENO, ush->pgid);
     tcgetattr(STDIN_FILENO, &tty);
-    ush->cmd_substs_file = mx_get_cmd_substs_filename();
+    ush->cmd_substs_file = mx_strjoin(home, MX_CMD_SUBST_FILE);
     remove(ush->cmd_substs_file);
+    mx_strdel(&home);
 }
 
 t_ush *mx_init_shell(void) {
@@ -72,7 +74,6 @@ t_ush *mx_init_shell(void) {
                         "export", "unset", "local", "jobs", "fg", NULL};
     int *not_found = NULL;
 
-    init_shell_for_jobs_and_cmd_substs(ush);
     mx_init_terminal_data();
     ush->in = mx_memalloc(sizeof(t_input));
     ush->env = mx_strarr_dup(environ);
@@ -81,6 +82,7 @@ t_ush *mx_init_shell(void) {
     ush->export = mx_strarr_dup(ush->env);
     ush->local_variables = mx_strarr_dup(ush->env);
     mx_set_default(ush, not_found);
+    init_shell_for_jobs_and_cmd_substs(ush);
     mx_bubble_sort(ush->export, mx_strarr_len(ush->export) - 1);
     ush->builtins = mx_strarr_dup(builtins);
     mx_intdel(&not_found);

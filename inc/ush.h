@@ -261,8 +261,9 @@ t_job *mx_sort_jobs(t_job *head);
 
 // Command substitutions
 void mx_command_substitutions(t_ush *ush);
-char *mx_get_cmd_substs_filename(void);
 void mx_change_line(t_ush *ush, char **new_cmd_subst, int start, int end);
+char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst);
+bool mx_check_quote(int index, char *line);
 
 // Builtins
 char **mx_store_flags(char **argv);
