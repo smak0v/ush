@@ -216,6 +216,8 @@ void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 int mx_check_flag(char **flags, char flag);
 bool mx_is_builtin(char *name, t_ush *ush);
 t_builtins *mx_init_builtins(void);
+bool mx_is_empty_line(char *line);
+bool mx_is_closed_quotes(char *line);
 
 // Signals
 void mx_ignore_signals(void);

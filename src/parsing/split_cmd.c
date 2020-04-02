@@ -6,29 +6,21 @@ static void copy_character(char **args,  int *j, int count, char ch) {
     args[count][*j + 1] = '\0';
 }
 
-static bool copy_quoted_string(char **args, char *cmd, int *j, char ch) {
-    int len = mx_strlen(cmd);
+static void copy_quoted_string(char **args, char *cmd, size_t *j, char ch) {
+    size_t len = strlen(cmd);
     int counter = 0;
 
-    for (int i = 0; i < len; ++i, ++counter) {
+    for (size_t i = 0; i < len; ++i, ++counter) {
         if (cmd[i] != ch)
             continue;
         if (cmd[i] == ch && cmd[i - 1] != '\\') {
             *j += counter + 2;
             *args = mx_strndup(cmd, counter);
-            return true;
         }
     }
-    return false;
 }
 
-static char **quoted_string_multiline_error(char ***args) {
-    mx_del_strarr(args);
-    mx_print_error("ush: multiline input not supported\n");
-    return NULL;
-}
-
-static void skip_spaces(int *count, int *j, int *i, char *cmd) {
+static void skip_spaces(int *count, int *j, size_t *i, char *cmd) {
     ++(*count);
     *j = -1;
     while (mx_isspace(cmd[*i]))
@@ -42,20 +34,14 @@ char **mx_split_cmd(char *cmd) {
     int count = 0;
     int j = -1;
 
-    for (int i = 0; i < mx_strlen(cmd); ++i) {
-        if (cmd[i] == '"' && cmd[i - 1] != '\\' && (i + 1 < mx_strlen(cmd)))
-            if (!copy_quoted_string(&args[count++], &cmd[i + 1], &i, '"'))
-                return quoted_string_multiline_error(&args);
-            else
-                continue;
-        else if (cmd[i] == '\'' && cmd[i - 1] != '\\' && (i + 1 < mx_strlen(cmd)))
-            if (!copy_quoted_string(&args[count++], &cmd[i + 1], &i, '\''))
-                return quoted_string_multiline_error(&args);
-            else
-                continue;
+    for (size_t i = 0; i < strlen(cmd); ++i) {
+        if (cmd[i] == '"' && cmd[i - 1] != '\\' && (i + 1 < strlen(cmd)))
+            copy_quoted_string(&args[count++], &cmd[i + 1], &i, '"');
+        else if (cmd[i] == '\'' && cmd[i - 1] != '\\' && (i + 1 < strlen(cmd)))
+            copy_quoted_string(&args[count++], &cmd[i + 1], &i, '\'');
         else if (!mx_isspace(cmd[i]) && cmd[i] != '\\')
             copy_character(args, &j, count, cmd[i]);
-        else if (cmd[i] == '\\' && (i + 1 < mx_strlen(cmd)) && (++i))
+        else if (cmd[i] == '\\' && (i + 1 < strlen(cmd)) && (++i))
             copy_character(args, &j, count, cmd[i]);
         else
             skip_spaces(&count, &j, &i, cmd);
