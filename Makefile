@@ -34,7 +34,7 @@ UTILS_SRCS = build_pwd_string.c getenv.c set_defaults.c \
 CLEARING_SRCS = clear_tokens.c clear_trees.c clear_processes_data.c
 
 BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
-				validation.c mixed_errors.c unset.c exit.c
+				validation.c mixed_errors.c unset.c exit.c easy_builtins.c
 
 ENV_SRCS = env.c env_errors.c parse_env.c janitor.c
 

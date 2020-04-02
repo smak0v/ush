@@ -65,7 +65,7 @@ int mx_cd(t_ush *ush, char **flags, char *destination) {
     }
     else {
         path = mx_check_flag(flags, 'P') ? mx_get_pwd()
-               : mx_strdup(mx_build_logical_path(pwd, destination, real_path));
+               : mx_build_logical_path(pwd, destination, real_path);
         export(ush, "OLDPWD", pwd);
         export(ush, "PWD", path);
         mx_strdel(&real_path);

@@ -9,7 +9,6 @@ static char *rebuild_path(char **split, char *full_path, char **realpath) {
         tmp = mx_replace_substr(*realpath,
                                 real_name,
                                 split[mx_strarr_len(split) - 1]);
-        mx_strdel(realpath);
     }
 
     mx_strdel(&real_name);
@@ -35,5 +34,5 @@ char *mx_build_logical_path(char *pwd, char *dest, char *realpath) {
     }
 
     free(dest_split);
-    return realpath;
+    return mx_strdup(realpath);
 }

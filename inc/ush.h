@@ -23,7 +23,7 @@
 #define MX_IS_EXEC(mode) ((mode) & S_IXUSR)
 #define MX_IS_LNK(mode) (((mode) & S_IFMT) == S_IFLNK)
 
-#define MX_BUILTINS_COUNT 12
+#define MX_BUILTINS_COUNT 14
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
 #define MX_DEFAULT_PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -98,6 +98,8 @@ struct s_builtins {
     int (*mx_ush_local)(char **, t_ush *);
     int (*mx_ush_jobs)(char **, t_ush *);
     int (*mx_ush_fg)(char **, t_ush *);
+    int (*mx_ush_history)(char **, t_ush *);
+    int (*mx_ush_return)(char **, t_ush *);
 };
 
 struct s_input {
@@ -264,6 +266,8 @@ int mx_ush_export(char **args, t_ush *ush);
 int mx_ush_unset(char **args, t_ush *ush);
 int mx_ush_local(char **args, t_ush *ush);
 int mx_ush_which(char **args, t_ush *ush);
+int mx_ush_history(char **args, t_ush *ush);
+int mx_ush_return(char **args, t_ush *ush);
 void mx_invalid_identifier(char *cmd, char *identifier);
 
     // CD

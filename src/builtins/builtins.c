@@ -18,7 +18,6 @@ int mx_ush_cd(char **args, t_ush *ush) {
         destination = *arguments;
 
     status = mx_cd(ush, flags, destination);
-
     mx_del_strarr(&flags);
     mx_del_strarr(&arguments);
     return status;
@@ -41,6 +40,7 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 
     mx_printstr_endl(path);
     mx_strdel(&path);
+    mx_del_strarr(&flags);
     return 0;
 }
 

@@ -66,4 +66,5 @@ void mx_set_default(t_ush *ush, int *not_found) {
         ush->local_variables = set_local(ush->local_variables, not_found);
 
     init_hidden(ush);
+    mx_intdel(&not_found);
 }
