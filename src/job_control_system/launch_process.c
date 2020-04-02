@@ -3,24 +3,25 @@
 static int launch_process(t_process *process, t_ush *ush) {
     int (**builtin_func)(char **, t_ush *) = (
         int (**)(char **, t_ush *))mx_init_builtins();
-    char **tmp = mx_strarr_dup(ush->env);
     int status = MX_SUCCESS;
 
     for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
         if (!mx_strcmp(process->argv[0], ush->builtins[i])) {
             status = builtin_func[i](process->argv, ush);
-            mx_reset_env_and_clean_data(ush, tmp, builtin_func);
+            mx_reset_env_and_clean_data(builtin_func);
             _exit(status);
         }
     if ((status = execvp(process->argv[0], process->argv)) < 0) {
         mx_command_not_found_error(process->argv[0]);
         _exit(status);
     }
-    mx_reset_env_and_clean_data(ush, tmp, builtin_func);
+    mx_reset_env_and_clean_data(builtin_func);
     _exit(status);
 }
 
-static void manage_fds(t_process *process, int *fd) {
+static void manage_fds(t_process *process, int *fd, t_ush *ush) {
+    int out = -1;
+
     if (process->next) {
         if (fd[0] != STDIN_FILENO) {
             dup2(fd[0], STDIN_FILENO);
@@ -31,8 +32,14 @@ static void manage_fds(t_process *process, int *fd) {
             close(fd[1]);
         }
     }
-    else if (fd[0] != STDIN_FILENO)
-        dup2(fd[0], STDIN_FILENO);
+    else {
+        if (ush->cmd_subst) {
+            out = open(ush->cmd_substs_file, O_WRONLY|O_CREAT|O_APPEND, 0600);
+            dup2(out, STDOUT_FILENO);
+        }
+        if (fd[0] != STDIN_FILENO)
+            dup2(fd[0], STDIN_FILENO);
+    }
 }
 
 int mx_launch_simple_builtin(t_ush *ush, char **argv) {
@@ -51,7 +58,7 @@ int mx_launch_simple_builtin(t_ush *ush, char **argv) {
     for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
         if (!mx_strcmp(argv[0], ush->builtins[i])) {
             status = builtin_func[i](argv, ush);
-            mx_reset_env_and_clean_data(ush, tmp, builtin_func);
+            mx_reset_env_and_clean_data(builtin_func);
         }
     mx_del_strarr(&tmp);
     return status;
@@ -71,7 +78,10 @@ int mx_launch_proccess(pid_t pgid, t_process *process, int *fd, t_ush *ush) {
         pgid = pid;
     setpgid(pid, pgid);
     tcsetpgrp(STDIN_FILENO, pgid);
-    mx_default_signals();
-    manage_fds(process, fd);
+    if (ush->cmd_subst)
+        mx_ignore_signals();
+    else
+        mx_default_signals();
+    manage_fds(process, fd, ush);
     return launch_process(process, ush);
 }

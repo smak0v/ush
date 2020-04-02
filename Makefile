@@ -1,112 +1,200 @@
-APP_NAME = ush
+#================================COMMON=======================================#
+APP_NAME				= ush
 
-CC = clang
-CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
-ADDITIONAl_FLAGS = -g -ltermcap
+CC						= clang
 
-DIR_NAME = ush
+DIR						= ush
 
-SRCD = src
-INCD = inc
-OBJD = obj
+#=================================FLAGS=======================================#
+C_FLAGS					= -std=c11 $(addprefix -W, all extra pedantic)
 
-LIBMXD = libmx
-LIBMXA := $(LIBMXD)/libmx.a
-LIBMXI := $(LIBMXD)/inc
+ADD_FLAGS				= -g
 
-INC = ush.h
-INCS = $(addprefix $(INCD)/, $(INC))
+LINKER_FLAGS			= -ltermcap
 
-CORE_SRCS = ush_loop.c proccess_commands_list.c traverse_and_execute_tree.c \
-			init_ush.c input_mode.c signals.c
+#=================================LIBMX=======================================#
+LIBMXD					= libmx
 
-INPUT_SRCS = get_input.c history.c expansions.c tilde_exp.c dollar_exp.c \
-			 input_keys.c input_utils.c
+LIBMXA					:= $(LIBMXD)/libmx.a
 
-UTILS_SRCS = build_pwd_string.c getenv.c set_defaults.c \
-			 check_identifier_validity.c mx_printnbr.c \
-			 setup_underscore_env_var.c create_tmp_env.c \
-			 overwrite_strarr_value.c split_key_value.c \
-			 create_trees.c print_tree.c ush_errors.c \
-			 errors.c process_home.c check_flag.c is_builtin.c \
-			 init_builtins.c
+LIBMXI					:= $(LIBMXD)/inc
 
-CLEARING_SRCS = clear_tokens.c clear_trees.c clear_processes_data.c
+#==================================INC========================================#
+INCD					= inc
 
-BUILTINS_SRCS = builtins.c builtins2.c parse_flags.c parse_args.c \
-				validation.c mixed_errors.c unset.c exit.c easy_builtins.c
+INC						= ush.h
 
-ENV_SRCS = env.c env_errors.c parse_env.c janitor.c
+INCS					= $(addprefix $(INCD)/, $(INC))
 
-EXPORT_SRCS = export.c process_duplicates.c
+#==================================OBJ========================================#
+OBJD					= obj
 
-WHICH_SRCS = which.c which_utils.c
+CORE_OBJD				= $(OBJD)/core
+INPUT_OBJD				= $(OBJD)/input
+UTILS_OBJD				= $(OBJD)/utils
+CLEARING_OBJD			= $(OBJD)/clearing
+BUILTINS_OBJD			= $(OBJD)/builtins
+PARSING_OBJD			= $(OBJD)/parsing
+JOB_CTRL_SYSTEM_OBJD	= $(OBJD)/job_control_system
+CMD_SUBSTS_OBJD			= $(OBJD)/cmd_substitutions
 
-CD_SRCS = cd.c path.c cd_errors.c build_logical_path.c
+ENV_OBJD				= $(BUILTINS_OBJD)/env
+EXPORT_OBJD				= $(BUILTINS_OBJD)/export
+WHICH_OBJD				= $(BUILTINS_OBJD)/which
+CD_OBJD					= $(BUILTINS_OBJD)/cd
+FG_OBJD					= $(BUILTINS_OBJD)/fg
+JOBS_OBJD				= $(BUILTINS_OBJD)/jobs
 
-FG_SRCS = fg.c fg_errors.c fg_utils.c
+OBJ_DIRS				= $(OBJD) $(CORE_OBJD) $(INPUT_OBJD) $(UTILS_OBJD) \
+						  $(CLEARING_OBJD) $(BUILTINS_OBJD) $(ENV_OBJD) \
+						  $(EXPORT_OBJD) $(WHICH_OBJD) $(CD_OBJD) $(FG_OBJD) \
+						  $(JOBS_OBJD) $(PARSING_OBJD) $(CMD_SUBSTS_OBJD) \
+						  $(JOB_CTRL_SYSTEM_OBJD)
 
-JOBS_SRCS = jobs.c jobs_errors.c
+OBJS					= $(addprefix $(OBJD)/, main.o $(CORE:%.c=%.o) \
+						  $(UTILS:%.c=%.o) $(BUILTINS:%.c=%.o) $(ENV:%.c=%.o) \
+						  $(EXPORT:%.c=%.o) $(WHICH:%.c=%.o) $(CD:%.c=%.o) \
+						  $(PARSING:%.c=%.o) $(JOB_CTRL_SYSTEM:%.c=%.o) \
+						  $(INPUT:%.c=%.o) $(FG:%.c=%.o) $(JOBS:%.c=%.o) \
+						  $(CMD_SUBSTS:%.c=%.o) $(CLEARING:%.c=%.o))
 
-PARSING_SRCS = proccess_escapings.c split_cmd.c split_token.c
+#===================================SRC=======================================#
+CORE_SRCS				= ush_loop.c process_commands_list.c \
+						  traverse_and_execute_tree.c init_ush.c input_mode.c \
+						  signals.c
 
-JOB_CTRL_SYSTEM_SRCS = jcs_utils.c job_utils.c process_utils.c launch_job.c \
-					   launch_process.c
+INPUT_SRCS				= get_input.c history.c expansions.c tilde_exp.c \
+						  dollar_exp.c input_keys.c input_utils.c
 
-CORE = $(addprefix core/, $(CORE_SRCS))
-INPUT = $(addprefix input/, $(INPUT_SRCS))
-PARSING = $(addprefix parsing/, $(PARSING_SRCS))
-CLEARING = $(addprefix clearing/, $(CLEARING_SRCS))
-UTILS = $(addprefix utils/, $(UTILS_SRCS))
-BUILTINS = $(addprefix builtins/, $(BUILTINS_SRCS))
-ENV = $(addprefix builtins/env/, $(ENV_SRCS))
-EXPORT = $(addprefix builtins/export/, $(EXPORT_SRCS))
-WHICH = $(addprefix builtins/which/, $(WHICH_SRCS))
-CD = $(addprefix builtins/cd/, $(CD_SRCS))
-FG = $(addprefix builtins/fg/, $(FG_SRCS))
-JOBS = $(addprefix builtins/jobs/, $(JOBS_SRCS))
-JOB_CTRL_SYSTEM = $(addprefix job_control_system/, $(JOB_CTRL_SYSTEM_SRCS))
+UTILS_SRCS				= build_pwd_string.c getenv.c set_defaults.c \
+						  check_identifier_validity.c mx_printnbr.c \
+						  setup_underscore_env_var.c create_tmp_env.c \
+						  overwrite_strarr_value.c split_key_value.c \
+						  create_trees.c print_tree.c ush_errors.c errors.c \
+						  process_home.c check_flag.c is_builtin.c \
+						  init_builtins.c
 
-SRC = main.c $(CORE) $(CLEARING) $(UTILS) $(BUILTINS) $(ENV) $(EXPORT) \
-	  $(WHICH) $(CD) $(JOB_CTRL_SYSTEM) $(PARSING) $(INPUT) $(FG) $(JOBS)
+CLEARING_SRCS			= clear_tokens.c clear_trees.c clear_processes_data.c
 
-SRCS = $(addprefix $(SRCD)/, $(SRC))
-OBJS = main.o $(CORE_SRCS:%.c=%.o) $(CLEARING_SRCS:%.c=%.o) \
-	   $(UTILS_SRCS:%.c=%.o) $(BUILTINS_SRCS:%.c=%.o) $(ENV_SRCS:%.c=%.o) \
-	   $(EXPORT_SRCS:%.c=%.o) $(WHICH_SRCS:%.c=%.o) $(CD_SRCS:%.c=%.o) \
-	   $(PARSING_SRCS:%.c=%.o) $(JOB_CTRL_SYSTEM_SRCS:%.c=%.o) \
-	   $(INPUT_SRCS:%.c=%.o) $(FG_SRCS:%.c=%.o) $(JOBS_SRCS:%.c=%.o)
+BUILTINS_SRCS			= builtins.c builtins2.c parse_flags.c parse_args.c \
+						  validation.c mixed_errors.c unset.c exit.c \
+						  easy_builtins.c
 
+ENV_SRCS				= env.c env_errors.c parse_env.c janitor.c
+
+EXPORT_SRCS				= export.c process_duplicates.c
+
+WHICH_SRCS				= which.c which_utils.c
+
+CD_SRCS					= cd.c path.c cd_errors.c build_logical_path.c
+
+FG_SRCS					= fg.c fg_errors.c fg_utils.c
+
+JOBS_SRCS				= jobs.c jobs_errors.c
+
+PARSING_SRCS			= proccess_escapings.c split_cmd.c split_token.c
+
+JOB_CTRL_SYSTEM_SRCS	= jcs_utils.c job_utils.c process_utils.c \
+						  launch_job.c launch_process.c
+
+CMD_SUBSTS_SRCS			= cmd_substs.c cmd_substs_utils.c
+
+CORE					= $(addprefix core/, $(CORE_SRCS))
+INPUT					= $(addprefix input/, $(INPUT_SRCS))
+PARSING					= $(addprefix parsing/, $(PARSING_SRCS))
+CLEARING				= $(addprefix clearing/, $(CLEARING_SRCS))
+UTILS					= $(addprefix utils/, $(UTILS_SRCS))
+JOB_CTRL_SYSTEM			= $(addprefix job_control_system/, \
+						  $(JOB_CTRL_SYSTEM_SRCS))
+CMD_SUBSTS				= $(addprefix cmd_substitutions/, $(CMD_SUBSTS_SRCS))
+BUILTINS				= $(addprefix builtins/, $(BUILTINS_SRCS))
+
+ENV						= $(addprefix builtins/env/, $(ENV_SRCS))
+EXPORT					= $(addprefix builtins/export/, $(EXPORT_SRCS))
+WHICH					= $(addprefix builtins/which/, $(WHICH_SRCS))
+CD						= $(addprefix builtins/cd/, $(CD_SRCS))
+FG						= $(addprefix builtins/fg/, $(FG_SRCS))
+JOBS					= $(addprefix builtins/jobs/, $(JOBS_SRCS))
+
+SRCD					= src
+
+#================================FUNCTIONS====================================#
+define compile_dependency
+	@$(CC) $(C_FLAGS) $(ADD_FLAGS) -c $(1) -o $(2) -I $(INCD) -I $(LIBMXI)
+	@printf "\r\33[2K$(DIR)\t\t\033[33;1mcompile\t\t\033[0m$(<:$(SRCD)%.c=%)"
+endef
+
+#=================================RULES=======================================#
 all: install
 
 install: $(LIBMXA) $(APP_NAME)
 
-$(APP_NAME): $(SRCS) $(INCD)/$(INC) $(LIBMXA)
-	@$(CC) $(CFLAGS) -c $(SRCS) -I $(INCD) -I $(LIBMXI)
-	@$(CC) $(CFLAGS) $(ADDITIONAl_FLAGS) $(OBJS) $(LIBMXA) -o $(APP_NAME)
-	@mkdir -p $(OBJD)
-	@mv $(OBJS) $(OBJD)
-	@printf "\r\33[2K$@\t\t   \033[32;1mcreated\033[0m\n"
+$(OBJ_DIRS):
+	@mkdir -p $@
 
 $(LIBMXA):
 	@make -sC $(LIBMXD)
 
 clean:
-	@make -sC $(LIBMXD) $@
 	@rm -rf $(OBJD)
-	@printf "$(DIR_NAME)/$(OBJD)\t\t   \033[31;1mdeleted\033[0m\n"
+	@printf "$(DIR)/$(OBJD)\t\t\033[31;1mdeleted\033[0m\n"
 
 uninstall: clean
 	@make -sC $(LIBMXD) $@
 	@rm -rf $(APP_NAME)
-	@printf "$(APP_NAME)\t\t   \033[31;1muninstalled\033[0m\n"
+	@printf "$(APP_NAME)\t\t\033[31;1muninstalled\033[0m\n"
 
 reinstall: uninstall install
 
-debug:
-	clang -std=c11 -Wall -Wextra -Wpedantic -ltermcap -O0 -g \
-	src/*.c src/builtins/*.c src/clearing/*.c src/utils/*.c src/core/*.c \
-	src/builtins/cd/*.c src/builtins/export/*.c src/builtins/env/*.c \
-	src/builtins/which/*.c src/parsing/*.c src/input/*.c \
-	src/job_control_system/*.c src/builtins/jobs/*.c src/builtins/fg/*.c \
-	libmx/libmx.a -I libmx/inc/ -I inc/ -o ush
+#================================DEPENDENCIES=================================#
+$(APP_NAME): $(OBJS)
+	@$(CC) $(C_FLAGS) $(ADD_FLAGS) $(LINKER_FLAGS) \
+												$(OBJS) -L $(LIBMXD) -lmx -o $@
+	@printf "\r\33[2K$@\t\t\033[32;1mcreated\033[0m\n"
+
+$(OBJD)/%.o: $(SRCD)/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(CORE_OBJD)/%.o: $(SRCD)/core/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(INPUT_OBJD)/%.o: $(SRCD)/input/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(UTILS_OBJD)/%.o: $(SRCD)/utils/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(CLEARING_OBJD)/%.o: $(SRCD)/clearing/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(BUILTINS_OBJD)/%.o: $(SRCD)/builtins/%.c $(INCS)
+	@$(call compile_dependency, $<, $@)
+
+$(ENV_OBJD)/%.o: $(SRCD)/builtins/env/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(EXPORT_OBJD)/%.o: $(SRCD)/builtins/export/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(WHICH_OBJD)/%.o: $(SRCD)/builtins/which/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(CD_OBJD)/%.o: $(SRCD)/builtins/cd/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(FG_OBJD)/%.o: $(SRCD)/builtins/fg/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(JOBS_OBJD)/%.o: $(SRCD)/builtins/jobs/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(PARSING_OBJD)/%.o: $(SRCD)/parsing/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(JOB_CTRL_SYSTEM_OBJD)/%.o: $(SRCD)/job_control_system/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(CMD_SUBSTS_OBJD)/%.o: $(SRCD)/cmd_substitutions/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(OBJS): | $(OBJ_DIRS)

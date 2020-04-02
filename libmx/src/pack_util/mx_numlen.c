@@ -5,7 +5,7 @@ int mx_numlen(long long value) {
     int copy_value = value;
 
     while (copy_value) {
-        length++;
+        ++length;
         copy_value /= 10;
     }
     return value < 0 ? length + 1 : length;
