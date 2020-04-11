@@ -61,32 +61,15 @@ static int redirect_and_launch(t_ush *ush, char **argv) {
 }
 
 int mx_launch_simple_builtin(t_ush *ush, char **argv, int copy_stdout) {
-    char **tmp_env = mx_create_tmp_env(ush, &argv);
-    char **tmp = mx_strarr_dup(ush->env);
-    int status = MX_SUCCESS;
+    int status = redirect_and_launch(ush, argv);
 
-    if (!argv)
-        return mx_clean_data(tmp_env);
-    if (tmp_env && *tmp_env) {
-        mx_del_strarr(&ush->env);
-        ush->env = tmp_env;
-    }
-    status = redirect_and_launch(ush, argv);
     dup2(copy_stdout, STDOUT_FILENO);
-    mx_del_strarr(&tmp);
     return status;
 }
 
 int mx_launch_proccess(pid_t pgid, t_process *process, int *fd, t_ush *ush) {
-    char **tmp_env = mx_create_tmp_env(ush, &process->argv);
     pid_t pid = getpid();
 
-    if (!process->argv)
-        return mx_clean_data(tmp_env);
-    if (tmp_env && *tmp_env) {
-        mx_del_strarr(&ush->env);
-        ush->env = tmp_env;
-    }
     if (!pgid)
         pgid = pid;
     setpgid(pid, pgid);
