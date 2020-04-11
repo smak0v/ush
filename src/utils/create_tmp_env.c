@@ -57,7 +57,7 @@ static char **create_tmp_env(char ***args, bool *command_found) {
             if (!process_duplicates(tmp_env, *args[i], pair[0]))
                 tmp_env = mx_add_var(tmp_env, *args[i]);
             mx_del_strarr(&pair);
-            *args = mx_pop_string_arqray(*args, *args[i]);
+            *args = mx_pop_string_array(*args, *args[i]);
             --i;
             --len;
         }
