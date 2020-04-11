@@ -255,7 +255,7 @@ void push_back_proccess(t_process **processes, t_process *process);
 void mx_delete_processes(t_process **processes);
 int mx_launch_job(t_job *job, t_ush *ush, char **env);
 int mx_launch_proccess(pid_t pgid, t_process *procces, int *fd, t_ush *ush);
-int mx_launch_simple_builtin(t_ush *ush, char **argv);
+int mx_launch_simple_builtin(t_ush *ush, char **argv, int copy_stdout);
 int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
 t_job *mx_sort_jobs(t_job *head);
 

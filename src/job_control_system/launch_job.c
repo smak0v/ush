@@ -4,9 +4,10 @@ static int fork_and_launch(t_job *job, t_process *procces, t_ush *ush,
                            int *fd) {
     int status = MX_SUCCESS;
     pid_t pid = 0;
+    int copy_stdout = dup(STDOUT_FILENO);
 
     if (!job->processes->next && mx_is_builtin(job->processes->argv[0], ush))
-        status = mx_launch_simple_builtin(ush, procces->argv);
+        status = mx_launch_simple_builtin(ush, procces->argv, copy_stdout);
     else {
         if ((pid = fork()) == 0)
             status = mx_launch_proccess(job->pgid, procces, fd, ush);

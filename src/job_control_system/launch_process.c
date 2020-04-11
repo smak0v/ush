@@ -42,10 +42,26 @@ static void manage_fds(t_process *process, int *fd, t_ush *ush) {
     }
 }
 
-int mx_launch_simple_builtin(t_ush *ush, char **argv) {
-    char **tmp_env = mx_create_tmp_env(ush, &argv);
+static int redirect_and_launch(t_ush *ush, char **argv) {
     int (**builtin_func)(char **, t_ush *) = (
         int (**)(char **, t_ush *))mx_init_builtins();
+    int status = MX_SUCCESS;
+    int out = -1;
+
+    if (ush->cmd_subst) {
+        out = open(ush->cmd_substs_file, O_WRONLY|O_CREAT|O_APPEND, 0600);
+        dup2(out, STDOUT_FILENO);
+    }
+    for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
+        if (!mx_strcmp(argv[0], ush->builtins[i])) {
+            status = builtin_func[i](argv, ush);
+            mx_reset_env_and_clean_data(builtin_func);
+        }
+    return status;
+}
+
+int mx_launch_simple_builtin(t_ush *ush, char **argv, int copy_stdout) {
+    char **tmp_env = mx_create_tmp_env(ush, &argv);
     char **tmp = mx_strarr_dup(ush->env);
     int status = MX_SUCCESS;
 
@@ -55,11 +71,8 @@ int mx_launch_simple_builtin(t_ush *ush, char **argv) {
         mx_del_strarr(&ush->env);
         ush->env = tmp_env;
     }
-    for (int i = 0; i < MX_BUILTINS_COUNT; ++i)
-        if (!mx_strcmp(argv[0], ush->builtins[i])) {
-            status = builtin_func[i](argv, ush);
-            mx_reset_env_and_clean_data(builtin_func);
-        }
+    status = redirect_and_launch(ush, argv);
+    dup2(copy_stdout, STDOUT_FILENO);
     mx_del_strarr(&tmp);
     return status;
 }
