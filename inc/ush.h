@@ -34,6 +34,8 @@
 #define MX_WHICH_FLAGS "as"
 #define MX_ECHO_FLAGS "neE"
 
+#define MX_CMD_SUBST_FILE "/.cmd_subst.file"
+
 #define MX_RIGHT       4414235
 #define MX_LEFT        4479771
 #define MX_UP          4283163
@@ -47,9 +49,7 @@
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
 
-#define MX_CMD_SUBST_FILE "/.cmd_subst.file"
-
-#define MX_ARG_MAX    256144
+#define MX_ARG_MAX     262144
 
 // Structures
 typedef struct s_hist t_hist;

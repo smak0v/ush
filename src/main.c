@@ -6,7 +6,7 @@ int main() {
     char line[MX_ARG_MAX];
 
     if (!isatty(STDIN_FILENO)) {
-        fgets(line, sizeof(line), STDIN_FILENO);
+        fgets(line, sizeof(line), stdin);
         ush->in->line = mx_strdup(line);
         mx_ush_core(ush);
         return ush->exit_code;
