@@ -55,8 +55,6 @@ static void init_shell_for_jobs_and_cmd_substs(t_ush *ush) {
     struct termios tty;
     char *home = mx_getenv(ush->hidden, "HOME");
 
-    while (tcgetpgrp(STDIN_FILENO) != (ush->pgid = getpgrp()))
-        kill(-ush->pgid, SIGTTIN);
     mx_ignore_signals();
     ush->pgid = getpid();
     setpgid(ush->pgid, ush->pgid);

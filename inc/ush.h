@@ -49,6 +49,8 @@
 
 #define MX_CMD_SUBST_FILE "/.cmd_subst.file"
 
+#define MX_ARG_MAX    256144
+
 // Structures
 typedef struct s_hist t_hist;
 typedef struct s_ush t_ush;
@@ -179,6 +181,7 @@ typedef enum e_defaults {
 // Functions
 // Core
 int mx_ush_loop(t_ush *ush);
+void mx_ush_core(t_ush *ush);
 int mx_process_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
 t_ush *mx_init_shell(void);
