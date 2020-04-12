@@ -85,6 +85,7 @@ char **mx_create_tmp_env(t_ush *ush, t_job *job, t_process *process) {
     tmp = mx_strarr_join(tmp_env, ush->env);
     mx_del_strarr(&tmp_env);
     tmp_env = tmp;
-    tmp_env = delete_duplicates_except_last(tmp_env);
+    if (tmp_env)
+        tmp_env = delete_duplicates_except_last(tmp_env);
     return tmp_env;
 }

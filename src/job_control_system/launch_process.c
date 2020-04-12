@@ -11,7 +11,8 @@ static int launch_process(t_process *process, t_ush *ush) {
             mx_reset_env_and_clean_data(builtin_func);
             _exit(status);
         }
-    if ((status = execvp(process->argv[0], process->argv)) < 0) {
+    mx_get_command_path(ush, process);
+    if ((status = execve(process->argv[0], process->argv, ush->env)) < 0) {
         mx_command_not_found_error(process->argv[0]);
         _exit(status);
     }

@@ -221,6 +221,7 @@ bool mx_is_builtin(char *name, t_ush *ush);
 t_builtins *mx_init_builtins(void);
 bool mx_is_empty_line(char *line);
 bool mx_is_closed_quotes(char *line);
+void mx_get_command_path(t_ush *ush, t_process *process);
 
 // Signals
 void mx_ignore_signals(void);
@@ -256,7 +257,7 @@ t_process *mx_create_processes(char *cmd);
 t_process *mx_copy_processes(t_process *processes);
 void push_back_proccess(t_process **processes, t_process *process);
 void mx_delete_processes(t_process **processes);
-int mx_launch_job(t_job *job, t_ush *ush, char **env);
+int mx_launch_job(t_job *job, t_ush *ush);
 int mx_launch_proccess(pid_t pgid, t_process *procces, int *fd, t_ush *ush);
 int mx_launch_simple_builtin(t_ush *ush, char **argv, int copy_stdout);
 int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);

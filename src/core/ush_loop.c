@@ -7,6 +7,7 @@ void mx_ush_core(t_ush *ush) {
     if (ush->in->line) {
         mx_create_trees(ush, ush->in->line);
         ush->exit_code = mx_process_commands_list(ush);
+        ush->exit_code = ush->exit_code > 0 ? 1 : 0;
         mx_clear_trees(ush);
         mx_strdel(&ush->in->line);
     }

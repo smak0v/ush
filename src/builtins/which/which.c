@@ -85,7 +85,7 @@ char **mx_which(t_ush *ush, char **flags, char **args, int *status) {
     char **res = NULL;
     char **mem_clean = NULL;
     char **tmp = NULL;
-    
+
     for (int j = 0; args[j]; ++j) {
         tmp = check_builtins(ush, args[j]);
         if (!tmp || mx_check_flag(flags, 'a'))

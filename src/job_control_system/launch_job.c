@@ -33,19 +33,18 @@ static int prepare(t_job *job, t_process *process, t_ush *ush, int *fd) {
         return mx_clean_data(tmp_env);
     if (tmp_env && *tmp_env)
         ush->env = tmp_env;
-    fork_and_launch(job, process, ush, fd);
+    status = fork_and_launch(job, process, ush, fd);
     mx_del_strarr(&ush->env);
     ush->env = env;
     return status;
 }
 
-static int loop_by_processes(t_job *job, t_ush *ush, char **env) {
+static int loop_by_processes(t_job *job, t_ush *ush) {
     t_process *procces = NULL;
     int status = MX_SUCCESS;
     int fd[2] = {job->stdin, 0};
     int pipes[2];
 
-    env = NULL;
     for (procces = job->processes; procces; procces = procces->next) {
         if (procces->next && !pipe(pipes))
             fd[1] = pipes[1];
@@ -61,12 +60,12 @@ static int loop_by_processes(t_job *job, t_ush *ush, char **env) {
     return status;
 }
 
-int mx_launch_job(t_job *job, t_ush *ush, char **env) {
+int mx_launch_job(t_job *job, t_ush *ush) {
     if (!mx_strcmp(job->processes->argv[0], "exit") && job->processes->next)
         return MX_SUCCESS;
     if (!mx_strcmp(job->processes->argv[0], "fg") && job->processes->next)
         return mx_no_job_control_error();
     if (mx_strcmp(job->processes->argv[0], "exit"))
         ush->delete_suspended = false;
-    return loop_by_processes(job, ush, env);
+    return loop_by_processes(job, ush);
 }
