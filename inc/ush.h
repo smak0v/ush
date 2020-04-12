@@ -215,7 +215,6 @@ char *mx_build_key_value_str(char *key, char *value);
 int mx_check_duplicate(char ***array, char *key);
 char **mx_safe_split(char *arg);
 char **mx_create_tmp_env(t_ush *ush, t_job *job, t_process *process);
-void mx_setup_underscore_env_var(t_ush *ush, char *arg);
 int mx_check_flag(char **flags, char flag);
 bool mx_is_builtin(char *name, t_ush *ush);
 t_builtins *mx_init_builtins(void);
