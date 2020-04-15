@@ -49,7 +49,6 @@ char **mx_echo_parse_flags(char **args) {
 }
 
 char **mx_echo_parse_args(char **args) {
-    char **output = NULL;
     bool flag_stop = false;
     int i = 1;
 

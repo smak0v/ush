@@ -27,7 +27,7 @@ void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
             shell_or_operator(tree, ush, status);
         else {
             job = mx_create_job(tree->data);
-            *status = mx_launch_job(job, ush, ush->env);
+            *status = mx_launch_job(job, ush);
             mx_delete_job(&job);
             mx_traverse_and_execute_tree(tree->right, ush, status);
         }

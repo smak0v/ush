@@ -26,15 +26,39 @@ static void copy_last(t_dll **sub_tokens, char *pos) {
     mx_strdel(&tmp);
 }
 
+static void check_quoted(char token_i, bool *quoted) {
+    static char ch = '-';
+
+    if (token_i == '"' && ch == '-') {
+        ch = '"';
+        *quoted = !*quoted;
+    }
+    else if (token_i == '"' && ch == '"') {
+        ch = '-';
+        *quoted = !*quoted;
+    }
+    else if (token_i == '\'' && ch == '-') {
+        ch = '\'';
+        *quoted = !*quoted;
+    }
+    else if (token_i == '\'' && ch == '\'') {
+        ch = '-';
+        *quoted = !*quoted;
+    }
+}
+
 t_dll *mx_split_token(char *token) {
     t_dll *sub_tokens = NULL;
     char *prev_position = token;
+    bool quoted = false;
 
-    for (int i = 0, len = 0; i < mx_strlen(token); ++i, ++len)
-        if (token[i] == '&' && token[i + 1] == '&' && (i += 2))
+    for (int i = 0, len = 0; i < mx_strlen(token); ++i, ++len) {
+        check_quoted(token[i], &quoted);
+        if (token[i] == '&' && token[i + 1] == '&' && !quoted && (i += 2))
             copy_part(&sub_tokens, &prev_position, &len, "&&");
-        else if (token[i] == '|' && token[i + 1] == '|' && (i += 2))
+        else if (token[i] == '|' && token[i + 1] == '|' && !quoted && (i += 2))
             copy_part(&sub_tokens, &prev_position, &len, "||");
+    }
     copy_last(&sub_tokens, prev_position);
     return sub_tokens;
 }

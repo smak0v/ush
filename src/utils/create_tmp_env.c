@@ -69,14 +69,15 @@ static char **create_tmp_env(char ***args, bool *command_found) {
     return tmp_env;
 }
 
-char **mx_create_tmp_env(t_ush *ush, char ***args) {
+char **mx_create_tmp_env(t_ush *ush, t_job *job, t_process *process) {
     bool command_found = false;
-    char **tmp_env = create_tmp_env(args, &command_found);
+    char **tmp_env = create_tmp_env(&process->argv, &command_found);
     char **tmp = NULL;
 
-    if (!command_found && tmp_env && *tmp_env) {
+    if (!command_found && tmp_env && *tmp_env && !job->processes->next) {
         tmp = mx_strarr_join(tmp_env, ush->local_variables);
         mx_del_strarr(&ush->local_variables);
+        mx_del_strarr(&tmp_env);
         ush->local_variables = tmp;
         ush->local_variables =
             delete_duplicates_except_last(ush->local_variables);
@@ -85,6 +86,7 @@ char **mx_create_tmp_env(t_ush *ush, char ***args) {
     tmp = mx_strarr_join(tmp_env, ush->env);
     mx_del_strarr(&tmp_env);
     tmp_env = tmp;
-    tmp_env = delete_duplicates_except_last(tmp_env);
+    if (tmp_env)
+        tmp_env = delete_duplicates_except_last(tmp_env);
     return tmp_env;
 }
