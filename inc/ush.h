@@ -34,6 +34,8 @@
 #define MX_WHICH_FLAGS "as"
 #define MX_ECHO_FLAGS "neE"
 
+#define MX_CMD_SUBST_FILE "/.cmd_subst.file"
+
 #define MX_RIGHT       4414235
 #define MX_LEFT        4479771
 #define MX_UP          4283163
@@ -47,7 +49,7 @@
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
 
-#define MX_CMD_SUBST_FILE "/.cmd_subst.file"
+#define MX_ARG_MAX     262144
 
 // Structures
 typedef struct s_hist t_hist;
@@ -129,6 +131,7 @@ struct s_ush {
     int exit_code;
     pid_t pgid;
     bool cmd_subst;
+    bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
 };
 
@@ -178,6 +181,7 @@ typedef enum e_defaults {
 // Functions
 // Core
 int mx_ush_loop(t_ush *ush);
+void mx_ush_core(t_ush *ush);
 int mx_process_commands_list(t_ush *ush);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
 t_ush *mx_init_shell(void);
@@ -210,11 +214,13 @@ void mx_overwrite_strarr_value(char ***arr, char *key, char *value);
 char *mx_build_key_value_str(char *key, char *value);
 int mx_check_duplicate(char ***array, char *key);
 char **mx_safe_split(char *arg);
-char **mx_create_tmp_env(t_ush *ush, char ***args);
-void mx_setup_underscore_env_var(t_ush *ush, char *arg);
+char **mx_create_tmp_env(t_ush *ush, t_job *job, t_process *process);
 int mx_check_flag(char **flags, char flag);
 bool mx_is_builtin(char *name, t_ush *ush);
 t_builtins *mx_init_builtins(void);
+bool mx_is_empty_line(char *line);
+bool mx_is_closed_quotes(char *line);
+void mx_get_command_path(t_ush *ush, t_process *process);
 
 // Signals
 void mx_ignore_signals(void);
@@ -250,16 +256,17 @@ t_process *mx_create_processes(char *cmd);
 t_process *mx_copy_processes(t_process *processes);
 void push_back_proccess(t_process **processes, t_process *process);
 void mx_delete_processes(t_process **processes);
-int mx_launch_job(t_job *job, t_ush *ush, char **env);
+int mx_launch_job(t_job *job, t_ush *ush);
 int mx_launch_proccess(pid_t pgid, t_process *procces, int *fd, t_ush *ush);
-int mx_launch_simple_builtin(t_ush *ush, char **argv);
+int mx_launch_simple_builtin(t_ush *ush, char **argv, int copy_stdout);
 int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
 t_job *mx_sort_jobs(t_job *head);
 
 // Command substitutions
 void mx_command_substitutions(t_ush *ush);
-char *mx_get_cmd_substs_filename(void);
 void mx_change_line(t_ush *ush, char **new_cmd_subst, int start, int end);
+char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst);
+bool mx_check_quote(int index, char *line);
 
 // Builtins
 char **mx_store_flags(char **argv);

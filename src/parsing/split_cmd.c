@@ -1,44 +1,44 @@
 #include "ush.h"
 
 static void copy_character(char **args,  int *j, int count, char ch) {
-    args[count] = realloc(args[count], mx_strlen(args[count]) + 2);
+    if (!args[count])
+        args[count] = mx_strnew(0);
+    else
+        args[count] = realloc(args[count], strlen(args[count]) + 2);
     args[count][++(*j)] = ch;
     args[count][*j + 1] = '\0';
 }
 
-static bool copy_double_quoted_string(char **args, int *count, char *cmd,
-                                      int *j) {
-    int len = mx_strlen(cmd);
+static void copy_quoted_string(char **args, char *cmd, size_t *j, char ch) {
+    size_t len = strlen(cmd);
     int counter = 0;
 
-    for (int i = 0; i < len; ++i, ++counter) {
-        if (cmd[i] != '"')
+    for (size_t i = 0; i < len; ++i, ++counter) {
+        if (cmd[i] != ch)
             continue;
-        if (cmd[i] == '"' && cmd[i - 1] != '\\') {
+        if (cmd[i] == ch && cmd[i - 1] != '\\') {
             *j += counter + 2;
-            args[*count] = mx_strndup(cmd, counter);
-            ++(*count);
-            return true;
+            *args = mx_strndup(cmd, counter);
         }
     }
-    return false;
 }
 
-static bool copy_quoted_string(char **args, int *count, char *cmd, int *j) {
-    int len = mx_strlen(cmd);
-    int counter = 0;
+static void skip_spaces(int *count, int *j, size_t *i, char *cmd) {
+    ++(*count);
+    *j = -1;
+    while (mx_isspace(cmd[*i]))
+        ++(*i);
+    --(*i);
+}
 
-    for (int i = 0; i < len; ++i, ++counter) {
-        if (cmd[i] != '\'')
-            continue;
-        if (cmd[i] == '\'' && cmd[i - 1] != '\\') {
-            *j += counter + 2;
-            args[*count] = mx_strndup(cmd, counter);
-            ++(*count);
-            return true;
-        }
+static char **realloc_args(int count, int *buff_size, char **args) {
+    if (count >= *buff_size) {
+        *buff_size += MX_USH_TOK_BUFFSIZE;
+        args = realloc(args, *buff_size * sizeof(char *));
+        for (int p = count; p < *buff_size; ++p)
+            args[p] = NULL;
     }
-    return false;
+    return args;
 }
 
 char **mx_split_cmd(char *cmd) {
@@ -47,33 +47,18 @@ char **mx_split_cmd(char *cmd) {
     int count = 0;
     int j = -1;
 
-    for (int i = 0; i < mx_strlen(cmd); ++i) {
-        if (cmd[i] == '"' && cmd[i - 1] != '\\' && (i + 1 < mx_strlen(cmd)))
-            if (!copy_double_quoted_string(args, &count, &cmd[i + 1], &i)) {
-                mx_del_strarr(&args);
-                mx_print_error("ush: multiline input not supported\n");
-                return NULL;
-            }
-            else
-                continue;
-        else if (cmd[i] == '\'' && cmd[i - 1] != '\\' && (i + 1 < mx_strlen(cmd)))
-            if (!copy_quoted_string(args, &count, &cmd[i + 1], &i)) {
-                mx_del_strarr(&args);
-                mx_print_error("ush: multiline input not supported\n");
-                return NULL;
-            }
-            else
-                continue;
+    for (size_t i = 0; i < strlen(cmd); ++i) {
+        if (cmd[i] == '"' && cmd[i - 1] != '\\' && (i + 1 < strlen(cmd)))
+            copy_quoted_string(&args[count++], &cmd[i + 1], &i, '"');
+        else if (cmd[i] == '\'' && cmd[i - 1] != '\\' && (i + 1 < strlen(cmd)))
+            copy_quoted_string(&args[count++], &cmd[i + 1], &i, '\'');
         else if (!mx_isspace(cmd[i]) && cmd[i] != '\\')
             copy_character(args, &j, count, cmd[i]);
-        else if (cmd[i] == '\\' && (i + 1 < mx_strlen(cmd)) && (++i))
+        else if (cmd[i] == '\\' && (i + 1 < strlen(cmd)) && (++i))
             copy_character(args, &j, count, cmd[i]);
-        else {
-            ++count;
-            j = -1;
-        }
-        if (count >= buff_size && (buff_size += MX_USH_TOK_BUFFSIZE))
-            args = realloc(args, buff_size * sizeof(char *));
+        else
+            skip_spaces(&count, &j, &i, cmd);
+        args = realloc_args(count, &buff_size, args);
     }
     return args;
 }

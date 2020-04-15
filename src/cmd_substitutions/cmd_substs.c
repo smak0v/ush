@@ -3,23 +3,15 @@
 static char *process_output_data(t_ush *ush) {
     char *cmd_subst = mx_file_to_str(ush->cmd_substs_file);
     char *new_cmd_subst = NULL;
-    int j = 0;
 
-    for (int i = 0; i < mx_strlen(cmd_subst) - 1; ++i) {
-        new_cmd_subst = realloc(new_cmd_subst, mx_strlen(new_cmd_subst) + 2);
-        if (mx_isspace(cmd_subst[i])) {
-            new_cmd_subst[j] = ' ';
-            while (mx_isspace(cmd_subst[i]))
-                ++i;
-            --i;
-        }
-        else
-            new_cmd_subst[j] = cmd_subst[i];
-        new_cmd_subst[++j] = '\0';
+    if (!ush->cmd_subst_replace_spaces) {
+        new_cmd_subst = mx_strndup(cmd_subst, mx_strlen(cmd_subst) - 1);
+        mx_strdel(&cmd_subst);
+        remove(ush->cmd_substs_file);
+        return new_cmd_subst;
     }
-    remove(ush->cmd_substs_file);
-    mx_strdel(&cmd_subst);
-    return new_cmd_subst;
+    else
+        return mx_del_extra_cmd_subst_spaces(ush, cmd_subst);
 }
 
 static int get_end_index(char *line, char *open_combination) {
@@ -60,20 +52,26 @@ static void process_command_substitution(t_ush *ush, char *open_combination,
     mx_change_line(ush, &new_cmd_subst, start, end_index);
 }
 
+static void command_substitutions(t_ush *ush, int i, char *open_combination) {
+    if (mx_check_quote(i, ush->in->line))
+        ush->cmd_subst_replace_spaces = true;
+    process_command_substitution(ush, open_combination, i);
+    i = 0;
+    ush->cmd_subst_replace_spaces = false;
+}
+
 void mx_command_substitutions(t_ush *ush) {
     for (int i = 0; i < mx_strlen(ush->in->line); ++i) {
         if (ush->in->line[i] == '$' && (i + 1 < mx_strlen(ush->in->line))
             && ush->in->line[i + 1] == '(') {
-                if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
-                    continue;
-                process_command_substitution(ush, "$(", i);
-                i = 0;
-            }
+            if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
+                continue;
+            command_substitutions(ush, i, "$(");
+        }
         else if (ush->in->line[i] == '`') {
             if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
                 continue;
-            process_command_substitution(ush, "`", i);
-            i = 0;
+            command_substitutions(ush, i, "`");
         }
     }
 }
