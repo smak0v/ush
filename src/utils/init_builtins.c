@@ -17,6 +17,8 @@ t_builtins *mx_init_builtins(void) {
     builtins->mx_ush_fg = &mx_ush_fg;
     builtins->mx_ush_history = &mx_ush_history;
     builtins->mx_ush_return = &mx_ush_return;
+    builtins->mx_ush_true = &mx_ush_true;
+    builtins->mx_ush_false = &mx_ush_false;
 
     return builtins;
 }

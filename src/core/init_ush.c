@@ -70,7 +70,7 @@ t_ush *mx_init_shell(void) {
     t_ush *ush = mx_memalloc(sizeof(t_ush));
     char *builtins[] = {"cd", "pwd", "echo", "which", "exit", "bye", "env",
                         "export", "unset", "local", "jobs", "fg", "history",
-                        "return", NULL};
+                        "return", "true", "false", NULL};
     int *not_found = NULL;
 
     init_shell_for_jobs_and_cmd_substs(ush);

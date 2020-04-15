@@ -23,7 +23,7 @@
 #define MX_IS_EXEC(mode) ((mode) & S_IXUSR)
 #define MX_IS_LNK(mode) (((mode) & S_IFMT) == S_IFLNK)
 
-#define MX_BUILTINS_COUNT 14
+#define MX_BUILTINS_COUNT 16
 #define MX_USH_TOK_BUFFSIZE 64
 #define MX_USH_TOK_DELIM " \t\r\n\a"
 #define MX_DEFAULT_PATH "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -103,6 +103,8 @@ struct s_builtins {
     int (*mx_ush_fg)(char **, t_ush *);
     int (*mx_ush_history)(char **, t_ush *);
     int (*mx_ush_return)(char **, t_ush *);
+    int (*mx_ush_true)(char **, t_ush *);
+    int (*mx_ush_false)(char **, t_ush *);
 };
 
 struct s_input {
@@ -278,6 +280,8 @@ int mx_ush_local(char **args, t_ush *ush);
 int mx_ush_which(char **args, t_ush *ush);
 int mx_ush_history(char **args, t_ush *ush);
 int mx_ush_return(char **args, t_ush *ush);
+int mx_ush_true(char **args, t_ush *ush);
+int mx_ush_false(char **args, t_ush *ush);
 void mx_invalid_identifier(char *cmd, char *identifier);
 
     // CD
@@ -310,6 +314,11 @@ char **mx_which(t_ush *ush, char **flags, char **args, int *status);
 void mx_which_invalid_option(char *option);
 void mx_which_usage_error(int *status);
 char **mx_get_split_path(t_ush *ush);
+
+    //ECHO
+void mx_print_echo(char **flags, char **arguments);
+char **mx_echo_parse_flags(char **args);
+char **mx_echo_parse_args(char **args);
 
     // EXIT
 short int mx_exit(char **args, int *exit);

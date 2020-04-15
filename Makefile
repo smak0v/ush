@@ -44,19 +44,21 @@ WHICH_OBJD				= $(BUILTINS_OBJD)/which
 CD_OBJD					= $(BUILTINS_OBJD)/cd
 FG_OBJD					= $(BUILTINS_OBJD)/fg
 JOBS_OBJD				= $(BUILTINS_OBJD)/jobs
+ECHO_OBJD				= $(BUILTINS_OBJD)/echo
 
 OBJ_DIRS				= $(OBJD) $(CORE_OBJD) $(INPUT_OBJD) $(UTILS_OBJD) \
 						  $(CLEARING_OBJD) $(BUILTINS_OBJD) $(ENV_OBJD) \
 						  $(EXPORT_OBJD) $(WHICH_OBJD) $(CD_OBJD) $(FG_OBJD) \
-						  $(JOBS_OBJD) $(PARSING_OBJD) $(CMD_SUBSTS_OBJD) \
-						  $(JOB_CTRL_SYSTEM_OBJD)
+						  $(JOBS_OBJD) $(ECHO_OBJD) $(PARSING_OBJD) \
+						  $(CMD_SUBSTS_OBJD) $(JOB_CTRL_SYSTEM_OBJD)
 
 OBJS					= $(addprefix $(OBJD)/, main.o $(CORE:%.c=%.o) \
 						  $(UTILS:%.c=%.o) $(BUILTINS:%.c=%.o) $(ENV:%.c=%.o) \
 						  $(EXPORT:%.c=%.o) $(WHICH:%.c=%.o) $(CD:%.c=%.o) \
 						  $(PARSING:%.c=%.o) $(JOB_CTRL_SYSTEM:%.c=%.o) \
 						  $(INPUT:%.c=%.o) $(FG:%.c=%.o) $(JOBS:%.c=%.o) \
-						  $(CMD_SUBSTS:%.c=%.o) $(CLEARING:%.c=%.o))
+						  $(ECHO:%.c=%.o) $(CMD_SUBSTS:%.c=%.o) \
+						  $(CLEARING:%.c=%.o))
 
 #===================================SRC=======================================#
 CORE_SRCS				= ush_loop.c process_commands_list.c \
@@ -92,6 +94,8 @@ FG_SRCS					= fg.c fg_errors.c fg_utils.c
 
 JOBS_SRCS				= jobs.c jobs_errors.c
 
+ECHO_SRCS 				= echo.c echo_parsing.c
+
 PARSING_SRCS			= proccess_escapings.c split_cmd.c split_token.c
 
 JOB_CTRL_SYSTEM_SRCS	= jcs_utils.c job_utils.c process_utils.c \
@@ -115,6 +119,7 @@ WHICH					= $(addprefix builtins/which/, $(WHICH_SRCS))
 CD						= $(addprefix builtins/cd/, $(CD_SRCS))
 FG						= $(addprefix builtins/fg/, $(FG_SRCS))
 JOBS					= $(addprefix builtins/jobs/, $(JOBS_SRCS))
+ECHO					= $(addprefix builtins/echo/, $(ECHO_SRCS))
 
 SRCD					= src
 
@@ -186,6 +191,9 @@ $(FG_OBJD)/%.o: $(SRCD)/builtins/fg/%.c $(INCS)
 	$(call compile_dependency, $<, $@)
 
 $(JOBS_OBJD)/%.o: $(SRCD)/builtins/jobs/%.c $(INCS)
+	$(call compile_dependency, $<, $@)
+
+$(ECHO_OBJD)/%.o: $(SRCD)/builtins/echo/%.c $(INCS)
 	$(call compile_dependency, $<, $@)
 
 $(PARSING_OBJD)/%.o: $(SRCD)/parsing/%.c $(INCS)
