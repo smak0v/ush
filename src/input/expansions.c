@@ -11,7 +11,7 @@ static void expand_dollars(t_ush *ush) {
                 && isspace(ush->in->line[i - 1])) {
                 continue;
             }
-            mx_expand_dollar(ush, i, ush->in->line + i);
+            mx_expand_dollar(ush, i);
         }
     }
 }
@@ -27,7 +27,7 @@ static void expand_tildes(t_ush *ush) {
                 && isspace(ush->in->line[i - 1])) {
                 continue;
             }
-            mx_expand_tilde(ush, i, ush->in->line + i + 1);
+            mx_expand_tilde(ush, i);
         }
     }
 }
