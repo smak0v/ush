@@ -23,10 +23,10 @@ void mx_shuffle_text(t_input *in) {
 }
 
 void mx_update_cursor(t_input *in) {
-    int j = 0;
+    size_t j = 0;
 
     tputs(tgetstr("cr", NULL), 1, mx_printnbr);
-    for (int i = 0; i < in->win_x; i++)
+    for (size_t i = 0; i < in->win_x; i++)
         tputs(tgetstr("nd", NULL), 1, mx_printnbr);
     if (((strlen(in->line) + 4) / in->winsize) + 1 > in->cur_y)
         while (j++ < ((strlen(in->line) + 4) / in->winsize + 1 - in->cur_y))
