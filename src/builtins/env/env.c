@@ -38,7 +38,7 @@ static char **set_environment(t_env *env, t_ush *ush) {
     char **environment = NULL;
 
     if (env->i)
-        environment = mx_strarr_dup(env->name_val);
+        environment = mx_clean_duplicates(mx_strarr_dup(env->name_val));
     else
         environment = mx_strarr_join(ush->env, env->name_val);
 

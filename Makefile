@@ -81,7 +81,7 @@ BUILTINS_SRCS			= builtins.c builtins2.c parse_flags.c parse_args.c \
 						  validation.c mixed_errors.c unset.c exit.c \
 						  easy_builtins.c
 
-ENV_SRCS				= env.c env_errors.c parse_env.c janitor.c
+ENV_SRCS				= env.c env_errors.c parse_env.c env_utils.c
 
 EXPORT_SRCS				= export.c process_duplicates.c
 

@@ -306,6 +306,7 @@ t_env *mx_parse_env(char **args);
 void mx_env_illegal_option(char illegal_option);
 void mx_option_requires_an_argument(char option);
 void mx_env_janitor(t_env **env_struct);
+char **mx_clean_duplicates(char **env);
 
     // EXPORT
 void mx_export(char **arguments, t_ush *ush, int *status);
