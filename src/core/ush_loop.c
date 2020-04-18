@@ -21,7 +21,8 @@ void mx_ush_core(t_ush *ush) {
 int mx_ush_loop(t_ush *ush) {
     while (!ush->exit) {
         tcsetpgrp(STDIN_FILENO, ush->pgid);
-        mx_printstr("u$h> ");
+        mx_update_prompt(ush);
+        mx_print_prompt(ush);
         ush->in->line = mx_get_line(ush);
         mx_ush_core(ush);
     }

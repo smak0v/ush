@@ -33,8 +33,8 @@ void mx_expand_dollar(t_ush *ush, size_t index) {
     key = get_key(line + index + 1);
     value = strcmp(key, "?") == 0 ? mx_getenv(ush->hidden, key)
         : mx_getenv(ush->local_variables, key);
-    dollar_expression = strndup(line + index, strlen(key) + 1
-        + (line[index + 1] == '{' ? 2 : 0));
+    dollar_expression = strndup(
+        line + index, strlen(key) + 1 + (line[index + 1] == '{' ? 2 : 0));
     mx_strdel(&ush->in->line);
     ush->in->line = value
         ? mx_replace_substr(line, dollar_expression, value)

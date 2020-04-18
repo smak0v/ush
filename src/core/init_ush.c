@@ -75,6 +75,7 @@ t_ush *mx_init_shell(void) {
 
     mx_init_terminal_data();
     ush->in = mx_memalloc(sizeof(t_input));
+    mx_init_prompt(ush);
     ush->env = mx_strarr_dup(environ);
     increase_shell_lvl(ush->env);
     not_found = set_env(ush->env);

@@ -9,7 +9,8 @@ void mx_arrow_left(t_input *in) {
                 ++(in->win_x);
             }
             --(in->cur_y);
-        } else {
+        }
+        else {
             tputs(tgetstr("le", NULL), 1, mx_printnbr);
             --(in->win_x);
         }
@@ -24,7 +25,8 @@ void mx_arrow_right(t_input *in) {
             tputs(tgetstr("cr", NULL), 1, mx_printnbr);
             in->win_x = 0;
             ++(in->cur_y);
-        } else {
+        }
+        else {
             tputs(tgetstr("nd", NULL), 1, mx_printnbr);
             ++(in->win_x);
         }
@@ -43,10 +45,14 @@ void mx_arrow_up(t_ush *ush) {
     }
     mx_printstr(ush->in->line);
     ush->in->cur_x = strlen(ush->in->line);
-    ush->in->cur_y += ((ush->in->cur_x + 4) / ush->in->winsize);
-    ush->in->win_x = ((ush->in->cur_x + 5) > ush->in->winsize
-        ? (ush->in->cur_x + 5 - (ush->in->winsize * (ush->in->cur_y - 1)))
-        : (ush->in->cur_x + 5));
+    ush->in->cur_y += (
+        (ush->in->cur_x + ush->in->prompt_length - 1) / ush->in->winsize);
+    if ((ush->in->cur_x + ush->in->prompt_length) > ush->in->winsize)
+        ush->in->win_x = (ush->in->cur_x
+                          + ush->in->prompt_length
+                          - (ush->in->winsize * (ush->in->cur_y - 1)));
+    else
+        ush->in->win_x = (ush->in->cur_x + ush->in->prompt_length);
     mx_update_cursor(ush->in);
 }
 
@@ -60,10 +66,14 @@ void mx_arrow_down(t_ush *ush) {
         mx_strcat(ush->in->line, ush->current->cmd);
         mx_printstr(ush->in->line);
         ush->in->cur_x = strlen(ush->in->line);
-        ush->in->cur_y += ((ush->in->cur_x + 4) / ush->in->winsize);
-        ush->in->win_x = ((ush->in->cur_x + 5) > ush->in->winsize
-            ? (ush->in->cur_x + 5 - (ush->in->winsize * (ush->in->cur_y - 1)))
-            : (ush->in->cur_x + 5));
+        ush->in->cur_y += (
+            (ush->in->cur_x + ush->in->prompt_length - 1) / ush->in->winsize);
+        if ((ush->in->cur_x + ush->in->prompt_length) > ush->in->winsize)
+            ush->in->win_x = (ush->in->cur_x
+                              + ush->in->prompt_length
+                              - (ush->in->winsize * (ush->in->cur_y - 1)));
+        else
+            ush->in->win_x = ush->in->cur_x + ush->in->prompt_length;
         mx_update_cursor(ush->in);
     }
 }

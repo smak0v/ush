@@ -45,6 +45,7 @@
 #define MX_ENTER       10
 #define MX_CTRL_C      3
 #define MX_CTRL_D      4
+#define MX_ALT_1       41410
 
 #define MX_SUCCESS     0
 #define MX_FAILURE     1
@@ -110,6 +111,8 @@ struct s_builtins {
 };
 
 struct s_input {
+    char *prompt;
+    size_t prompt_length;
     size_t win_x;
     size_t cur_x;
     size_t cur_y;
@@ -231,7 +234,12 @@ void mx_ignore_signals(void);
 void mx_default_signals(void);
 
 // Input
+void mx_init_prompt(t_ush *ush);
+void mx_change_prompt(t_ush *ush);
+void mx_update_prompt(t_ush *ush);
+void mx_print_prompt(t_ush *ush);
 char *mx_get_line(t_ush *ush);
+void mx_print_line(t_input *in);
 void mx_shuffle_text(t_input *in);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
