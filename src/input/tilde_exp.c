@@ -42,11 +42,10 @@ static char *replace_tilde(t_ush *ush, char *postfix) {
 
 void mx_expand_tilde(t_ush *ush, size_t index) {
     char *tilde = NULL;
-    char *line = ush->in->line;
+    char *line = NULL;
     char *tilde_expression = NULL;
 
-    if (index != 0 && !isspace(line[index - 1]))
-        return;
+    line = strdup(ush->in->line);
     tilde = replace_tilde(ush, line + index + 1);
     if (tilde) {
         tilde_expression = strndup(line + index, 1
@@ -56,4 +55,5 @@ void mx_expand_tilde(t_ush *ush, size_t index) {
         mx_strdel(&tilde_expression);
         mx_strdel(&tilde);
     }
+    mx_strdel(&line);
 }

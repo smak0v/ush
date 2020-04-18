@@ -15,7 +15,7 @@ static char *get_key(char *str) {
     else
         for (size_t i = 0; i < strlen(str); i++)
             if (!isalpha(str[i]) && !isnumber(str[i])) {
-                key = strndup(str, i);
+                key = strndup(str, i == 0? 1 : i);
                 break;
             }
     if (!key)
@@ -26,11 +26,10 @@ static char *get_key(char *str) {
 void mx_expand_dollar(t_ush *ush, size_t index) {
     char *key = NULL;
     char *value = NULL;
-    char *line = ush->in->line;
+    char *line = NULL;
     char *dollar_expression = NULL;
 
-    if (index != 0 && !isspace(line[index - 1]))
-        return;
+    line = strdup(ush->in->line);
     key = get_key(line + index + 1);
     value = strcmp(key, "?") == 0 ? mx_getenv(ush->hidden, key)
         : mx_getenv(ush->local_variables, key);
@@ -43,4 +42,5 @@ void mx_expand_dollar(t_ush *ush, size_t index) {
     mx_strdel(&dollar_expression);
     mx_strdel(&value);
     mx_strdel(&key);
+    mx_strdel(&line);
 }
