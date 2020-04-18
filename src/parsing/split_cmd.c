@@ -28,7 +28,8 @@ static void skip_spaces(int *count, int *j, size_t *i, char *cmd) {
     *j = -1;
     while (mx_isspace(cmd[*i]))
         ++(*i);
-    --(*i);
+    if (cmd[*i] != '\\')
+        --(*i);
 }
 
 static char **realloc_args(int count, int *buff_size, char **args) {

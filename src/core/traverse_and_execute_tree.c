@@ -31,6 +31,6 @@ void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status) {
             mx_delete_job(&job);
             mx_traverse_and_execute_tree(tree->right, ush, status);
         }
-        mx_del_strarr(&args);
     }
+    mx_del_strarr(&args);
 }
