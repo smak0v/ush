@@ -38,7 +38,7 @@ char **mx_clean_duplicates(char **env) {
     char **split = NULL;
     char **res = env;
 
-    for (int i = 0; res[i + 1]; i++) {
+    for (int i = 0; res && res[i + 1]; i++) {
         int flag = 0;
 
         split = mx_split_key_value(res[i]);

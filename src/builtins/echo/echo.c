@@ -1,6 +1,9 @@
 #include "ush.h"
 
 void mx_print_echo(char **flags, char **arguments) {
+    if (!arguments || !(*arguments))
+        return;
+
     mx_printstr(arguments[0]);
     
     for (int i = 1; arguments[i]; i++) {
