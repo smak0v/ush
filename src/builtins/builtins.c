@@ -48,8 +48,8 @@ int mx_ush_echo(char **args, t_ush *ush) {
     char **flags = mx_echo_parse_flags(args);
     char **arguments = mx_echo_parse_args(args);
 
-    // if (mx_check_flag(flags, 'e'))
-    //     mx_process_echo_args(arguments);
+    if (mx_check_flag(flags, 'e'))
+        mx_process_echo_args(arguments, flags);
 
     mx_print_echo(flags, arguments);
     mx_del_strarr(&flags);

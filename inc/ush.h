@@ -335,6 +335,7 @@ char **mx_get_split_path(t_ush *ush);
 void mx_print_echo(char **flags, char **arguments);
 char **mx_echo_parse_flags(char **args);
 char **mx_echo_parse_args(char **args);
+void mx_process_echo_args(char **args, char **flags);
 
     // EXIT
 short int mx_exit(char **args, int *exit);
