@@ -1,16 +1,17 @@
 #include "ush.h"
 
-void mx_change_line(t_ush *ush, char **new_cmd_subst, int start, int end) {
-    char *new_line = mx_strndup(ush->in->line, start);
+void mx_change_line(char **line, char **new_cmd_subst, int start, int end) {
+    char *line_ptr = *line;
+    char *new_line = mx_strndup(line_ptr, start);
     char *tmp = mx_strjoin(new_line, *new_cmd_subst);
 
     mx_strdel(&new_line);
     new_line = tmp;
-    tmp = mx_strjoin(new_line, ush->in->line + start + end + 1);
+    tmp = mx_strjoin(new_line, line_ptr + start + end + 1);
     mx_strdel(&new_line);
     new_line = tmp;
-    mx_strdel(&ush->in->line);
-    ush->in->line = new_line;
+    mx_strdel(line);
+    *line = new_line;
     mx_strdel(new_cmd_subst);
 }
 

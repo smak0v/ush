@@ -4,7 +4,7 @@ void mx_dll_push_back(t_dll **list, void *data) {
     t_dll *node = mx_dll_create_node(data);
     t_dll *last = *list;
 
-    if (!*list) {
+    if (!last) {
         *list = node;
         return;
     }

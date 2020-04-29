@@ -49,7 +49,7 @@ void mx_create_tree(t_dll *sub_tokens, t_tree **leaf) {
         *leaf = mx_create_tree_node(mx_strdup(data));
 }
 
-void mx_create_trees(t_ush *ush, char *line) {
+void mx_create_trees(t_dll **trees, char *line) {
     char *token = NULL;
     t_dll *sub_tokens = NULL;
     t_tree *tree = NULL;
@@ -64,7 +64,7 @@ void mx_create_trees(t_ush *ush, char *line) {
     while (token) {
         sub_tokens = mx_split_token(token);
         mx_create_tree(sub_tokens, &tree);
-        mx_dll_push_back(&ush->trees, tree);
+        mx_dll_push_back(trees, tree);
         mx_clear_tokens(&sub_tokens);
         token = strtok(NULL, ";");
     }

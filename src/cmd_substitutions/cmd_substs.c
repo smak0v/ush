@@ -29,8 +29,9 @@ static int get_end_index(char *line, char *open_combination) {
 }
 
 static void process_command_substitution(t_ush *ush, char *open_combination,
-                                         int start) {
-    int end_index = get_end_index(ush->in->line + start, open_combination);
+                                         int start, char **line) {
+    char *line_ptr = *line;
+    int end_index = get_end_index(line_ptr + start, open_combination);
     char *new_cmd_subst = NULL;
     char *str = NULL;
 
@@ -40,38 +41,42 @@ static void process_command_substitution(t_ush *ush, char *open_combination,
         return;
     }
     if (!mx_strcmp(open_combination, "$("))
-        str = mx_strndup(ush->in->line + start + 2, end_index - 2);
+        str = mx_strndup(line_ptr + start + 2, end_index - 2);
     else if (!mx_strcmp(open_combination, "`"))
-        str = mx_strndup(ush->in->line + start + 1, end_index - 1);
+        str = mx_strndup(line_ptr + start + 1, end_index - 1);
     ush->cmd_subst = true;
-    mx_create_trees(ush, str);
+    mx_create_trees(&ush->cmd_subst_trees, str);
     mx_strdel(&str);
-    mx_process_commands_list(ush);
-    mx_clear_trees(ush);
+    mx_process_commands_list(ush, &ush->cmd_subst_trees);
     new_cmd_subst = process_output_data(ush);
-    mx_change_line(ush, &new_cmd_subst, start, end_index);
+    mx_change_line(line, &new_cmd_subst, start, end_index);
 }
 
-static void command_substitutions(t_ush *ush, int i, char *open_combination) {
-    if (mx_check_quote(i, ush->in->line))
+static void command_substitutions(t_ush *ush, int i, char *open_combination,
+                                  char **line) {
+    char *lien_prt = *line;
+
+    if (mx_check_quote(i, lien_prt))
         ush->cmd_subst_replace_spaces = true;
-    process_command_substitution(ush, open_combination, i);
+    process_command_substitution(ush, open_combination, i, line);
     i = 0;
     ush->cmd_subst_replace_spaces = false;
 }
 
-void mx_command_substitutions(t_ush *ush) {
-    for (int i = 0; i < mx_strlen(ush->in->line); ++i) {
-        if (ush->in->line[i] == '$' && (i + 1 < mx_strlen(ush->in->line))
-            && ush->in->line[i + 1] == '(') {
-            if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
+void mx_command_substitutions(t_ush *ush, char **line) {
+    char *line_ptr = *line;
+
+    for (int i = 0; i < mx_strlen(line_ptr); ++i) {
+        if (line_ptr[i] == '$' && (i + 1 < mx_strlen(line_ptr))
+            && line_ptr[i + 1] == '(') {
+            if ((i - 1 >= 0) && line_ptr[i - 1] == '\\')
                 continue;
-            command_substitutions(ush, i, "$(");
+            command_substitutions(ush, i, "$(", line);
         }
-        else if (ush->in->line[i] == '`') {
-            if ((i - 1 >= 0) && ush->in->line[i - 1] == '\\')
+        else if (line_ptr[i] == '`') {
+            if ((i - 1 >= 0) && line_ptr[i - 1] == '\\')
                 continue;
-            command_substitutions(ush, i, "`");
+            command_substitutions(ush, i, "`", line);
         }
     }
 }
