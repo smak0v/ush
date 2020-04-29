@@ -13,8 +13,7 @@ static void clear_tree(t_tree **tree) {
     *tree = NULL;
 }
 
-void mx_clear_trees(t_ush *ush) {
-    t_dll *trees = ush->trees;
+void mx_clear_trees(t_ush *ush, t_dll *trees) {
     t_tree *tree = NULL;
 
     while (trees) {
@@ -22,5 +21,5 @@ void mx_clear_trees(t_ush *ush) {
         clear_tree(&tree);
         mx_dll_pop_front(&trees);
     }
-    ush->trees = NULL;
+    trees = NULL;
 }

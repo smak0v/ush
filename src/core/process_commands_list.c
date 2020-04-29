@@ -1,7 +1,7 @@
 #include "ush.h"
 
-int mx_process_commands_list(t_ush *ush) {
-    t_dll *tree = ush->trees;
+int mx_process_commands_list(t_ush *ush, t_dll *trees) {
+    t_dll *tree = trees;
     int status = 0;
 
     while (tree) {

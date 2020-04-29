@@ -124,7 +124,8 @@ struct s_input {
 struct s_ush {
     t_job *suspended;
     bool delete_suspended;
-    t_dll *trees;
+    t_dll *cmd_trees;
+    t_dll *cmd_subst_trees;
     t_hist *history;
     t_hist *current;
     t_input *in;
@@ -189,7 +190,7 @@ typedef enum e_defaults {
 // Core
 int mx_ush_loop(t_ush *ush);
 void mx_ush_core(t_ush *ush);
-int mx_process_commands_list(t_ush *ush);
+int mx_process_commands_list(t_ush *ush, t_dll *trees);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
 t_ush *mx_init_shell(void);
 void mx_init_terminal_data(void);
@@ -202,7 +203,7 @@ t_dll *mx_split_token(char *token);
 char **mx_split_cmd(char *cmd);
 
 // Utils
-void mx_create_trees(t_ush *ush, char *line);
+t_dll *mx_create_trees(t_ush *ush, char *line);
 void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
 int mx_printnbr(int i);
@@ -356,7 +357,7 @@ int mx_get_job_index_by_name(char *job_arg, t_job *jobs);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
-void mx_clear_trees(t_ush *ush);
+void mx_clear_trees(t_ush *ush, t_dll *trees);
 int mx_clean_data(char **tmp_env);
 void mx_reset_env_and_clean_data(int (**builtin_func)(char **, t_ush *));
 

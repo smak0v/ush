@@ -46,8 +46,8 @@ static void process_command_substitution(t_ush *ush, char *open_combination,
     ush->cmd_subst = true;
     mx_create_trees(ush, str);
     mx_strdel(&str);
-    mx_process_commands_list(ush);
-    mx_clear_trees(ush);
+    mx_process_commands_list(ush, ush->cmd_subst_trees);
+    mx_clear_trees(ush, ush->cmd_subst_trees);
     new_cmd_subst = process_output_data(ush);
     mx_change_line(ush, &new_cmd_subst, start, end_index);
 }

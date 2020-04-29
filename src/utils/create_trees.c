@@ -49,23 +49,24 @@ void mx_create_tree(t_dll *sub_tokens, t_tree **leaf) {
         *leaf = mx_create_tree_node(mx_strdup(data));
 }
 
-void mx_create_trees(t_ush *ush, char *line) {
+t_dll *mx_create_trees(t_ush *ush, char *line) {
     char *token = NULL;
     t_dll *sub_tokens = NULL;
     t_tree *tree = NULL;
 
     if (mx_is_empty_line(line))
-        return;
+        return NULL;
     if (!mx_is_closed_quotes(line)) {
         mx_print_error("ush: multiline input not supported\n");
-        return;
+        return NULL;
     }
     token = strtok(line, ";");
     while (token) {
         sub_tokens = mx_split_token(token);
         mx_create_tree(sub_tokens, &tree);
-        mx_dll_push_back(&ush->trees, tree);
+        mx_dll_push_back(&ush->cmd_trees, tree);
         mx_clear_tokens(&sub_tokens);
         token = strtok(NULL, ";");
     }
+    return ush->cmd_trees;
 }
