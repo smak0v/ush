@@ -203,7 +203,7 @@ t_dll *mx_split_token(char *token);
 char **mx_split_cmd(char *cmd);
 
 // Utils
-void mx_create_trees(t_ush *ush, t_dll **trees, char *line);
+void mx_create_trees(t_dll **trees, char *line);
 void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
 int mx_printnbr(int i);
@@ -276,8 +276,8 @@ int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
 t_job *mx_sort_jobs(t_job *head);
 
 // Command substitutions
-void mx_command_substitutions(t_ush *ush);
-void mx_change_line(t_ush *ush, char **new_cmd_subst, int start, int end);
+void mx_command_substitutions(t_ush *ush, char **line);
+void mx_change_line(char **line, char **new_cmd_subst, int start, int end);
 char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst);
 bool mx_check_quote(int index, char *line);
 
@@ -357,7 +357,7 @@ int mx_get_job_index_by_name(char *job_arg, t_job *jobs);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
-void mx_clear_trees(t_ush *ush, t_dll *trees);
+void mx_clear_trees(t_dll **trees);
 int mx_clean_data(char **tmp_env);
 void mx_reset_env_and_clean_data(int (**builtin_func)(char **, t_ush *));
 
