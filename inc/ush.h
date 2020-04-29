@@ -190,8 +190,9 @@ typedef enum e_defaults {
 // Core
 int mx_ush_loop(t_ush *ush);
 void mx_ush_core(t_ush *ush);
-int mx_process_commands_list(t_ush *ush, t_dll *trees);
+int mx_process_commands_list(t_ush *ush, t_dll **trees);
 void mx_traverse_and_execute_tree(t_tree *tree, t_ush *ush, int *status);
+void mx_prepare_subline_and_launch_job(t_ush *ush, t_tree *tree, int *status);
 t_ush *mx_init_shell(void);
 void mx_init_terminal_data(void);
 void mx_enable_input_mode(t_ush *ush);
