@@ -44,7 +44,7 @@ static void process_command_substitution(t_ush *ush, char *open_combination,
     else if (!mx_strcmp(open_combination, "`"))
         str = mx_strndup(ush->in->line + start + 1, end_index - 1);
     ush->cmd_subst = true;
-    mx_create_trees(ush, str);
+    mx_create_trees(ush, &ush->cmd_subst_trees, str);
     mx_strdel(&str);
     mx_process_commands_list(ush, ush->cmd_subst_trees);
     mx_clear_trees(ush, ush->cmd_subst_trees);

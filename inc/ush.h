@@ -203,7 +203,7 @@ t_dll *mx_split_token(char *token);
 char **mx_split_cmd(char *cmd);
 
 // Utils
-t_dll *mx_create_trees(t_ush *ush, char *line);
+void mx_create_trees(t_ush *ush, t_dll **trees, char *line);
 void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
 int mx_printnbr(int i);
