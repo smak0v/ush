@@ -26,10 +26,12 @@ int mx_ush_cd(char **args, t_ush *ush) {
 int mx_ush_pwd(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
     char *path = NULL;
-    char *option = 0;
+    char *option = NULL;
 
     if (flags && *flags && (option = mx_flags_validation(flags, pwd))) {
-        mx_print_error_endl("to do: pwd error handling");
+        mx_print_error("pwd: bad option: -");
+        mx_print_error_endl(option);
+        mx_del_strarr(&flags);
         return 1;
     }
 
@@ -47,16 +49,16 @@ int mx_ush_pwd(char **args, t_ush *ush) {
 int mx_ush_echo(char **args, t_ush *ush) {
     char **flags = mx_echo_parse_flags(args);
     char **arguments = mx_echo_parse_args(args);
+    ush += 1;
 
     if (mx_check_flag(flags, 'e'))
-        mx_process_echo_args(arguments, flags);
+        mx_process_echo_args(arguments);
 
     mx_print_echo(flags, arguments);
     mx_del_strarr(&flags);
     mx_del_strarr(&arguments);
     return 0;
 }
-
 
 int mx_ush_which(char **args, t_ush *ush) {
     char **flags = mx_store_flags(args);
@@ -70,7 +72,7 @@ int mx_ush_which(char **args, t_ush *ush) {
     else if (arguments) {
         output = mx_which(ush, flags, arguments, &status);
         if (!mx_check_flag(flags, 's'))
-            mx_print_strarr(output, "\n");
+            mx_print_which(arguments, output);
         mx_del_strarr(&output);
     }
     else

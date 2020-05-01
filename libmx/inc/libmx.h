@@ -35,6 +35,8 @@ void mx_printchar_ntimes(char ch, int count);
 void mx_print_unicode(wchar_t c);
 void mx_printstr(const char *s);
 void mx_printstr_endl(const char *s);
+void mx_printstrn(const char *s, int n);
+void mx_printstrn_endl(const char *s, int n);
 void mx_print_error(const char *error);
 void mx_print_error_endl(const char *error);
 void mx_print_strarr(char **arr, const char *delim);

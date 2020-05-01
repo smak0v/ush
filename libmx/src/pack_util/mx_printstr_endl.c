@@ -6,3 +6,10 @@ void mx_printstr_endl(const char *s) {
         mx_printchar('\n');
     }
 }
+
+void mx_printstrn_endl(const char *s, int n) {
+    if (s) {
+        write(1, s, n);
+        mx_printchar('\n');
+    }
+}

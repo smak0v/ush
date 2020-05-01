@@ -24,7 +24,6 @@ static char **check_match(DIR *dir, char **flags, char *path, char *command) {
         if (!mx_strcmp(dirnt->d_name, command)) {
             full_filename = get_full_filename(path, command);
             lstat(full_filename, &st);
-
             if (MX_IS_EXEC(st.st_mode)) {
                 res = mx_push_to_strarr(res, full_filename);
                 if (!mx_check_flag(flags, 'a')) {
@@ -48,7 +47,6 @@ static int scan_dir(char ***output, char **flags, char **path, char *arg) {
 
         if (!dir)
             continue;
-
         if ((tmp = check_match(dir, flags, path[i], arg)) && flag == 0) {
             res = mx_strarr_join(*output, tmp);
             mx_del_strarr(&tmp);

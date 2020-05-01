@@ -11,7 +11,7 @@ static void process_escape(char **arg, char escape, int index) {
     mx_strdel(&tmp);
 }
 
-void mx_process_echo_args(char **args, char **flags) {
+void mx_process_echo_args(char **args) {
     for (int i = 0; args && args[i]; i++)
         for (int j = 0; args[i][j + 1]; j++)
             if (args[i][j] == '\\' && args[i][j + 1] == '\\')
