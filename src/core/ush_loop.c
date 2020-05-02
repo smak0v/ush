@@ -3,7 +3,6 @@
 void mx_ush_core(t_ush *ush) {
     char *str_exit_code = NULL;
 
-    mx_expansions(ush);
     if (ush->in->line) {
         mx_create_trees(&ush->cmd_trees, ush->in->line);
         ush->exit_code = mx_process_commands_list(ush, &ush->cmd_trees);

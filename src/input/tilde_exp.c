@@ -40,20 +40,20 @@ static char *replace_tilde(t_ush *ush, char *postfix) {
     return tilde;
 }
 
-void mx_expand_tilde(t_ush *ush, size_t index) {
+void mx_expand_tilde(t_ush *ush, char **line, size_t index) {
     char *tilde = NULL;
-    char *line = NULL;
+    char *before = NULL;
     char *tilde_expression = NULL;
 
-    line = strdup(ush->in->line);
-    tilde = replace_tilde(ush, line + index + 1);
+    before = strdup(*line);
+    tilde = replace_tilde(ush, before + index + 1);
     if (tilde) {
-        tilde_expression = strndup(line + index, 1
-            + (line[index + 1] == '+' || line[index + 1] == '-'));
-        mx_strdel(&ush->in->line);
-        ush->in->line = mx_replace_substr(line, tilde_expression, tilde);
+        tilde_expression = strndup(before + index, 1
+            + (before[index + 1] == '+' || before[index + 1] == '-'));
+        mx_strdel(line);
+        *line = mx_replace_substr(before, tilde_expression, tilde);
         mx_strdel(&tilde_expression);
         mx_strdel(&tilde);
     }
-    mx_strdel(&line);
+    mx_strdel(&before);
 }
