@@ -1,7 +1,7 @@
 #include "ush.h"
 
 static void is_closed_quotes(char *line, char ch, size_t *i, bool *is_closed) {
-    if (line[*i] == ch) {
+    if (line[*i] == ch && line[*i - 1] != '\\') {
         *is_closed = false;
         for (size_t j = *i + 1; j < strlen(line); ++j)
             if (line[j] == ch) {

@@ -204,7 +204,7 @@ t_dll *mx_split_token(char *token);
 char **mx_split_cmd(char *cmd);
 
 // Utils
-void mx_create_trees(t_dll **trees, char *line);
+void mx_create_trees(t_ush *ush, t_dll **trees, char *line);
 void mx_create_tree(t_dll *sub_tokens, t_tree **leaf);
 void mx_print_inorder_tree(t_tree *tree);
 int mx_printnbr(int i);
@@ -230,6 +230,10 @@ t_builtins *mx_init_builtins(void);
 bool mx_is_empty_line(char *line);
 bool mx_is_closed_quotes(char *line);
 void mx_get_command_path(t_ush *ush, t_process *process);
+void mx_check_quoted(char line_i, bool *quoted);
+void mx_copy_and_create_tree(char *token, t_dll **trees);
+void mx_left_branch(t_dll *tmp, t_tree **leaf);
+void mx_right_branch(t_dll *tmp, t_tree **leaf);
 
 // Signals
 void mx_ignore_signals(void);
@@ -358,6 +362,7 @@ int mx_get_job_index_by_name(char *job_arg, t_job *jobs);
 
 // Data clearing
 void mx_clear_tokens(t_dll **tokens);
+void mx_free_token(t_token *token);
 void mx_clear_trees(t_dll **trees);
 int mx_clean_data(char **tmp_env);
 void mx_reset_env_and_clean_data(int (**builtin_func)(char **, t_ush *));
@@ -366,3 +371,4 @@ void mx_reset_env_and_clean_data(int (**builtin_func)(char **, t_ush *));
 void mx_proccess_start_error(char *process_name);
 void mx_command_not_found_error(char *command_name);
 void mx_no_such_file_or_directory(char *cmd);
+void mx_semicolons_parse_error(t_ush *ush, t_dll **trees);

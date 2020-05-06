@@ -10,3 +10,9 @@ void mx_clear_tokens(t_dll **tokens) {
         mx_dll_pop_front(tokens);
     }
 }
+
+void mx_free_token(t_token *token) {
+    mx_strdel(&token->data);
+    free(token);
+    token = NULL;
+}

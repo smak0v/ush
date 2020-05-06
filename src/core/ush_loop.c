@@ -5,7 +5,7 @@ void mx_ush_core(t_ush *ush) {
 
     mx_expansions(ush);
     if (ush->in->line) {
-        mx_create_trees(&ush->cmd_trees, ush->in->line);
+        mx_create_trees(ush, &ush->cmd_trees, ush->in->line);
         ush->exit_code = mx_process_commands_list(ush, &ush->cmd_trees);
         ush->exit_code = ush->exit_code > 0 ? 1 : 0;
         str_exit_code = mx_itoa(ush->exit_code);
