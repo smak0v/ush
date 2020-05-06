@@ -1,41 +1,41 @@
 #include "ush.h"
 
-static void expand_dollars(t_ush *ush) {
+static void expand_dollars(t_ush *ush, char **line) {
     bool escape = false;
 
-    for (size_t i = 0; i < strlen(ush->in->line); i++) {
-        if (ush->in->line[i] == '\'')
+    for (size_t i = 0; i < strlen(*line); i++) {
+        if ((*line)[i] == '\'' || (*line)[i] == '\"')
             escape = !escape;
-        if (ush->in->line[i] == '$' && !escape) {
-            if (ush->in->line[i + 1] == '(')
+        if ((*line)[i] == '$' && !escape) {
+            if ((*line)[i + 1] == '(')
                 return;
-            mx_expand_dollar(ush, i);
+            mx_expand_dollar(ush, line, i);
         }
     }
 }
 
-static void expand_tildes(t_ush *ush) {
+static void expand_tildes(t_ush *ush, char **line) {
     bool escape = false;
 
-    for (size_t i = 0; i < strlen(ush->in->line); i++) {
-        if (ush->in->line[i] == '\'' || ush->in->line[i] == '\"')
+    for (size_t i = 0; i < strlen(*line); i++) {
+        if ((*line)[i] == '\'' || (*line)[i] == '\"')
             escape = !escape;
-        if (ush->in->line[i] == '~' && !escape) {
-            if (i - 2 >= 0 && ush->in->line[i - 2] == '\\'
-                && isspace(ush->in->line[i - 1])) {
+        if ((*line)[i] == '~' && !escape) {
+            if (i - 2 >= 0 && (*line)[i - 2] == '\\'
+                && isspace((*line)[i - 1])) {
                 continue;
             }
-            if (i != 0 && !isspace(ush->in->line[i - 1])
-                && ush->in->line[i - 1] != '`'
-                && ush->in->line[i - 1] != '(') {
+            if (i != 0 && !isspace((*line)[i - 1])
+                && (*line)[i - 1] != '`'
+                && (*line)[i - 1] != '(') {
                 return;
             }
-            mx_expand_tilde(ush, i);
+            mx_expand_tilde(ush, line, i);
         }
     }
 }
 
-void mx_expansions(t_ush *ush) {
-    expand_dollars(ush);
-    expand_tildes(ush);
+void mx_expansions(t_ush *ush, char **line) {
+    expand_dollars(ush, line);
+    expand_tildes(ush, line);
 }

@@ -16,9 +16,8 @@ static void process_cmd_substs_and_expansions(t_ush *ush, t_tree **tree) {
     t_tree *tree_ptr = *tree;
     char *line = (char *)tree_ptr->data;
 
-    // TODO (4sv) Replace expansions in variable - line
-    // Before cmd_substs checking
     if (!ush->cmd_subst) {
+        mx_expansions(ush, &line);
         mx_command_substitutions(ush, &line);
         ush->cmd_subst = false;
         (*tree)->data = line;

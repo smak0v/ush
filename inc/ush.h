@@ -141,6 +141,7 @@ struct s_ush {
     bool cmd_subst;
     bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
+    int chars_after_newline;
 };
 
 struct s_cmd {
@@ -249,9 +250,9 @@ void mx_print_line(t_input *in);
 void mx_shuffle_text(t_input *in);
 void mx_add_cmd(t_hist **hist, t_hist *node);
 t_hist *mx_create_hist_node(char *cmd);
-void mx_expand_tilde(t_ush *ush, size_t index);
-void mx_expand_dollar(t_ush *ush, size_t index);
-void mx_expansions(t_ush *ush);
+void mx_expand_tilde(t_ush *ush, char **line, size_t index);
+void mx_expand_dollar(t_ush *ush, char **line, size_t index);
+void mx_expansions(t_ush *ush, char **line);
 void mx_arrow_left(t_input *in);
 void mx_arrow_right(t_input *in);
 void mx_arrow_up(t_ush *ush);
@@ -336,12 +337,13 @@ char **mx_which(t_ush *ush, char **flags, char **args, int *status);
 void mx_which_invalid_option(char *option);
 void mx_which_usage_error(int *status);
 char **mx_get_split_path(t_ush *ush);
+void mx_print_which(char **args, char **output);
 
     //ECHO
-void mx_print_echo(char **flags, char **arguments);
+void mx_print_echo(t_ush *ush, char **flags, char **arguments);
 char **mx_echo_parse_flags(char **args);
 char **mx_echo_parse_args(char **args);
-void mx_process_echo_args(char **args, char **flags);
+void mx_process_echo_args(char **args);
 
     // EXIT
 short int mx_exit(char **args, int *exit);

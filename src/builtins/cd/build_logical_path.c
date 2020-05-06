@@ -15,24 +15,35 @@ static char *rebuild_path(char **split, char *full_path, char **realpath) {
     return tmp;
 }
 
-char *mx_build_logical_path(char *pwd, char *dest, char *realpath) {
-    char **dest_split = mx_strsplit(dest, '/');
-    char *path = NULL;
+static char *process_path(char *dst, char *rlpath, char *pwd, int *lnk) {
+    char **dstsplit = mx_strsplit(dst, '/');
     char *full_path = NULL;
+    char *path = NULL;
 
-    while (dest_split[0]) {
-        path = mx_strarr_to_str(dest_split, "/");
-        if (dest[0] == '/')
+    while (dstsplit[0]) {
+        path = mx_strarr_to_str(dstsplit, "/");
+        if (dst[0] == '/')
             full_path = mx_strjoin("/", path);
         else
             full_path = mx_build_path(pwd, path);
         if (mx_check_link(&path, full_path)) {
-            realpath = rebuild_path(dest_split, full_path, &realpath);
+            rlpath = rebuild_path(dstsplit, full_path, &rlpath);
+            *lnk = 1;
         }
-        mx_strdel(&dest_split[mx_strarr_len(dest_split) - 1]);
+        mx_strdel(&dstsplit[mx_strarr_len(dstsplit) - 1]);
         mx_strdel(&full_path);
     }
+    free(dstsplit);
+    return rlpath;
+}
 
-    free(dest_split);
-    return mx_strdup(realpath);
+char *mx_build_logical_path(char *pwd, char *dest, char *realpath) {
+    int link = 0;
+
+    realpath = process_path(dest, realpath, pwd, &link);
+
+    if (link)
+        return realpath;
+    else
+        return mx_strdup(realpath);
 }

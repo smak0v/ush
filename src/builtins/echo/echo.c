@@ -11,7 +11,7 @@ static void process_escape(char **arg, char escape, int index) {
     mx_strdel(&tmp);
 }
 
-void mx_process_echo_args(char **args, char **flags) {
+void mx_process_echo_args(char **args) {
     for (int i = 0; args && args[i]; i++)
         for (int j = 0; args[i][j + 1]; j++)
             if (args[i][j] == '\\' && args[i][j + 1] == '\\')
@@ -30,9 +30,25 @@ void mx_process_echo_args(char **args, char **flags) {
                 process_escape(&args[i], '\t', j);
             else if (args[i][j] == '\\' && args[i][j + 1] == 'v')
                 process_escape(&args[i], '\v', j);
+            else if (args[i][j] == '\\' && args[i][j + 1] == 'a')
+                process_escape(&args[i], '\a', j);
 }
 
-void mx_print_echo(char **flags, char **arguments) {
+static int calc_len(char **arguments) {
+    int counter = 0;
+
+    for (int i = 0; arguments[i]; i++) { 
+        for (int j = 0; arguments[i][j]; j++) {
+            counter++;
+            if (arguments[i][j] == '\n')
+                counter = 0;
+        }
+        counter++;
+    }
+    return counter - 1;
+}
+
+void mx_print_echo(t_ush *ush, char **flags, char **arguments) {
     if (!arguments || !(*arguments))
         return;
 
@@ -45,4 +61,6 @@ void mx_print_echo(char **flags, char **arguments) {
 
     if (!mx_check_flag(flags, 'n'))
         mx_printchar('\n');
+    else
+        ush->chars_after_newline = calc_len(arguments);
 }

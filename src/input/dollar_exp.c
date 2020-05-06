@@ -23,24 +23,24 @@ static char *get_key(char *str) {
     return key;
 }
 
-void mx_expand_dollar(t_ush *ush, size_t index) {
+void mx_expand_dollar(t_ush *ush, char **line, size_t index) {
     char *key = NULL;
     char *value = NULL;
-    char *line = NULL;
+    char *before = NULL;
     char *dollar_expression = NULL;
 
-    line = strdup(ush->in->line);
-    key = get_key(line + index + 1);
+    before = strdup(*line);
+    key = get_key(before + index + 1);
     value = strcmp(key, "?") == 0 ? mx_getenv(ush->hidden, key)
         : mx_getenv(ush->local_variables, key);
     dollar_expression = strndup(
-        line + index, strlen(key) + 1 + (line[index + 1] == '{' ? 2 : 0));
-    mx_strdel(&ush->in->line);
-    ush->in->line = value
-        ? mx_replace_substr(line, dollar_expression, value)
-        : mx_replace_substr(line, dollar_expression, " ");
+        before + index, strlen(key) + 1 + (before[index + 1] == '{' ? 2 : 0));
+    mx_strdel(line);
+    *line = value
+        ? mx_replace_substr(before, dollar_expression, value)
+        : mx_replace_substr(before, dollar_expression, " ");
     mx_strdel(&dollar_expression);
     mx_strdel(&value);
     mx_strdel(&key);
-    mx_strdel(&line);
+    mx_strdel(&before);
 }
