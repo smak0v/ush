@@ -1,13 +1,12 @@
 #include "ush.h"
 
 void mx_change_line(char **line, char **new_cmd_subst, int start, int end) {
-    char *line_ptr = *line;
-    char *new_line = mx_strndup(line_ptr, start);
+    char *new_line = mx_strndup((*line), start);
     char *tmp = mx_strjoin(new_line, *new_cmd_subst);
 
     mx_strdel(&new_line);
     new_line = tmp;
-    tmp = mx_strjoin(new_line, line_ptr + start + end + 1);
+    tmp = mx_strjoin(new_line, (*line) + start + end + 1);
     mx_strdel(&new_line);
     new_line = tmp;
     mx_strdel(line);
@@ -36,14 +35,20 @@ char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst) {
     return new_cmd_subst;
 }
 
-bool mx_check_quote(int index, char *line) {
-    for (int i = index; i > 0; --i) {
-        while (mx_isspace(line[i]))
-            --i;
-        if (line[i] == '"' || line[i] == '\'')
-            return true;
-        else
-            return false;
-    }
-    return false;
+bool mx_check_double_quote(int index, char *line) {
+    --index;
+
+    while (mx_isspace(line[index]) && (index >= 0))
+        --index;
+
+    return (line[index] == '"') ? true : false;
+}
+
+bool mx_check_singly_quote(int index, char *line) {
+    --index;
+
+    while (mx_isspace(line[index]) && (index >= 0))
+        --index;
+
+    return (line[index] == '\'') ? true : false;
 }

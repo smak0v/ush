@@ -4,7 +4,7 @@ static char *process_output_data(t_ush *ush) {
     char *cmd_subst = mx_file_to_str(ush->cmd_substs_file);
     char *new_cmd_subst = NULL;
 
-    if (!ush->cmd_subst_replace_spaces) {
+    if (ush->cmd_subst_replace_spaces) {
         new_cmd_subst = mx_strndup(cmd_subst, mx_strlen(cmd_subst) - 1);
         mx_strdel(&cmd_subst);
         remove(ush->cmd_substs_file);
@@ -30,8 +30,7 @@ static int get_end_index(char *line, char *open_combination) {
 
 static void process_command_substitution(t_ush *ush, char *open_combination,
                                          int start, char **line) {
-    char *line_ptr = *line;
-    int end_index = get_end_index(line_ptr + start, open_combination);
+    int end_index = get_end_index((*line) + start, open_combination);
     char *new_cmd_subst = NULL;
     char *str = NULL;
 
@@ -41,9 +40,9 @@ static void process_command_substitution(t_ush *ush, char *open_combination,
         return;
     }
     if (!mx_strcmp(open_combination, "$("))
-        str = mx_strndup(line_ptr + start + 2, end_index - 2);
+        str = mx_strndup((*line) + start + 2, end_index - 2);
     else if (!mx_strcmp(open_combination, "`"))
-        str = mx_strndup(line_ptr + start + 1, end_index - 1);
+        str = mx_strndup((*line) + start + 1, end_index - 1);
     ush->cmd_subst = true;
     mx_create_trees(ush, &ush->cmd_subst_trees, str);
     mx_strdel(&str);
@@ -54,27 +53,26 @@ static void process_command_substitution(t_ush *ush, char *open_combination,
 
 static void command_substitutions(t_ush *ush, int i, char *open_combination,
                                   char **line) {
-    char *lien_prt = *line;
-
-    if (mx_check_quote(i, lien_prt))
+    if (mx_check_double_quote(i, *line))
         ush->cmd_subst_replace_spaces = true;
     process_command_substitution(ush, open_combination, i, line);
-    i = 0;
     ush->cmd_subst_replace_spaces = false;
 }
 
 void mx_command_substitutions(t_ush *ush, char **line) {
-    char *line_ptr = *line;
-
-    for (int i = 0; i < mx_strlen(line_ptr); ++i) {
-        if (line_ptr[i] == '$' && (i + 1 < mx_strlen(line_ptr))
-            && line_ptr[i + 1] == '(') {
-            if ((i - 1 >= 0) && line_ptr[i - 1] == '\\')
+    for (int i = 0; i < mx_strlen(*line); ++i) {
+        if ((*line)[i] == '$' && (i + 1 < mx_strlen(*line))
+            && (*line)[i + 1] == '(') {
+            if (mx_check_singly_quote(i, *line))
+                break;
+            if ((i - 1 >= 0) && (*line)[i - 1] == '\\')
                 continue;
             command_substitutions(ush, i, "$(", line);
         }
-        else if (line_ptr[i] == '`') {
-            if ((i - 1 >= 0) && line_ptr[i - 1] == '\\')
+        else if ((*line)[i] == '`') {
+            if (mx_check_singly_quote(i, *line))
+                break;
+            if ((i - 1 >= 0) && (*line)[i - 1] == '\\')
                 continue;
             command_substitutions(ush, i, "`", line);
         }

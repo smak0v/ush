@@ -10,13 +10,13 @@ t_process *create_process(char *cmd) {
 t_process *mx_create_processes(char *cmd) {
     char **splited_by_pipes = mx_strsplit(cmd, '|');
     char **tmp = splited_by_pipes;
-    char *trimmed = NULL;
+    char *copy = NULL;
     t_process *processes = NULL;
 
     while (*tmp) {
-        trimmed = mx_strtrim(*tmp);
-        push_back_proccess(&processes, create_process(trimmed));
-        mx_strdel(&trimmed);
+        copy = mx_strdup(*tmp);
+        push_back_proccess(&processes, create_process(copy));
+        mx_strdel(&copy);
         ++tmp;
     }
     mx_del_strarr(&splited_by_pipes);
