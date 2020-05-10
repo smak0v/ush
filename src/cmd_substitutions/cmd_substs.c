@@ -71,9 +71,10 @@ void mx_command_substitutions(t_ush *ush, char **line, int start) {
             command_substitutions(ush, i, "$(", line);
         }
         else if ((*line)[i] == '`') {
-            if (mx_check_single_quote(i, *line))
+            if (ush->cmd_subst_level == 0 && mx_check_single_quote(i, *line))
                 break;
-            if ((i - 1 >= 0) && (*line)[i - 1] == '\\')
+            if (ush->cmd_subst_level == 0 && (i - 1 >= 0)
+                && (*line)[i - 1] == '\\')
                 continue;
             mx_command_substitutions(ush, line, i + 1);
             command_substitutions(ush, i, "`", line);

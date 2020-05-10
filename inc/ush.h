@@ -141,6 +141,7 @@ struct s_ush {
     bool cmd_subst;
     bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
+    int cmd_subst_level;
     int chars_after_newline;
 };
 
@@ -235,6 +236,7 @@ void mx_check_quoted(char line_i, bool *quoted);
 void mx_copy_and_create_tree(char *token, t_dll **trees);
 void mx_left_branch(t_dll *tmp, t_tree **leaf);
 void mx_right_branch(t_dll *tmp, t_tree **leaf);
+bool mx_is_in_cmd_subs(char *line, int index);
 
 // Signals
 void mx_ignore_signals(void);
