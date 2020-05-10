@@ -119,6 +119,7 @@ struct s_input {
     char *line;
     int key;
     size_t winsize;
+    int chars_after_newline;
 };
 
 struct s_ush {
@@ -141,7 +142,6 @@ struct s_ush {
     bool cmd_subst;
     bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
-    int chars_after_newline;
 };
 
 struct s_cmd {

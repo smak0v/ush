@@ -56,5 +56,6 @@ char *mx_get_line(t_ush *ush) {
     if (ush->in->line[0])
         mx_add_cmd(&(ush->history), mx_create_hist_node(ush->in->line));
     ush->current = ush->history;
+    ush->in->chars_after_newline = 0;
     return ush->in->line;
 }
