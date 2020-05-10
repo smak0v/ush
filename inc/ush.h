@@ -282,11 +282,11 @@ int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
 t_job *mx_sort_jobs(t_job *head);
 
 // Command substitutions
-void mx_command_substitutions(t_ush *ush, char **line);
+void mx_command_substitutions(t_ush *ush, char **line, int start);
 void mx_change_line(char **line, char **new_cmd_subst, int start, int end);
 char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst);
 bool mx_check_double_quote(int index, char *line);
-bool mx_check_singly_quote(int index, char *line);
+bool mx_check_single_quote(int index, char *line);
 
 // Builtins
 char **mx_store_flags(char **argv);

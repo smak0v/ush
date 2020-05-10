@@ -44,7 +44,7 @@ bool mx_check_double_quote(int index, char *line) {
     return (line[index] == '"') ? true : false;
 }
 
-bool mx_check_singly_quote(int index, char *line) {
+bool mx_check_single_quote(int index, char *line) {
     --index;
 
     while (mx_isspace(line[index]) && (index >= 0))

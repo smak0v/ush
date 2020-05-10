@@ -59,21 +59,23 @@ static void command_substitutions(t_ush *ush, int i, char *open_combination,
     ush->cmd_subst_replace_spaces = false;
 }
 
-void mx_command_substitutions(t_ush *ush, char **line) {
-    for (int i = 0; i < mx_strlen(*line); ++i) {
+void mx_command_substitutions(t_ush *ush, char **line, int start) {
+    for (int i = start; i < mx_strlen(*line); ++i) {
         if ((*line)[i] == '$' && (i + 1 < mx_strlen(*line))
             && (*line)[i + 1] == '(') {
-            if (mx_check_singly_quote(i, *line))
+            if (mx_check_single_quote(i, *line))
                 break;
             if ((i - 1 >= 0) && (*line)[i - 1] == '\\')
                 continue;
+            mx_command_substitutions(ush, line, i + 2);
             command_substitutions(ush, i, "$(", line);
         }
         else if ((*line)[i] == '`') {
-            if (mx_check_singly_quote(i, *line))
+            if (mx_check_single_quote(i, *line))
                 break;
             if ((i - 1 >= 0) && (*line)[i - 1] == '\\')
                 continue;
+            mx_command_substitutions(ush, line, i + 1);
             command_substitutions(ush, i, "`", line);
         }
     }
