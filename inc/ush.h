@@ -289,6 +289,8 @@ void mx_change_line(char **line, char **new_cmd_subst, int start, int end);
 char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst);
 bool mx_check_double_quote(int index, char *line);
 bool mx_check_single_quote(int index, char *line);
+int mx_count_back_slashes(int level);
+bool mx_check_back_slashes_count(int level, char *line, int start);
 
 // Builtins
 char **mx_store_flags(char **argv);

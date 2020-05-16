@@ -52,3 +52,21 @@ bool mx_check_single_quote(int index, char *line) {
 
     return (line[index] == '\'') ? true : false;
 }
+
+int mx_count_back_slashes(int level) {
+    if (level == 0 || level == 1)
+        return level;
+
+    return (mx_pow(2, level - 1) * 2) - 1;
+}
+
+bool mx_check_back_slashes_count(int level, char *line, int start) {
+    int back_slashes_count = mx_count_back_slashes(level);
+
+    while (back_slashes_count) {
+        if (line[--start] != '\\')
+            return false;
+        --back_slashes_count;
+    }
+    return true;
+}

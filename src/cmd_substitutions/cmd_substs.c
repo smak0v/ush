@@ -76,8 +76,8 @@ void mx_command_substitutions(t_ush *ush, char **line, int start) {
             if (ush->cmd_subst_level == 0 && (i - 1 >= 0)
                 && (*line)[i - 1] == '\\')
                 continue;
+            ++ush->cmd_subst_level;
             mx_command_substitutions(ush, line, i + 1);
-            command_substitutions(ush, i, "`", line);
         }
     }
 }
