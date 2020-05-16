@@ -24,6 +24,13 @@ static void copy_quoted_string(char **args, char *cmd, size_t *j, char ch) {
 }
 
 static void skip_spaces(int *count, int *j, size_t *i, char *cmd) {
+    if (*i == 0) {
+        while (mx_isspace(cmd[*i]))
+            *i += 1;
+        *i -= 1;
+        return;
+    }
+
     ++(*count);
     *j = -1;
     while (mx_isspace(cmd[*i]))
