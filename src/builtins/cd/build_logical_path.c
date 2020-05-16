@@ -41,9 +41,9 @@ char *mx_build_logical_path(char *pwd, char *dest, char *realpath) {
     int link = 0;
 
     realpath = process_path(dest, realpath, pwd, &link);
-    
+
     if (link)
         return realpath;
-    else    
+    else
         return mx_strdup(realpath);
 }

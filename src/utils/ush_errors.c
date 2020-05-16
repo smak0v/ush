@@ -20,3 +20,9 @@ void mx_command_not_found_error(char *command_name) {
     mx_print_error(command_name);
     mx_print_error(": command not found\n");
 }
+
+void mx_semicolons_parse_error(t_ush *ush, t_dll **trees) {
+    mx_clear_trees(trees);
+    mx_print_error_endl("ush: syntax error near unexpected token `;;'");
+    ush->exit_code = 127;
+}

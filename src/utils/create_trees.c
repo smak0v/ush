@@ -1,71 +1,45 @@
 #include "ush.h"
 
-static void free_token(t_token *token) {
-    mx_strdel(&token->data);
-    free(token);
-    token = NULL;
+static bool is_escpd_semicolon(char *line, int i) {
+    return (line[i] == ';' && (i - 1 >= 0) && line[i - 1] != '\\')
+            || (line[i] == ';');
 }
 
-static void right_branch(t_dll *tmp, t_tree **leaf) {
-    t_token *token = (t_token *)tmp->data;
-    t_token *next_token = (t_token *)tmp->next->data;
-
-    tmp->next->prev = NULL;
-    mx_create_tree(tmp->next, &(*leaf)->right);
-    free_token(next_token);
-    free(tmp->next);
-    tmp->next = NULL;
-    free_token(token);
-    free(tmp);
-    tmp = NULL;
+static bool crutch_for_auditor(char *line, int i, bool quote) {
+    return (line[i] == ';' && (i - 1 < 0) && line[i + 1] == ';' && !quote)
+            || (is_escpd_semicolon(line, i) && line[i + 1] == ';' && !quote);
 }
 
-static void left_branch(t_dll *tmp, t_tree **leaf) {
-    tmp->prev->next = NULL;
-    while (tmp->prev)
-        tmp = tmp->prev;
-    mx_create_tree(tmp, &(*leaf)->left);
-}
-
-void mx_create_tree(t_dll *sub_tokens, t_tree **leaf) {
-    t_dll *tmp_1 = sub_tokens;
-    char *data = NULL;
-    bool found = false;
-
-    while (tmp_1->next)
-        tmp_1 = tmp_1->next;
-    while (tmp_1) {
-        if (((t_token *)tmp_1->data)->type == 1) {
-            found = true;
-            data = ((t_token *)tmp_1->data)->data;
-            *leaf = mx_create_tree_node(mx_strdup(data));
-            right_branch(tmp_1, leaf);
-            left_branch(tmp_1, leaf);
-            break;
-        }
-        tmp_1 = tmp_1->prev;
-    }
-    if (!found && (data = ((t_token *)sub_tokens->data)->data))
-        *leaf = mx_create_tree_node(mx_strdup(data));
-}
-
-void mx_create_trees(t_dll **trees, char *line) {
+static void split_semicolons(t_ush *ush, t_dll **trees, char *line) {
     char *token = NULL;
-    t_dll *sub_tokens = NULL;
-    t_tree *tree = NULL;
+    int prev_pos = 0;
+    bool quote= false;
 
+    for (int i = 0; i < mx_strlen(line); ++i) {
+        mx_check_quoted(line[i], &quote);
+        if (is_escpd_semicolon(line, i) && line[i + 1] != ';' && !quote) {
+            token = mx_strndup(line + prev_pos, i - prev_pos);
+            mx_copy_and_create_tree(token, trees);
+            prev_pos = ++i;
+        }
+        else if (crutch_for_auditor(line, i, quote)) {
+            mx_semicolons_parse_error(ush, trees);
+            return;
+        }
+    }
+    if (mx_strcmp(line + prev_pos, ";")) {
+        token = mx_strndup(line + prev_pos, mx_strlen(line + prev_pos));
+        mx_copy_and_create_tree(token, trees);
+    }
+}
+
+void mx_create_trees( t_ush *ush, t_dll **trees, char *line) {
     if (mx_is_empty_line(line))
         return;
+    // TODO check for closed cmd_substs
     if (!mx_is_closed_quotes(line)) {
         mx_print_error("ush: multiline input not supported\n");
         return;
     }
-    token = strtok(line, ";");
-    while (token) {
-        sub_tokens = mx_split_token(token);
-        mx_create_tree(sub_tokens, &tree);
-        mx_dll_push_back(trees, tree);
-        mx_clear_tokens(&sub_tokens);
-        token = strtok(NULL, ";");
-    }
+    split_semicolons(ush, trees, line);
 }

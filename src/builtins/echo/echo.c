@@ -64,5 +64,5 @@ void mx_print_echo(t_ush *ush, char **flags, char **arguments) {
     if (!mx_check_flag(flags, 'n'))
         mx_printchar('\n');
     else
-        ush->chars_after_newline = calc_len(arguments);
+        ush->in->chars_after_newline = calc_len(arguments);
 }

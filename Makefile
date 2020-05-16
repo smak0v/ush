@@ -73,7 +73,8 @@ UTILS_SRCS				= build_pwd_string.c getenv.c set_defaults.c \
 						  create_tmp_env.c get_command_path.c init_builtins.c \
 						  overwrite_strarr_value.c split_key_value.c \
 						  create_trees.c ush_errors.c errors.c  check_line.c \
-						  process_home.c check_flag.c is_builtin.c
+						  process_home.c check_flag.c is_builtin.c \
+						  check_quotes.c trees_utils.c
 
 CLEARING_SRCS			= clear_tokens.c clear_trees.c clear_processes_data.c
 

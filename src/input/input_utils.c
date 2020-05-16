@@ -6,7 +6,7 @@ void mx_init_line(t_ush *ush) {
     ush->in->line = mx_memalloc(1024);
     ush->in->key = 0;
     ush->in->cur_x = 0;
-    ush->in->win_x = ush->in->prompt_length;
+    ush->in->win_x = ush->in->prompt_length + ush->in->chars_after_newline;
     ush->in->cur_y = 1;
 }
 
@@ -51,7 +51,7 @@ void mx_cursor_to_promt(t_input *in) {
     }
     tputs(tgetstr("cr", NULL), 1, mx_printnbr);
     in->win_x = 0;
-    while (in->win_x < in->prompt_length) {
+    while (in->win_x < (in->prompt_length + in->chars_after_newline)) {
         tputs(tgetstr("nd", NULL), 1, mx_printnbr);
         ++(in->win_x);
     }
