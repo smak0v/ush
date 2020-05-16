@@ -50,7 +50,7 @@ char **mx_echo_parse_flags(char **args) {
 
 char **mx_echo_parse_args(char **args) {
     bool flag_stop = false;
-    int i = 1;
+    int i = 0;
 
     for (; args[i]; i++) {
         if (!flag_stop && args[i][0] == '-' && check_flag_validity(args[i]))

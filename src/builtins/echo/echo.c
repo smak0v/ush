@@ -49,8 +49,10 @@ static int calc_len(char **arguments) {
 }
 
 void mx_print_echo(t_ush *ush, char **flags, char **arguments) {
-    if (!arguments || !(*arguments))
+    if (!arguments || !(*arguments)) {
+        mx_printchar('\n');
         return;
+    }
 
     mx_printstr(arguments[0]);
     
