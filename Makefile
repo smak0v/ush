@@ -132,10 +132,12 @@ endef
 #=================================RULES=======================================#
 all: install
 
-install: $(LIBMXA) $(APP_NAME)
+install: $(LIBMXD) $(APP_NAME)
 
 $(OBJ_DIRS):
 	@mkdir -p $@
+
+$(LIBMXD): $(LIBMXA)
 
 $(LIBMXA):
 	@make -sC $(LIBMXD)
