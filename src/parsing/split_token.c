@@ -1,14 +1,12 @@
 #include "ush.h"
 
 static void copy_part(t_dll **sub_tokens, char **pos, int *len, char *str) {
-    char *tmp = mx_strndup(*pos, *len);
     t_token *token_1 = malloc(sizeof(t_token));
     t_token *token_2 = malloc(sizeof(t_token));
 
-    token_1->data = mx_strtrim(tmp);
+    token_1->data = mx_strndup(*pos, *len);
     token_1->type = 0;
     mx_dll_push_back(sub_tokens, token_1);
-    mx_strdel(&tmp);
     token_2->data = mx_strdup(str);
     token_2->type = 1;
     mx_dll_push_back(sub_tokens, token_2);
@@ -17,13 +15,11 @@ static void copy_part(t_dll **sub_tokens, char **pos, int *len, char *str) {
 }
 
 static void copy_last(t_dll **sub_tokens, char *pos) {
-    char *tmp = mx_strdup(pos);
     t_token *token = malloc(sizeof(t_token));
 
-    token->data = mx_strtrim(tmp);
+    token->data = mx_strdup(pos);
     token->type = 0;
     mx_dll_push_back(sub_tokens, token);
-    mx_strdel(&tmp);
 }
 
 t_dll *mx_split_token(char *token) {

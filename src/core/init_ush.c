@@ -61,6 +61,7 @@ static void init_shell_for_jobs_and_cmd_substs(t_ush *ush) {
     tcsetpgrp(STDIN_FILENO, ush->pgid);
     tcgetattr(STDIN_FILENO, &tty);
     ush->cmd_substs_file = mx_strjoin(home, MX_CMD_SUBST_FILE);
+    --ush->cmd_subst_level;
     remove(ush->cmd_substs_file);
     mx_strdel(&home);
 }

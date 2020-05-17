@@ -142,6 +142,8 @@ struct s_ush {
     bool cmd_subst;
     bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
+    int cmd_subst_level;
+    int open_comb_len;
 };
 
 struct s_cmd {
@@ -235,6 +237,7 @@ void mx_check_quoted(char line_i, bool *quoted);
 void mx_copy_and_create_tree(char *token, t_dll **trees);
 void mx_left_branch(t_dll *tmp, t_tree **leaf);
 void mx_right_branch(t_dll *tmp, t_tree **leaf);
+bool mx_is_in_cmd_subs(char *line, int index);
 
 // Signals
 void mx_ignore_signals(void);
@@ -282,10 +285,14 @@ int mx_wait_and_check_status(t_ush *ush, t_job *job, int status, pid_t pid);
 t_job *mx_sort_jobs(t_job *head);
 
 // Command substitutions
-void mx_command_substitutions(t_ush *ush, char **line);
+int mx_command_substitutions(t_ush *ush, char **line);
 void mx_change_line(char **line, char **new_cmd_subst, int start, int end);
 char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst);
-bool mx_check_quote(int index, char *line);
+bool mx_check_double_quote(int index, char *line);
+bool mx_check_single_quote(int index, char *line);
+int mx_count_back_slashes(int level);
+bool mx_check_back_slashes_count(int level, char *line, int start);
+void mx_remove_back_slashes(char **line);
 
 // Builtins
 char **mx_store_flags(char **argv);
@@ -374,3 +381,4 @@ void mx_proccess_start_error(char *process_name);
 void mx_command_not_found_error(char *command_name);
 void mx_no_such_file_or_directory(char *cmd);
 void mx_semicolons_parse_error(t_ush *ush, t_dll **trees);
+int mx_multiline_input_error(t_ush *ush);

@@ -6,7 +6,7 @@ CC						= clang
 DIR						= ush
 
 #=================================FLAGS=======================================#
-C_FLAGS					= -std=c11 $(addprefix -W, all extra pedantic)
+C_FLAGS					= -std=c11 $(addprefix -W, all extra pedantic error)
 
 ADD_FLAGS				= -g
 

@@ -20,3 +20,14 @@ void mx_check_quoted(char line_i, bool *quoted) {
         *quoted = !*quoted;
     }
 }
+
+bool mx_is_in_cmd_subs(char *line, int index) {
+    --index;
+    for (int i = index; i >= 0; --i) {
+        if (line[i] == '`')
+            return false;
+        else if (line[i] == '(' && (i - 1 >= 0) && line[i - 1] == '$')
+            return false;
+    }
+    return true;
+}

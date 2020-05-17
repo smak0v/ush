@@ -1,17 +1,16 @@
 #include "ush.h"
 
 void mx_change_line(char **line, char **new_cmd_subst, int start, int end) {
-    char *line_ptr = *line;
-    char *new_line = mx_strndup(line_ptr, start);
+    char *new_line = mx_strndup((*line), start);
     char *tmp = mx_strjoin(new_line, *new_cmd_subst);
 
     mx_strdel(&new_line);
     new_line = tmp;
-    tmp = mx_strjoin(new_line, line_ptr + start + end + 1);
+    tmp = mx_strjoin(new_line, (*line) + end + 1);
     mx_strdel(&new_line);
     new_line = tmp;
     mx_strdel(line);
-    *line = new_line;
+    *line = tmp;
     mx_strdel(new_cmd_subst);
 }
 
@@ -36,14 +35,37 @@ char *mx_del_extra_cmd_subst_spaces(t_ush *ush, char *cmd_subst) {
     return new_cmd_subst;
 }
 
-bool mx_check_quote(int index, char *line) {
-    for (int i = index; i > 0; --i) {
-        while (mx_isspace(line[i]))
-            --i;
-        if (line[i] == '"' || line[i] == '\'')
-            return true;
-        else
-            return false;
+bool mx_check_double_quote(int index, char *line) {
+    --index;
+
+    while (mx_isspace(line[index]) && (index >= 0))
+        --index;
+
+    return (line[index] == '"') ? true : false;
+}
+
+bool mx_check_single_quote(int index, char *line) {
+    --index;
+
+    while (mx_isspace(line[index]) && (index >= 0))
+        --index;
+
+    return (line[index] == '\'') ? true : false;
+}
+
+void mx_remove_back_slashes(char **line) {
+    char *new_line = mx_strnew(0);
+    int j = 0;
+
+    for (int i = 0; i < mx_strlen(*line); ++i) {
+        if ((*line)[i] != '\\') {
+            new_line = realloc(new_line, mx_strlen(new_line) + 2);
+            new_line[j] = (*line)[i];
+            new_line[j + 1] = '\0';
+            ++j;
+        }
     }
-    return false;
+
+    mx_strdel(line);
+    *line = new_line;
 }
