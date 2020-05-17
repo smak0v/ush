@@ -36,7 +36,6 @@ static void split_semicolons(t_ush *ush, t_dll **trees, char *line) {
 void mx_create_trees( t_ush *ush, t_dll **trees, char *line) {
     if (mx_is_empty_line(line))
         return;
-    // TODO check for closed cmd_substs
     if (!mx_is_closed_quotes(line)) {
         mx_print_error("ush: multiline input not supported\n");
         return;

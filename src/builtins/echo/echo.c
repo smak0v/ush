@@ -37,7 +37,7 @@ void mx_process_echo_args(char **args) {
 static int calc_len(char **arguments) {
     int counter = 0;
 
-    for (int i = 0; arguments[i]; i++) { 
+    for (int i = 0; arguments[i]; i++) {
         for (int j = 0; arguments[i][j]; j++) {
             counter++;
             if (arguments[i][j] == '\n')
@@ -55,7 +55,7 @@ void mx_print_echo(t_ush *ush, char **flags, char **arguments) {
     }
 
     mx_printstr(arguments[0]);
-    
+
     for (int i = 1; arguments[i]; i++) {
         mx_printstr(" ");
         mx_printstr(arguments[i]);

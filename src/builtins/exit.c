@@ -19,7 +19,6 @@ static unsigned char calc_code(long long arg) {
 static short int check_args(char **args) {
     long long exit_arg = atoll(*args);
 
-    // Peer to peer for a better solution
     if (exit_arg < -9223372036854775807 || exit_arg > 9223372036854775806)
         return -1;
 

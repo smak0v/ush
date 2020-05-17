@@ -22,18 +22,18 @@ static void increase_shell_lvl(char **env) {
 }
 
 static void process_unfound(int *not_found, char *key) {
-        if (!mx_strcmp("OLDPWD", key))
-            not_found[OLDPWD] = 1;
-        else if (!mx_strcmp("PWD", key))
-            not_found[PWD] = 1;
-        else if (!mx_strcmp("SHLVL", key))
-            not_found[SHLVL] = 1;
-        else if (!mx_strcmp("PATH", key))
-            not_found[PATH] = 1;
-        else if (!mx_strcmp("TERM", key))
-            not_found[TERM] = 1;
-        else if (!mx_strcmp("HOME", key))
-            not_found[HOME] = 1;
+    if (!mx_strcmp("OLDPWD", key))
+        not_found[OLDPWD] = 1;
+    else if (!mx_strcmp("PWD", key))
+        not_found[PWD] = 1;
+    else if (!mx_strcmp("SHLVL", key))
+        not_found[SHLVL] = 1;
+    else if (!mx_strcmp("PATH", key))
+        not_found[PATH] = 1;
+    else if (!mx_strcmp("TERM", key))
+        not_found[TERM] = 1;
+    else if (!mx_strcmp("HOME", key))
+        not_found[HOME] = 1;
 }
 
 static int *set_env(char **env) {

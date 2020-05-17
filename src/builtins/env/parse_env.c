@@ -21,7 +21,6 @@ static int save_arg(t_env *setup, char **args, int i, int j, char flag) {
     return step;
 }
 
-
 static int process_flags(t_env *setup, char **args, int *i) {
     int step = 0;
 
