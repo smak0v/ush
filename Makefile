@@ -143,6 +143,7 @@ $(LIBMXA):
 	@make -sC $(LIBMXD)
 
 clean:
+	@make -sC $(LIBMXD) $@
 	@rm -rf $(OBJD)
 	@printf "$(DIR)/$(OBJD)\t\t\033[31;1mdeleted\033[0m\n"
 
