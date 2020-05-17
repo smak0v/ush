@@ -142,7 +142,6 @@ struct s_ush {
     bool cmd_subst;
     bool cmd_subst_replace_spaces;
     char *cmd_substs_file;
-    int cmd_subst_level;
     int open_comb_len;
 };
 

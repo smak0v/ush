@@ -60,7 +60,8 @@ int mx_command_substitutions(t_ush *ush, char **line) {
         if (ush->open_comb_len > 0) {
             if (mx_check_single_quote(i, *line))
                 break;
-            if ((end = get_end_index(*line, ush->open_comb_len == 1 ? "`" : "$(", i)) && end < 0)
+            if ((end = get_end_index(*line, ush->open_comb_len == 1
+                ? "`" : "$(", i)) && end < 0)
                 return mx_multiline_input_error(ush);
             process_substitution(ush, line, i, end);
         }
