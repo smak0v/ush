@@ -87,7 +87,7 @@ make uninstall
 ### Characters escaping
 
 Next characters can be escaped to be used literally: ```space```, ```'```,
-```"```, ```$```, ```(```, ```)```, ```\```, `, ```{```, ```}```.
+```"```, ```$```, ```(```, ```)```, ```\```, \`, ```{```, ```}```.
 
 ### Tilde expansions
 
