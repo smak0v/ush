@@ -6,11 +6,11 @@ void mx_change_line(char **line, char **new_cmd_subst, int start, int end) {
 
     mx_strdel(&new_line);
     new_line = tmp;
-    tmp = mx_strjoin(new_line, (*line) + start + end + 1);
+    tmp = mx_strjoin(new_line, (*line) + end + 1);
     mx_strdel(&new_line);
     new_line = tmp;
     mx_strdel(line);
-    *line = new_line;
+    *line = tmp;
     mx_strdel(new_cmd_subst);
 }
 
@@ -53,20 +53,19 @@ bool mx_check_single_quote(int index, char *line) {
     return (line[index] == '\'') ? true : false;
 }
 
-int mx_count_back_slashes(int level) {
-    if (level == 0 || level == 1)
-        return level;
+void mx_remove_back_slashes(char **line) {
+    char *new_line = mx_strnew(0);
+    int j = 0;
 
-    return (mx_pow(2, level - 1) * 2) - 1;
-}
-
-bool mx_check_back_slashes_count(int level, char *line, int start) {
-    int back_slashes_count = mx_count_back_slashes(level);
-
-    while (back_slashes_count) {
-        if (line[--start] != '\\')
-            return false;
-        --back_slashes_count;
+    for (int i = 0; i < mx_strlen(*line); ++i) {
+        if ((*line)[i] != '\\') {
+            new_line = realloc(new_line, mx_strlen(new_line) + 2);
+            new_line[j] = (*line)[i];
+            new_line[j + 1] = '\0';
+            ++j;
+        }
     }
-    return true;
+
+    mx_strdel(line);
+    *line = new_line;
 }

@@ -19,7 +19,7 @@ static void process_cmd_substs_and_expansions(t_ush *ush, t_tree **tree) {
     mx_expansions(ush, &line);
     (*tree)->data = line;
     if (!ush->cmd_subst) {
-        mx_command_substitutions(ush, &line, 0);
+        mx_command_substitutions(ush, &line);
         ush->cmd_subst = false;
         (*tree)->data = line;
     }
