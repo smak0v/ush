@@ -81,20 +81,21 @@ static char **check_builtins(t_ush *ush, char *arg) {
 char **mx_which(t_ush *ush, char **flags, char **args, int *status) {
     char **path = mx_get_split_path(ush);
     char **res = NULL;
-    char **mem_clean = NULL;
     char **tmp = NULL;
+    int found = 0;
 
     for (int j = 0; args[j]; ++j) {
+        found = 0;
         tmp = check_builtins(ush, args[j]);
-        if (!tmp || mx_check_flag(flags, 'a'))
+        if (tmp) {
+            res = mx_join_strarr_and_memclean(&res, &tmp);
+            found = 1;
+        }
+        if (!found || mx_check_flag(flags, 'a'))
             if (scan_dir(&tmp, flags, path, args[j]) == 0)
                 *status = 1;
-        mem_clean = res;
-        res = mx_strarr_join(res, tmp);
-        mx_del_strarr(&mem_clean);
-        mx_del_strarr(&tmp);
+        res = mx_join_strarr_and_memclean(&res, &tmp);
     }
-
     mx_del_strarr(&path);
     return res;
 }

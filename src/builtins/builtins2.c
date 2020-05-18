@@ -6,18 +6,18 @@ int mx_ush_env(char **args, t_ush *ush) {
 
     if (setup->error) {
         mx_env_illegal_option(setup->error);
-        return 1;
+        status = 1;
     }
-    if (setup->P && !mx_strcmp("No ArG", setup->P)) {
+    else if (setup->P && !mx_strcmp("No ArG", setup->P)) {
         mx_option_requires_an_argument('P');
-        return 1;
+        status = 1;
     }
-    if (setup->u && !mx_strcmp("No ArG", setup->u)) {
+    else if (setup->u && !mx_strcmp("No ArG", setup->u)) {
         mx_option_requires_an_argument('u');
-        return 1;
+        status = 1;
     }
-
-    status = mx_env(setup, ush);
+    else
+        status = mx_env(setup, ush);
     mx_env_janitor(&setup);
     return status;
 }

@@ -57,7 +57,7 @@ int mx_cd(t_ush *ush, char **flags, char *destination) {
     char *real_path = realpath(destination, NULL);
 
     if (mx_check_flag(flags, 's') && includes_link(pwd, destination))
-        return mx_cd_not_a_directory_error(&pwd, destination);
+        return mx_cd_not_a_directory_error(&pwd, destination, &real_path);
     if (chdir(destination) == -1)
         return mx_cd_no_such_file_or_dir(&pwd, destination);
 

@@ -25,6 +25,7 @@ static void set_pwd(t_ush *ush) {
     ush->local_variables = mx_add_var(ush->local_variables, pwd);
     setenv(key_value[0], key_value[1], 1);
 
+    mx_del_strarr(&key_value);
     mx_strdel(&pwd);
 }
 

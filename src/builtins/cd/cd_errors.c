@@ -1,6 +1,7 @@
 #include "ush.h"
 
-int mx_cd_not_a_directory_error(char **delstr, char *destination) {
+int mx_cd_not_a_directory_error(char **delstr, char *destination, char **str) {
+    mx_strdel(str);
     mx_print_error("cd: not a directory: ");
     mx_print_error_endl(destination);
     mx_strdel(delstr);

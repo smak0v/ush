@@ -9,15 +9,15 @@ int mx_ush_cd(char **args, t_ush *ush) {
 
     if (flags && *flags && (illegal_option = mx_flags_validation(flags, cd)))
         return mx_cd_invalid_option(illegal_option);
-
     if (!arguments)
         destination = mx_getenv(ush->hidden, "HOME");
     else if (!mx_strcmp(*arguments, "-"))
         destination = mx_getenv(ush->hidden, "OLDPWD");
     else
-        destination = *arguments;
+        destination = mx_strdup(*arguments);
 
     status = mx_cd(ush, flags, destination);
+    mx_strdel(&destination);
     mx_del_strarr(&flags);
     mx_del_strarr(&arguments);
     return status;
@@ -50,7 +50,7 @@ int mx_ush_echo(char **args, t_ush *ush) {
     char **flags = mx_echo_parse_flags(args);
     char **arguments = mx_echo_parse_args(args + 1);
 
-    if (mx_check_flag(flags, 'e'))
+    if (!mx_check_flag(flags, 'E'))
         mx_process_echo_args(arguments);
 
     mx_print_echo(ush, flags, arguments);
