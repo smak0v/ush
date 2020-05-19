@@ -45,11 +45,11 @@ void mx_arrow_up(t_ush *ush) {
     }
     mx_printstr(ush->in->line);
     ush->in->cur_x = strlen(ush->in->line);
-    ush->in->cur_y += (
-        (ush->in->cur_x + ush->in->prompt_length - 1) / ush->in->winsize);
+    ush->in->cur_y += (ush->in->cur_x + ush->in->prompt_length
+            + ush->in->chars_after_newline - 1) / ush->in->winsize;
     ush->in->win_x = ush->in->cur_x + ush->in->prompt_length
                      + ush->in->chars_after_newline;
-    if ((ush->in->cur_x + ush->in->prompt_length) > ush->in->winsize)
+    if (ush->in->win_x > ush->in->winsize)
         ush->in->win_x -= ush->in->winsize * (ush->in->cur_y - 1);
     mx_update_cursor(ush->in);
 }
@@ -64,11 +64,11 @@ void mx_arrow_down(t_ush *ush) {
         mx_strcat(ush->in->line, ush->current->cmd);
         mx_printstr(ush->in->line);
         ush->in->cur_x = strlen(ush->in->line);
-        ush->in->cur_y += (
-            (ush->in->cur_x + ush->in->prompt_length - 1) / ush->in->winsize);
+        ush->in->cur_y += (ush->in->cur_x + ush->in->prompt_length
+            + ush->in->chars_after_newline - 1) / ush->in->winsize;
         ush->in->win_x = ush->in->cur_x + ush->in->prompt_length
                      + ush->in->chars_after_newline;
-        if ((ush->in->cur_x + ush->in->prompt_length) > ush->in->winsize)
+        if (ush->in->win_x > ush->in->winsize)
             ush->in->win_x -= ush->in->winsize * (ush->in->cur_y - 1);
         mx_update_cursor(ush->in);
     }

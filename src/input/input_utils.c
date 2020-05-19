@@ -29,7 +29,7 @@ void mx_update_cursor(t_input *in) {
     tputs(tgetstr("cr", NULL), 1, mx_printnbr);
     for (size_t i = 0; i < in->win_x; i++)
         tputs(tgetstr("nd", NULL), 1, mx_printnbr);
-    if (((strlen(in->line) + in->prompt_length - 1) / in->winsize) + 1
+    if (((strlen(in->line) + in->chars_after_newline + in->prompt_length - 1) / in->winsize) + 1
         > in->cur_y) {
         while (j++ < ((strlen(in->line) + in->prompt_length - 1)
                         / in->winsize + 1 - in->cur_y)) {
