@@ -12,6 +12,6 @@ int main() {
         return ush->exit_code;
     }
     exit_code = mx_ush_loop(ush);
-    system("leaks ush");
+    // system("leaks ush");
     return exit_code;
 }
