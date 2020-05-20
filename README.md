@@ -78,7 +78,7 @@ make uninstall
     - ```-e```;
     - ```-E```.
 
-### Signals namaging
+### Signals managing
 
 - ```CTRL+D```;
 - ```CTRL+C```;
